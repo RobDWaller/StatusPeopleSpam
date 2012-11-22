@@ -1,0 +1,10 @@
+@media all and (min-width:768px) and (max-width:1024px)
+{
+    
+    .columnholder{margin:0px auto; width:960px; position:relative;}
+    .bannerimage
+    {
+        display:none;
+    }
+    
+}
