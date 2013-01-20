@@ -1,11 +1,1 @@
-function Scroll()
-{
-    
-    this.To = function(id,time,minus)
-    {
-        $('html, body').animate({
-            scrollTop: $(id).offset().top-minus
-        }, time);
-    }
-    
-}
+function Scroll(){this.To=function(c,b,a){$("html, body").animate({scrollTop:$(c).offset().top-a},b)}};
