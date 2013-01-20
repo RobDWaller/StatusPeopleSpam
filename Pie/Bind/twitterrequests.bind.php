@@ -305,7 +305,7 @@ class TwitterRequests
             
             if ($this->twitter->http_code==200)
             {
-            
+        
                 foreach ($followers as $user)
                 {
                         $followersarray[] = array('id'=>$user->id_str,
@@ -317,7 +317,8 @@ class TwitterRequests
                                 'description'=>$user->description,
                                 'website'=>$user->url,
                                 'image'=>$user->profile_image_url,
-                                'following'=>$user->following);	
+                                'following'=>$user->following,
+                                'favourites'=>$user->favourites_count);	
                 }
             
             }

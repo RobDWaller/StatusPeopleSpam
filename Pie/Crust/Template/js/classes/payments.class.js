@@ -12,20 +12,20 @@ function Payments()
     {
         
         var cur = '&pound;';
-        var base = 4.99;
-        var tax = 1.00;
+        var base = 3.49;
+        var tax = 0.00;
         
         if (currency == 'USD')
         {
             cur = '&#36;';
-            base = 8.99;
-            tax = 2.00;
+            base = 5.49;
+            tax = 0.00;
         }
         else if (currency == 'EUR')
         {
             cur = '&euro;';
-            base = 6.99;
-            tax = 1.50;
+            base = 4.49;
+            tax = 0.00;
         }
         
         var tms = 1;

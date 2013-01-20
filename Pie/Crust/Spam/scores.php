@@ -39,27 +39,26 @@
                         <div class="pricingbox">
                             <div class="three center">
                                 <h2 class="blue">UK</h2>
-                                <h1>£4.99*</h1>
+                                <h1>&pound;3.49</h1>
                                 <small class="orange bree">Per Month</small>
                                 <p class="bree blue">Block Spam</p>
                                 <p class="bree blue">Track 5 Accounts</p>
                             </div>
                             <div class="three center pricingborders">
                                 <h2 class="blue">US</h2>
-                                <h1>&#36;8.99*</h1>
+                                <h1>&#36;5.49</h1>
                                 <small class="orange bree">Per Month</small>
                                 <p class="bree blue">Block Spam</p>
                                 <p class="bree blue">Track 5 Accounts</p>
                             </div>
                             <div class="three center">
                                 <h2 class="blue">EU</h2>
-                                <h1>&euro;6.99*</h1>
+                                <h1>&euro;4.49</h1>
                                 <small class="orange bree">Per Month</small>
                                 <p class="bree blue">Block Spam</p>
                                 <p class="bree blue">Track 5 Accounts</p>
                             </div>
                         </div>
-                        <small class="white">* Excludes VAT of 20%. Please read our <a href="http://tools.statuspeople.com/User/Terms" class="whitelink" target="_blank">terms and conditions</a> carefully before you purchase. All payments taken via Pay Pal.</small>
                     </div>
                     <div class="two">
                         <?=$form;?>

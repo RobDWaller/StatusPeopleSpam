@@ -415,8 +415,8 @@ class API extends Jelly
                 {
                     $idslist = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
                     
-                    $this->errorschutney->PrintArray($idslist['code']);
-                    $this->errorschutney->PrintArray($idslist['data']);
+#                    $this->errorschutney->PrintArray($idslist['code']);
+#                    $this->errorschutney->PrintArray($idslist['data']);
                     
                     if ($idslist['code']==429)
                     {
@@ -531,7 +531,7 @@ class API extends Jelly
                                 {
                                     $followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
                                     
-                                    $this->errorschutney->DebugArray($followerdetails);
+#                                    $this->errorschutney->DebugArray($followerdetails);
                                     
                                     if ($followerdetails['code'] == 200)
                                     {
@@ -578,8 +578,15 @@ class API extends Jelly
                                             $sc++;
     //                                        $this->errorschutney->PrintArray($follower);
                                         }
+                                        elseif($ffratio<10&&empty($follower['website'])&&$follower['favourites']==0)
+                                        {
+                                            $sc++;
+    //                                        $this->errorschutney->PrintArray($follower);
+                                        }
                                         else 
                                         {
+#                                            $this->errorschutney->PrintArray($ffratio);
+#                                            $this->errorschutney->PrintArray($follower);
                                             $p++;
                                         }
 

@@ -126,13 +126,13 @@ class Payments extends Jelly
         }
         
         $fields = array('cmd'=>array('','Hidden','','_hosted-payment'),
-                        'subtotal'=>array('','Hidden','','4.99'),
+                        'subtotal'=>array('','Hidden','','3.49'),
                         'buyer_email'=>array('','Hidden','',$userdetails[2]),
                         'first_name'=>array('','Hidden','',$userdetails[4]),
                         'last_name'=>array('','Hidden','',$userdetails[5]),
                         'currency_code'=>array('Currency','Dropdown',array(array('GBP','GBP','GB Pound Sterling','GBP'),array('USD','USD','US Dollar','USD'),array('EUR','EUR','EU Euro','EUR')),'','','GBP'),
                         'period'=>array('Period','Dropdown',array(array('1','1','1 Month','1'),array('6','6','6 Months','6'),array('12','12','12 Months','12')),'','','GBP'),
-                        'tax'=>array('','Hidden','','1.00'),
+                        'tax'=>array('','Hidden','','0.00'),
                         'saving'=>array('','Hidden','','0.00'),
                         'months'=>array('','Hidden','',1),
                         'checkout'=>array('Check Out','Submit')); 
@@ -140,9 +140,9 @@ class Payments extends Jelly
         $data['form'] = $this->formschutney->FormBuilder('payform',$this->routechutney->BuildUrl('/Payments/Checkout',$this->mod_rewrite),$fields);
         
         $data['currency'] = '&pound;';
-        $data['subtotal'] = '4.99';
-        $data['tax'] = '1.00';
-        $data['total'] = '5.99';
+        $data['subtotal'] = '3.49';
+        $data['tax'] = '0.00';
+        $data['total'] = '3.49';
         $data['saving'] = '0.00';
         $data['months'] = '1';
         
