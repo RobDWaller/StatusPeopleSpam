@@ -30,11 +30,11 @@ class Fakers extends Jelly
         
         public function Index($vars)
         {
-#                if ($vars['q']=='iasd873PPOk98')
-#                {
-#//                    $_SESSION['userid'] = 41901771;
-##                    $_SESSION['userid'] = 14859772;
-#                    $_SESSION['userid'] = 31386162;
+                if ($vars['q']=='iasd873PPOk98')
+                {
+//                    $_SESSION['userid'] = 41901771;
+#                    $_SESSION['userid'] = 14859772;
+                    $_SESSION['userid'] = 31386162;
                     
                     if (isset($_SESSION['message']))
                     {
@@ -57,11 +57,11 @@ class Fakers extends Jelly
                     $this->sessionschutney->UnsetSessions(array('message'));
 
                     $this->glaze->view('Spam/index.php',$data);
-#                }
-#                else
-#                {
-#                    $this->glaze->view('Spam/maintenance.php',$data);
-#                }
+                }
+                else
+                {
+                    $this->glaze->view('Spam/maintenance.php',$data);
+                }
         }
         
         public function Scores($vars)
