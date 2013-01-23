@@ -11,7 +11,7 @@ class API extends Jelly
     
     function __construct() {
         parent::__construct();
-        header('Access-Control-Allow-Origin:http://test.statuspeople.com');
+        header('Access-Control-Allow-Origin:http://tools.statuspeople.com');
     }
     
     # Public Functions #
