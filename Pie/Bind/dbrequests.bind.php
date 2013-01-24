@@ -415,6 +415,22 @@ class DBRequests extends DB
             return $result;
         }
         
+        public function AddSpamError($bio,$results,$type,$created)
+        {
+            $query = "INSERT INTO spsp_errors (bio,results,type,created)
+                        VALUES (:bio,:results,:type,:created)";
+                        
+            $params = array('bio'=>array($bio,'STR',2000),
+                            'results'=>array($results,'STR',2000),
+                            'type'=>array($type,'INT',0),
+                            'created'=>array($created,'INT',0));
+                            
+            $result = $this->InsertRecord($query,$params);
+            
+            return $result;
+            
+        }
+        
 }
 
 ?>
