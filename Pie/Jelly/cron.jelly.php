@@ -246,6 +246,11 @@ class Cron extends Jelly
             //                                        $this->errorschutney->PrintArray($follower);
                                                     $spam[] = $follower;
                                                 }
+                                                elseif($ffratio<10&&empty($follower['website'])&&$follower['favourites']==0)
+                                                {
+                                                    $sc++;
+            //                                        $this->errorschutney->PrintArray($follower);
+                                                }
                                                 else 
                                                 {
                                                     $p++;
@@ -287,14 +292,17 @@ class Cron extends Jelly
                             }
                             else
                             {
-                                $to = 'rdwaller1984@googlemail.com';
-                                $subject = 'StatusPeople Failed Fakers Cache';
-                                $message = '<p>Dear Rob,<p><p>This is a missed fakers cache score...</p><pre>'.print_r($bio,true).print_r($results,true).'</pre><p>Thanks, StatusPeople</p>';
-                                $headers['from'] = 'StatusPeople <info@statuspeople.com>';
-                                $headers['reply'] = 'info@statuspeople.com';
-                                $headers['return'] = 'info@statuspeople.com';
+#                                $to = 'rdwaller1984@googlemail.com';
+#                                $subject = 'StatusPeople Failed Fakers Cache';
+#                                $message = '<p>Dear Rob,<p><p>This is a missed fakers cache score...</p><pre>'.print_r($bio,true).
+.'</pre><p>Thanks, StatusPeople</p>';
+#                                $headers['from'] = 'StatusPeople <info@statuspeople.com>';
+#                                $headers['reply'] = 'info@statuspeople.com';
+#                                $headers['return'] = 'info@statuspeople.com';
+#
+#                                $this->emailchutney->SendEmail($to,$subject,$message,$headers);
 
-                                $this->emailchutney->SendEmail($to,$subject,$message,$headers);
+                                $this->dbbind->AddSpamError(print_r($bio,true),print_r($bio,true),1,time());
                             }
 
                             $s = 0;

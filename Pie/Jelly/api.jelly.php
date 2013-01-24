@@ -280,6 +280,11 @@ class API extends Jelly
                                             $sc++;
     //                                        $this->errorschutney->PrintArray($follower);
                                         }
+                                        elseif($ffratio<10&&empty($follower['website'])&&$follower['favourites']==0)
+                                        {
+                                            $sc++;
+    //                                        $this->errorschutney->PrintArray($follower);
+                                        }
                                         else 
                                         {
                                             $p++;
