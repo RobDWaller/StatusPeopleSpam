@@ -302,6 +302,7 @@ class Cron extends Jelly
 #                                $this->emailchutney->SendEmail($to,$subject,$message,$headers);
 
                                 $this->dbbind->AddSpamError(print_r($bio,true),print_r($results,true),1,time());
+                                $update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
                             }
 
                             $s = 0;
@@ -335,8 +336,6 @@ class Cron extends Jelly
                     unset($hndrds);
                     unset($fids);
                     unset($results);
-                    
-                    $update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
                 }
             }
         }
