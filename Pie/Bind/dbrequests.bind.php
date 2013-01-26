@@ -176,9 +176,16 @@ class DBRequests extends DB
         
         public function GetUsersToCheck($limit)
         {
+#            $query = "SELECT *
+#                        FROM spsp_checks
+#                        WHERE accounttype = 1 AND live = 1 
+#                        GROUP BY screen_name
+#                        ORDER BY updated ASC
+#                        LIMIT 0,:limit";
+            
             $query = "SELECT *
                         FROM spsp_checks
-                        WHERE accounttype = 1 AND live = 1 
+                        WHERE accounttype = 1 AND live = 1 AND DATE_FORMAT(FROM_UNIXTIME(updated),'%d/%m/%y') != DATE_FORMAT(CURDATE(),'%d/%m/%y') 
                         GROUP BY screen_name
                         ORDER BY updated ASC
                         LIMIT 0,:limit";
