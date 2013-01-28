@@ -49,7 +49,7 @@ function Spam()
             if (source==1)
             {
                 button.attr('id','sharescores');
-                button.val('Share Your Scores');
+                button.val('Share Your Scores on Twitter');
             }
             else if (source==2)
             {
@@ -211,7 +211,7 @@ function Spam()
             button.attr('type','button');
             
             button.attr('id','sharescores');
-            button.val('Share Your Scores');
+            button.val('Share Your Scores on Twitter');
             
             button.appendTo(div2);
             
