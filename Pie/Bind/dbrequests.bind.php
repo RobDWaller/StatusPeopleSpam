@@ -187,7 +187,7 @@ class DBRequests extends DB
                         FROM spsp_checks
                         WHERE accounttype = 1 AND live = 1 AND DATE_FORMAT(FROM_UNIXTIME(updated),'%d/%m/%y') != DATE_FORMAT(CURDATE(),'%d/%m/%y') 
                         GROUP BY screen_name
-                        ORDER BY updated ASC
+                        ORDER BY lastcheck ASC
                         LIMIT 0,:limit";
             
             $params = array('limit'=>array($limit,'INT',0));
@@ -210,6 +210,21 @@ class DBRequests extends DB
             $result = $this->UpdateRecord($query, $params);
             
             return $result;
+        }
+        
+        public function UpdateLastCheckTime($twitterid,$screen_name,$time)
+        {
+            $query = "UPDATE spsp_checks
+                        SET lastcheck = :time
+                        WHERE twitterid = :twitterid AND screen_name = :screen_name";
+            
+            $params = array('time'=>array($time,'INT',0),
+                            'screen_name'=>array($screen_name,'STR',140),
+                            'twitterid'=>array($twitterid,'INT',0));
+            
+            $result = $this->UpdateRecord($query, $params);
+            
+            return $result;   
         }
         
         public function AddCheckScore($twitterid,$screen_name,$spam,$potential,$checks,$followers,$created)
