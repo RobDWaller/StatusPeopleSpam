@@ -305,20 +305,27 @@ class TwitterRequests
             
             if ($this->twitter->http_code==200)
             {
-        
-                foreach ($followers as $user)
+                
+                if (empty($followers))
                 {
-                        $followersarray[] = array('id'=>$user->id_str,
-                                'screen_name'=>$user->screen_name,
-                                'location'=>$user->location,
-                                'friends'=>$user->friends_count,
-                                'followers'=>$user->followers_count,
-                                'tweets'=>$user->statuses_count,
-                                'description'=>$user->description,
-                                'website'=>$user->url,
-                                'image'=>$user->profile_image_url,
-                                'following'=>$user->following,
-                                'favourites'=>$user->favourites_count);	
+                    $code = 404;
+                }
+                else
+                {
+                    foreach ($followers as $user)
+                    {
+                            $followersarray[] = array('id'=>$user->id_str,
+                                    'screen_name'=>$user->screen_name,
+                                    'location'=>$user->location,
+                                    'friends'=>$user->friends_count,
+                                    'followers'=>$user->followers_count,
+                                    'tweets'=>$user->statuses_count,
+                                    'description'=>$user->description,
+                                    'website'=>$user->url,
+                                    'image'=>$user->profile_image_url,
+                                    'following'=>$user->following,
+                                    'favourites'=>$user->favourites_count);	
+                    }
                 }
             
             }
