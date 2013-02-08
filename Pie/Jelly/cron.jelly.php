@@ -30,6 +30,8 @@ class Cron extends Jelly
             {
                 foreach ($records as $r)
                 {
+					$this->dbbind->UpdateLastCheckTime($r['twitterid'],$r['screen_name'],time());
+					
                     $spam = array();
                     
                     $details = $this->dbbind->GetTwitterDetails($r['userid']);
@@ -290,7 +292,6 @@ class Cron extends Jelly
                             {
                                 $this->dbbind->AddCheckScore($bio['user']->id,$bio['user']->screen_name,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
                                 $update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
-                                $checktime = $this->dbbind->UpdateLastCheckTime($r['twitterid'],$r['screen_name'],time());
                             }
                             else
                             {
@@ -302,9 +303,7 @@ class Cron extends Jelly
 #                                $headers['return'] = 'info@statuspeople.com';
 #
 #                                $this->emailchutney->SendEmail($to,$subject,$message,$headers);
-
                                 $this->dbbind->AddSpamError(print_r($bio,true),print_r($results,true),1,time());
-                                $checktime = $this->dbbind->UpdateLastCheckTime($r['twitterid'],$r['screen_name'],time());
                             }
 
                             $s = 0;

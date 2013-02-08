@@ -439,11 +439,11 @@ class DBRequests extends DB
         
         public function AddSpamError($bio,$results,$type,$created)
         {
-            $query = "INSERT INTO spsp_errors (bio,results,type,created)
+            $query = "INSERT INTO spsp_errors (bio,result,type,created)
                         VALUES (:bio,:results,:type,:created)";
                         
-            $params = array('bio'=>array($bio,'STR',2000),
-                            'results'=>array($results,'STR',2000),
+            $params = array('bio'=>array($bio,'STR',7000),
+                            'results'=>array($results,'STR',7000),
                             'type'=>array($type,'INT',0),
                             'created'=>array($created,'INT',0));
                             
