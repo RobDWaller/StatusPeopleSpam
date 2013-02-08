@@ -576,17 +576,17 @@ class API extends Jelly
                                         if ($follower['tweets']==0||$follower['followers']==0)
                                         {
                                             $sc++;
-    //                                        $this->errorschutney->PrintArray($follower);
+                                            $this->errorschutney->PrintArray($follower);
                                         }
                                         elseif($ffratio<=2)
                                         {
                                             $sc++;
-    //                                        $this->errorschutney->PrintArray($follower);
+                                            $this->errorschutney->PrintArray($follower);
                                         }
                                         elseif($ffratio<10&&empty($follower['website'])&&$follower['favourites']==0)
                                         {
                                             $sc++;
-    //                                        $this->errorschutney->PrintArray($follower);
+                                            $this->errorschutney->PrintArray($follower);
                                         }
                                         else 
                                         {
@@ -1159,45 +1159,95 @@ class API extends Jelly
             if ($scores)
             {
                 $i = 0;
+                $k = 0;
+                $d = 0;
                 
-                foreach ($scores as $s)
+                while ($d<20)
                 {
-                    $fake = round(($s['spam']/$s['checks'])*100);
-                    $inactive = round(($s['potential']/$s['checks'])*100);
-                    $good = 100-($fake+$inactive);
-                    $created = $s['created'];
+                    if (!$d)
+                    {
+                        $dates[] = date('M d',time());
+                    }
+                    else
+                    {
+                        $dates[] = date('M d',strtotime('-'.$d.' days'));
+                    }
                     
-                    $data['Fake'][$i] = array('count'=>$fake,'date'=>$s['date']);
-                    $data['Inactive'][$i] = array('count'=>$inactive,'date'=>$s['date']);
-                    $data['Good'][$i] = array('count'=>$good,'date'=>$s['date']);
+                    $d++;
+                }
+                
+#                $this->errorschutney->PrintArray($dates);
+                
+                foreach ($dates as $dt)
+                {
+                    
+                    $fake = round(($scores[$k]['spam']/$scores[$k]['checks'])*100);
+                    $inactive = round(($scores[$k]['potential']/$scores[$k]['checks'])*100);
+                    $good = 100-($fake+$inactive);
+                    $created = $scores[$k]['created'];
+                    
+                    if ($dt == $scores[$k]['date'])
+                    {
+                        $data['Fake'][$i] = array('count'=>$fake,'date'=>$scores[$k]['date']);
+                        $data['Inactive'][$i] = array('count'=>$inactive,'date'=>$scores[$k]['date']);
+                        $data['Good'][$i] = array('count'=>$good,'date'=>$scores[$k]['date']);
+                    }
+                    else
+                    {
+                        $data['Fake'][$i] = array('count'=>$fake,'date'=>$dt);
+                        $data['Inactive'][$i] = array('count'=>$inactive,'date'=>$dt);
+                        $data['Good'][$i] = array('count'=>$good,'date'=>$dt);
+                    }
+                    
+                    if (is_array($scores[$k+1]))
+                    {
+                        //$this->errorschutney->PrintArray($scores[$k+1]);
+                        $k++;
+                    }
                     
                     $i++;
                 }
                 
-                if ($i<9)
-                {
-                    
-                    $d = 9 - $i;
-                    
-                    $c = 0;
-                    
-                    $t = 1;
-                    $day = 86400;
-                    
-                    while ($c<$d)
-                    {
-                        $date = date('M d',$created-($t*$day));
-                        
-                        $data['Fake'][$i] = array('count'=>$fake,'date'=>$date);
-                        $data['Inactive'][$i] = array('count'=>$inactive,'date'=>$date);
-                        $data['Good'][$i] = array('count'=>$good,'date'=>$date);
-                        
-                        $c++;
-                        $t++;
-                        $i++;
-                    }
-                    
-                }
+#                $this->errorschutney->DebugArray($data);
+                
+#                foreach ($scores as $s)
+#                {
+#                    $fake = round(($s['spam']/$s['checks'])*100);
+#                    $inactive = round(($s['potential']/$s['checks'])*100);
+#                    $good = 100-($fake+$inactive);
+#                    $created = $s['created'];
+#                    
+#                    $data['Fake'][$i] = array('count'=>$fake,'date'=>$s['date']);
+#                    $data['Inactive'][$i] = array('count'=>$inactive,'date'=>$s['date']);
+#                    $data['Good'][$i] = array('count'=>$good,'date'=>$s['date']);
+#                    
+#                    $i++;
+#                }
+                
+#                if ($i<9)
+#                {
+#                    
+#                    $d = 9 - $i;
+#                    
+#                    $c = 0;
+#                    
+#                    $t = 1;
+#                    $day = 86400;
+#                    
+#                    while ($c<$d)
+#                    {
+#                        $date = date('M d',$created-($t*$day));
+#                        
+#                        $data['Fake'][$i] = array('count'=>$fake,'date'=>$date);
+#                        $data['Inactive'][$i] = array('count'=>$inactive,'date'=>$date);
+#                        $data['Good'][$i] = array('count'=>$good,'date'=>$date);
+#                        
+#                        $c++;
+#                        $t++;
+#                        $i++;
+#                    }
+#                    
+#                }
                 
                 $this->_APISuccess(201, 'Data returned successfully.',$data);
             }
