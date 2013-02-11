@@ -1089,8 +1089,8 @@ class API extends Jelly
                 $results['potential']=$p;
                 $results['spam']=$sc;
 
-                        $this->errorschutney->PrintArray($results);
-                        $this->errorschutney->DebugArray($spam);
+//                        $this->errorschutney->PrintArray($results);
+//                        $this->errorschutney->DebugArray($spam);
 
                 $rb = ($checks*100)-100;
                 $rt = $checks*100;
