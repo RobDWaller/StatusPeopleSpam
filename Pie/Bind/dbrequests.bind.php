@@ -453,6 +453,38 @@ class DBRequests extends DB
             
         }
         
+        public function GetAutoSpamUsers()
+        {
+            $query = "SELECT c.userid
+                    FROM spsp_checks AS c
+                    JOIN (SELECT userid FROM spsp_fakes WHERE live = 1) AS f
+                    ON c.userid = f.userid
+                    WHERE c.autoremove = 1 AND c.accounttype = 1
+                    GROUP BY c.userid
+                    ORDER BY c.autocheck ASC
+                    LIMIT 0,3";
+            
+            $result = $this->SelectRecords($query);
+            
+            return $result;
+        }
+        
+        public function UpdateAutoRemove($userid,$twitterid,$time)
+        {
+            
+            $query = "UPDATE spsp_checks 
+                        SET autocheck = :time
+                        WHERE userid = :userid AND twitterid = :twitterid";
+                        
+            $params = array('time'=>array($time,'INT',0),
+                            'userid'=>array($userid,'INT',0),
+                            'twitterid'=>array($twitterid,'INT',0));
+                        
+            $result = $this->UpdateRecord($query,$params);
+            
+            return $result;
+        }
+        
 }
 
 ?>

@@ -314,12 +314,18 @@ class Cron extends Jelly
 
                             foreach ($spam as $spm)
                             {
-                                if ($s < 20)
+                                if (!$r['autoremove'])
+                                {
+                                    if ($s < 20)
+                                    {
+                                        $insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
+                                    }
+                                    $s++;
+                                }
+                                else
                                 {
                                     $insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
                                 }
-
-                                $s++;
                             }
 
                             $is = substr($insertstring,0,-1);
@@ -345,6 +351,48 @@ class Cron extends Jelly
 //            echo 'No Match';
 //        }
     }
+    
+    public function AutoRemoveSpam()
+    {
+        //if (true)
+        if ($_POST['ch'] == $this->cronhash)
+        {
+            
+            $users = $this->dbbind->GetAutoSpamUsers();
+            
+            if ($users)
+            {
+                
+                foreach ($users as $u)
+                {
+                    $details = $this->dbbind->GetTwitterDetails($u['userid']);
+                    
+                    //$this->errorschutney->PrintArray($details);
+                    
+                    $fakes = $this->dbbind->GetFakes($u['userid'],30);
+                    
+                    //$this->errorschutney->PrintArray($fakes);
+                    
+                    foreach ($fakes as $f)
+                    {
+                        $destroy = $this->twitterbind->DestroyFriendship($details[2],$details[3],$f['twitterid']);
+                        
+                        //$this->errorschutney->PrintArray($destroy);
+                        
+                        if ($destroy)
+                        {
+                            $block = $this->dbbind->BlockSpam($u['userid'],$f['twitterid']);
+                        }
+                    }
+                    
+                    $this->dbbind->UpdateAutoRemove($u['userid'],$u['userid'],time());
+                }
+                
+            }
+            
+        }
+    }
+    
     
 //    public function TestFakersCheck()
 //    {
