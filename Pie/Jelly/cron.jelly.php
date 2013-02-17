@@ -162,7 +162,14 @@ class Cron extends Jelly
 
                             while ($z <= $checks)
                             {
-                                $chcks[$y] = round($y*$incr);  
+                                if(count($hndrds[round($y*$incr)])<100&&$z==$checks&&$followers>500)
+            					{
+        							$chcks[$y] = round(($y*$incr)-1);
+        						}
+        						else
+        						{
+        							$chcks[$y] = round($y*$incr);  
+        						}
 
                                 $y++;
                                 $z++;
