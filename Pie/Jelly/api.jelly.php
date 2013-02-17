@@ -11,7 +11,14 @@ class API extends Jelly
     
     function __construct() {
         parent::__construct();
-        header('Access-Control-Allow-Origin:http://tools.statuspeople.com');
+        
+        $httporigin = $_SERVER['HTTP_ORIGIN'];
+        $allowed = array('http://tools.statuspeople.com','http://test.statuspeople.com');
+        
+        if (in_array($httporigin,$allowed))
+        {        
+            header('Access-Control-Allow-Origin:'.$httporigin);
+        }
     }
     
     # Public Functions #
@@ -203,7 +210,14 @@ class API extends Jelly
                     
                     while ($z <= $checks)
                     {
-                        $chcks[$y] = round($y*$incr);  
+                        if(count($hndrds[round($y*$incr)])<100&&$z==$checks&&$followers>500)
+    					{
+							$chcks[$y] = round(($y*$incr)-1);
+						}
+						else
+						{
+							$chcks[$y] = round($y*$incr);  
+						}  
 
                         $y++;
                         $z++;
@@ -798,8 +812,15 @@ class API extends Jelly
 
                     while ($z <= $checks)
                     {
-                        $chcks[$y] = round($y*$incr);  
-
+                        if(count($hndrds[round($y*$incr)])<100&&$z==$checks&&$followers>500)
+    					{
+							$chcks[$y] = round(($y*$incr)-1);
+						}
+						else
+						{
+							$chcks[$y] = round($y*$incr);  
+						}
+                        
                         $y++;
                         $z++;
                     }
@@ -1021,7 +1042,14 @@ class API extends Jelly
 
                 while ($z <= $checks)
                 {
-                    $chcks[$y] = round($y*$incr);  
+                    if(count($hndrds[round($y*$incr)])<100&&$z==$checks&&$followers>500)
+					{
+						$chcks[$y] = round(($y*$incr)-1);
+					}
+					else
+					{
+						$chcks[$y] = round($y*$incr);  
+					}  
 
                     $y++;
                     $z++;
