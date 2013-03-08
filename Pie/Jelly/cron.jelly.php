@@ -259,6 +259,7 @@ class Cron extends Jelly
                                                 {
                                                     $sc++;
             //                                        $this->errorschutney->PrintArray($follower);
+                                                    $spam[] = $follower;
                                                 }
                                                 else 
                                                 {
