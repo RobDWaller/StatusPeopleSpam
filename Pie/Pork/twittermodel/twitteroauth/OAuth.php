@@ -3,9 +3,9 @@
 
 /* Generic exception class
  */
-class OAuthException extends Exception {
+/* class OAuthException extends Exception {
   // pass
-}
+} */
 
 class OAuthConsumer {
   public $key;

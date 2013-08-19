@@ -99,7 +99,7 @@ $(document).ready(function(){
 
     });
 
-    $('#resetscores').live('click',function(e){
+    $(document).on('click','#resetscores',function(e){
 
         e.preventDefault();
 
@@ -114,7 +114,7 @@ $(document).ready(function(){
 
     });
 
-    $('#addfaker').live('click',function(e){
+    $(document).on('click','#addfaker',function(e){
        
         e.preventDefault();
 
@@ -138,7 +138,7 @@ $(document).ready(function(){
 
     });
     
-    $('.delete').live('click',function(){
+    $(document).on('click','.delete',function(){
         var pr = $(this).parent();
         var inp = pr.children('input');
         var id = inp.val();
@@ -147,19 +147,19 @@ $(document).ready(function(){
         mes.DeleteCheck(id);
     });
     
-    $('#deleteno').live('click',function(){
+    $(document).on('click','#deleteno',function(){
 
         pop.RemovePopup();
 
     });
 
-    $('#popupclose').live('click',function(){
+    $(document).on('click','#popupclose',function(){
 
         pop.RemovePopup();
 
     });
 
-    $('#deleteyes').live('click',function(){
+    $(document).on('click','#deleteyes',function(){
 
         var id = $('#deletedata').val();
         pop.RemovePopup();
@@ -167,7 +167,7 @@ $(document).ready(function(){
         srv.CallServer('POST','json','/API/PostDeleteFaker','rf=json&usr='+twid+'&twid='+id,'Spam_DeleteFaker',twid);        
     });
 
-    $('.chart').live('click',function(){
+    $(document).on('click','.chart',function(){
         var pr = $(this).parent();
         var inp1 = pr.children('.ti');
         var id = inp1.val();
@@ -189,7 +189,7 @@ $(document).ready(function(){
         
     });
 
-    $('.details').live('click',function(e){
+    $(document).on('click','.details',function(e){
         
         e.preventDefault();
         
@@ -202,7 +202,7 @@ $(document).ready(function(){
         srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+twid+'&srch='+srch,'Spam_BuildUser','');
     });
     
-    $('.block').live('click',function(e){
+    $(document).on('click','.block',function(e){
         
         e.preventDefault();
         
@@ -213,7 +213,7 @@ $(document).ready(function(){
         srv.CallServer('POST','json','/API/PostBlockSpam','rf=json&usr='+twid+'&twid='+srch,'Spam_BlockUser',twid);
     });
     
-    $('.notspam').live('click',function(e){
+    $(document).on('click','.notspam',function(e){
         
         e.preventDefault();
         
@@ -224,7 +224,7 @@ $(document).ready(function(){
         srv.CallServer('POST','json','/API/PostNotSpam','rf=json&usr='+twid+'&twid='+srch,'Spam_NotSpam',twid);
     });
     
-    $('.tweetfollowers').live('click',function(e){
+    $(document).on('click','.tweetfollowers',function(e){
        
         e.preventDefault();
 
@@ -238,7 +238,7 @@ $(document).ready(function(){
         
     });
     
-    $(".usertweettimeline").live("click", function (e){
+    $(document).on("click",".usertweettimeline", function (e){
        
        e.preventDefault();
        
@@ -252,7 +252,7 @@ $(document).ready(function(){
        
     });
     
-    $("#chartreset").live('click',function(){
+    $(document).on('click',"#chartreset",function(){
        
        $('#charthandle').text(twuser);
         
@@ -266,7 +266,7 @@ $(document).ready(function(){
        
     });
     
-    $('#checkfakes').live('click',function(){
+    $(document).on('click','#checkfakes',function(){
        
        if ($('#checkform').length)
        {

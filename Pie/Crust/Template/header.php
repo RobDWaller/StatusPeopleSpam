@@ -19,17 +19,22 @@
     <link rel="stylesheet" href="/Pie/Crust/Template/css/tablets.css?v=2">
 	<!--<link rel="stylesheet" id="sptwstyle" href="/Pie/Crust/SocialMedia/css/default.css" />--> 
     <script src="/Pie/Crust/Template/js/libs/modernizr-1.7.min.js"></script> 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-    <script src="/Pie/Crust/Template/js/highcharts/js/highcharts.js"></script>	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://tools.statuspeople.com/Pie/Crust/Template/js/newhighcharts/js/highcharts.js"></script>	
 </head> 
 <body> 
-    <header class="column row">
-        <div class="twoa a">
-            <a href="<?=$homelink;?>"><img src="/Pie/Crust/Template/img/logo_new_hires_small.png" height="50px" width="98px" /></a>
-        </div>
-        <div class="twob">
-            <ul class="nav">
-                
-            </ul>
-        </div>
-    </header>
+	<div class="bgholder">
+		<header>
+			<div class="header">
+				<div class="three a">
+					<a href="<?=$homelink;?>"><img src="http://tools.statuspeople.com/Pie/Crust/Template/img/logo_white_hires_compressed.png" height="30" width="58" alt="StatusPeople" /></a>
+				</div>
+				<div class="three a">
+					
+				</div>
+				<div class="three">
+					
+				</div>
+			</div>
+			<?=$message;?>
+		</header>

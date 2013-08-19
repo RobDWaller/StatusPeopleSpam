@@ -3,32 +3,39 @@ function Messages()
     
     this.Build = function (type,messages,where)
     {
-        if (!$('#'+type+'message').length)
+        if ($('#'+type+'message').length)
         {
-            var ul = $('<ul/>');
-
-            $.each(messages,function(i,m){
-                var li = $('<li/>');
-                li.text(m);
-                li.appendTo(ul);
-            });
-
-            var div1 = $('<div class="column '+type+'message bree" id="'+type+'message"/>');
-            var div2 = $('<div class="e1"/>');
-            div2.html('<img src="/Pie/Crust/Template/img/'+type+'_icon.png" />');
-            div2.appendTo(div1);
-            var div3 = $('<div class="e2 s0"/>');
-            ul.appendTo(div3);
-            div3.appendTo(div1);
-            var div4 = $('<div class="e3 s0 '+type+'close"/>');
-            div4.html('<span id="'+type+'close">X</span>');
-            div4.appendTo(div1);
-
-            div1.insertBefore(where);
+            $('#'+type+'message').remove();
         }
         
-        var sc = new Scroll();
-        sc.To('#'+type+'message',500,10);
+        var ul = $('<ul/>');
+
+        $.each(messages,function(i,m){
+            var li = $('<li/>');
+            li.html(m);
+            li.appendTo(ul);
+        });
+
+        var div1 = $('<div class="'+type+'message bree" id="'+type+'message"/>');
+        var div2 = $('<div class="e1"/>');
+        div2.html('<img src="/Pie/Crust/Template/img/'+type+'_icon.png" />');
+        div2.appendTo(div1);
+        var div3 = $('<div class="e2 s0"/>');
+        ul.appendTo(div3);
+        div3.appendTo(div1);
+        var div4 = $('<div class="e3 s0 '+type+'close"/>');
+        div4.html('<span id="'+type+'close">X</span>');
+        div4.appendTo(div1);
+
+        div1.insertAfter(where);
+        
+		function Remove()
+		{
+			var ms = new Messages();
+			ms.CloseMessages(['#'+type+'message']);
+		}
+		
+        var st2 = setTimeout(Remove,15000);
     }
     
     this.DeleteCheck = function(id)
@@ -60,4 +67,16 @@ function Messages()
         pop.Content(div);
     }
     
+	this.CloseMessages = function(messages)
+	{
+		$.each(messages,function(e,m){
+		
+			if ($(m).length)
+			{
+				$(m).fadeOut("slow",function(){$(this).remove();});
+			}
+			
+		});
+	}
+	
 }

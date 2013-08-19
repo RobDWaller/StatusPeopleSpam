@@ -82,7 +82,7 @@ $(document).ready(function(){
         }
     });
     
-    $('#resetscores').live('click',function(e){
+    $(document).on('click','#resetscores',function(e){
         
         e.preventDefault();
         
@@ -97,7 +97,7 @@ $(document).ready(function(){
         
     });
     
-    $('#popupclose').live('click',function(){
+    $(document).on('click','#popupclose',function(){
         
         pop.RemovePopup();
         

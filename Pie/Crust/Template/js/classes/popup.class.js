@@ -3,8 +3,10 @@ function Popup()
     
     this.BuildPopup = function(data)
     {
+        var div1 = $('<div id="loaderfade2"/>');
+        
         var box = $("<div/>");
-        box.attr('id','popup')
+        box.attr('id','popup');
 
         var close = $("<div/>");
         close.attr('id','popupcloseholder');
@@ -21,8 +23,10 @@ function Popup()
         databox.append(data);
 
         databox.appendTo(box);
+        
+        box.appendTo(div1);
 
-        box.appendTo("body");
+        div1.appendTo("body");
     }
 
     this.Loader = function(message)
@@ -83,7 +87,8 @@ function Popup()
 
     this.RemovePopup = function()
     {
-        $("#popup").remove();
+        $('#loaderfade2').remove();
+//        $("#popup").remove();
     }
 
     this.RemoveContent = function()
@@ -101,4 +106,53 @@ function Popup()
         $("#popupmessage").remove();
     }
     
+    this.TinyLoader = function()
+    {
+        if (!$('#tinyloader').length)
+        {
+            var div1 = $('<div id="loaderfade"/>');
+            var div2 = $('<div id="tinyloader"><h2>Loading...</h2><img src="http://fakers.statuspeople.com/Pie/Crust/Template/img/287.gif" /></div>');
+
+            div2.appendTo(div1);
+
+            div1.appendTo('body');
+        }
+    }
+    
+    this.RemoveTinyLoader = function()
+    {
+        if ($('#tinyloader').length)
+        {
+        
+            $('#loaderfade').remove();
+        
+        }
+    }
+    
+	this.RightPopup = function()
+	{
+		if (!$('#rightpopup').length)
+		{
+			var div = $('<div id="rightpopup">'
+						+'<div><span id="closerightpopup">x</span></div>'
+						+'<div id="rightcontent"></div>'
+						+'</div>');
+			
+			div.appendTo('body');
+		}
+	}
+	
+	this.CloseRightPopup = function()
+	{
+		if ($('#rightpopup').length)
+		{
+			$('#rightpopup').remove();
+		}
+	}
+	
+	this.RightContent = function(content)
+	{
+		$('#rightcontent').html('');
+		content.appendTo('#rightcontent');
+	}
 }

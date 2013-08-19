@@ -1,26 +1,26 @@
 $(document).ready(function(){
    
-   $('#failureclose').live('click',function(){
+   $(document).on('click','#failureclose',function(){
       
-      $('#failuremessage').fadeOut("slow",function(){$(this).remove()});
-      
-   });
-   
-   $('#successclose').live('click',function(){
-      
-      $('#successmessage').fadeOut("slow",function(){$(this).remove()});
+      $('#failuremessage').fadeOut("slow",function(){$(this).remove();});
       
    });
    
-   $('#infoclose').live('click',function(){
+   $(document).on('click','#successclose',function(){
       
-      $('#infomessage').fadeOut("slow",function(){$(this).remove()});
+      $('#successmessage').fadeOut("slow",function(){$(this).remove();});
       
    });
    
-   $('#alertclose').live('click',function(){
+   $(document).on('click','#infoclose',function(){
       
-      $('#alertmessage').fadeOut("slow",function(){$(this).remove()});
+      $('#infomessage').fadeOut("slow",function(){$(this).remove();});
+      
+   });
+   
+   $(document).on('click','#alertclose',function(){
+      
+      $('#alertmessage').fadeOut("slow",function(){$(this).remove();});
       
    });
    

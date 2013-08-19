@@ -3,7 +3,7 @@ $(document).ready(function(){
     var srv = new Server();
     var spm = new Spam();    
         
-    $('#sharescores').live('click',function(e){
+    $(document).on('click','#sharescores',function(e){
         
         e.preventDefault();
         
