@@ -178,6 +178,7 @@ class Fakers extends Jelly
 
                 $data['competitors'] = $this->_BuildCompetitors($competitors);
                 $data['fakes'] = $this->_BuildFakes($fakes);
+				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
 
                 $data['twitterid'] = $userid;
 
@@ -200,8 +201,10 @@ class Fakers extends Jelly
                 $data['message'] = $_SESSION['message'];
             }
             
-            $this->sessionschutney->UnsetSessions(array('message'));
+			$this->sessionschutney->UnsetSessions(array('message'));
 
+			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
+			
             $this->glaze->view('Spam/reset.php',$data);
         }
 
@@ -507,7 +510,7 @@ class Fakers extends Jelly
                 }
                 
                 $output .= '<div class="three'.($i<($k-1)?' a':'').'">';
-                $output .= '<img src="'.$r['avatar'].'" height="28px" width="28px" />';
+                $output .= '<img src="'.$r['avatar'].'" height="28" width="28" alt="'.$r['screen_name'].'" />';
                 $output .= '<span class="spamscore"><a href="http://twitter.com/'.$r['screen_name'].'" target="_blank">'.$r['screen_name'].':</a> <span class="red">'.$spam.'% Fake</span></span>';
                 $output .= '</div>';
                 
@@ -519,7 +522,7 @@ class Fakers extends Jelly
                 $i++;
             }
             
-            $output .= '</div>';
+			//$output .= '</div>';
             
             return $output;
         }
@@ -595,12 +598,12 @@ class Fakers extends Jelly
                     $good = (100-($fake+$inactive));
                     
                     $output .= '<tr>';
-                    $output .= '<td><img src="'.$c['avatar'].'" width="48px" height="48px" /></td>';
-                    $output .= '<td><span>'.$c['screen_name'].'</span></td>';
+                    $output .= '<td><img src="'.$c['avatar'].'" width="36px" height="36px" /></td>';
+                    $output .= '<td><span class="blue">'.$c['screen_name'].'</span></td>';
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
                     $output .= '<td><span class="green">Good: '.$good.'%</span></td>';
-                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart" title="View on chart"><img src="/Pie/Crust/Template/img/Reports.png"/></span></td>';
+                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart" title="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
                     $output .= '<td><input type="hidden" value="'.$c['twitterid'].'"/><span class="delete" title="Remove">X</span></td>';
                     $output .= '</tr>';
                 }
