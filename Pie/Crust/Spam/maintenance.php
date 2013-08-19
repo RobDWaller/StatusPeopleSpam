@@ -1,6 +1,5 @@
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/header.php'); ?>
-<?=$message;?>
-<div class="columnholder bglblue2">
+<div class="columnholder bg5">
     <div class="banner">
         <ul>
             <li class="bannerimage"></li>   

@@ -177,7 +177,7 @@ class Payments extends Jelly
         
         $create = $this->paymentbind->CreatePurchase($userid,$transactionid,$_POST['currency_code'],$_POST['subtotal'],time());
         
-        if ($create&&isset($_COOKIE['transactionid']))
+        if ($create)
         {
         
             $fields = array('cmd'=>array('','Hidden','','_hosted-payment'),
@@ -277,7 +277,14 @@ class Payments extends Jelly
                 {
                     $getlastvalid = $this->paymentbind->GetValidDate($purchase[1]);
                     
-                    $lastvalid = date('Y/m/d',$getlastvalid[0]);
+					if ($getlastvalid[0]<=time())
+					{
+						$lastvalid = date('Y/m/d',time());
+					}
+					else
+					{
+						$lastvalid = date('Y/m/d',$getlastvalid[0]);	
+					}
                     
                     $valid = strtotime($lastvalid.' +'.$data['months'].' '.$m);
                     

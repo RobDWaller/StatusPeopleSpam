@@ -305,7 +305,7 @@ class Build
         public function PageMessage($type,$messages)
         {
             
-            $output = '<div class="column '.$type.'message bree" id="'.$type.'message">';
+            $output = '<div class="'.$type.'message bree" id="'.$type.'message">';
             $output .= '<div class="e1">';
             $output .= '<img src="/Pie/Crust/Template/img/'.$type.'_icon.png" />';
             $output .= '</div>';
