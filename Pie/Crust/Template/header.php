@@ -14,6 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <link rel="shortcut icon" href="/Pie/Crust/Template/favicon.ico"> 
     <link rel="apple-touch-icon" href="/Pie/Crust/Template/apple-touch-icon.png"> 
+	<link href="http://blog.statuspeople.com/Posts/RSS" rel="alternate" title="StatusPeople Blog" type="application/rss+xml">
  
     <link rel="stylesheet" href="/Pie/Crust/Template/css/style.css?v=2"> 
     <link rel="stylesheet" href="/Pie/Crust/Template/css/tablets.css?v=2">
@@ -26,13 +27,13 @@
 	<div class="bgholder">
 		<header>
 			<div class="header">
-				<div class="three a">
+				<div class="threea a">
 					<a href="<?=$homelink;?>"><img src="http://tools.statuspeople.com/Pie/Crust/Template/img/logo_white_hires_compressed.png" height="30" width="58" alt="StatusPeople" /></a>
 				</div>
-				<div class="three a">
-					
+				<div class="threeb a">
+					<?=$menu;?>
 				</div>
-				<div class="three">
+				<div class="threea">
 					
 				</div>
 			</div>
