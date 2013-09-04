@@ -53,7 +53,7 @@ class Fakers extends Jelly
                     $spamrecords = $this->dbbind->GetLatestSpamRecords(3);
 
                     //$this->errorschutney->DebugArray($spamrecords);
-
+					$data['menu'] = '<ul><li><span class="ico">p</span> <a href="http://statuspeople.com">Home</a></li><li><span class="ico3">%</span> <a href="http://blog.statuspeople.com">Blog</a></li></ul>';
                     $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);    
 
                     $this->sessionschutney->UnsetSessions(array('message'));
