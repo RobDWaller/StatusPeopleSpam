@@ -59,5 +59,4 @@
 <script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
 <script src="/Pie/Crust/Template/js/sharescores.js"></script>
 <script src="/Pie/Crust/Template/js/advanced.js"></script>
-<script src="/Pie/Crust/Template/js/closemessages.js"></script>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

@@ -421,6 +421,16 @@ function Popup()
 		$('#rightcontent').html('');
 		content.appendTo('#rightcontent');
 	}
+	
+	this.InfoBox = function()
+	{
+		var div = $('<div id="infobox"><a href="http://twitter.com/statuspeople" class="icon" data-tip="Follow Us" id="infotwitter" target="_blank">+</a>'+
+					'<a href="http://facebook.com/StatusPeople" class="icon" data-tip="Like Our Facebook Page" id="infofacebook" target="_blank">,</a>'+
+					'<a href="mailto:info@statuspeople.com" class="icon" data-tip="Email Us" id="infoemail" target="_blank">%</a>'+
+					'<a href="http://blog.statuspeople.com/Posts/RSS" class="icon" data-tip="Subscribe to our Blog" id="infofeed" target="_blank">/</a></div>');
+		
+		div.appendTo('body');
+	}
 }
 
 function Scroll()
