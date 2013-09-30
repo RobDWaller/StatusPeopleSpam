@@ -21,7 +21,8 @@
 	<!--<link rel="stylesheet" id="sptwstyle" href="/Pie/Crust/SocialMedia/css/default.css" />--> 
     <script src="/Pie/Crust/Template/js/libs/modernizr-1.7.min.js"></script> 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="http://tools.statuspeople.com/Pie/Crust/Template/js/newhighcharts/js/highcharts.js"></script>	
+	<script src="http://tools.statuspeople.com/Pie/Crust/Template/js/newhighcharts/js/highcharts.js"></script>
+	<script src="http://tools.statuspeople.com/Pie/Crust/Template/js/plugins/jquery.cookie.js"></script>	
 </head> 
 <body> 
 	<div class="bgholder">

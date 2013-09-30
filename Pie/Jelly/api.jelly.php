@@ -67,10 +67,12 @@ class API extends Jelly
     
     
     public function GetSpamScores($vars)
-    {
+	{
+		
         $this->ResponseFormat = $vars['rf'];
         $user = $vars['usr'];
         $search = $vars['srch'];
+		$searches = $vars['srchs'];
         
         $this->_CheckForResponseFormat();
         
@@ -78,16 +80,25 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
             
-            //$this->errorschutney->PrintArray($details);
+			//$this->errorschutney->DebugArray($details);
             
             $search = $this->validationchutney->StripNonAlphanumeric($search);
             
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
             
-            //$this->errorschutney->PrintArray($bio);
+			//$this->errorschutney->DebugArray($bio);
             
             $uid = $bio['user']->id;
             
+			$countsearch = 1;
+			
+			if ($user==$uid)
+			{
+				$countsearch = 0;
+			}
+			
+			//$this->errorschutney->DebugArray($countsearch);
+			
             $spamrecords = $this->dbbind->GetSpamDetails($uid);
             
             $true = true;
@@ -186,12 +197,38 @@ class API extends Jelly
                 $results['spam']=$spamscores[2];
             }
             
+			
+			
             if (empty($results))
             {
                 $this->_APIFail(500,'No User Data Returned.');
             }
             else 
             {
+				//$searches = $_COOKIE['searches'];
+				$results['searches'] = $searches;
+				
+				if ($countsearch>0)
+				{
+					//$this->errorschutney->PrintArray($_COOKIE);
+					//$this->errorschutney->PrintArray($countsearch);
+				
+					$newsearches = 0;
+					
+					//$this->errorschutney->PrintArray($searches);
+					
+					if ($searches>0)
+					{
+						$newsearches = $searches - 1;
+						//$this->errorschutney->PrintArray($newsearches);
+					}
+					
+					$this->dbbind->UpdateSearches($user,$newsearches);
+					//setcookie('searches',$newsearches,time()+3600000);
+					//$this->errorschutney->PrintArray($newsearches);
+					$results['searches'] = $newsearches;
+				}
+				
                 $this->_APISuccess(201, 'Request Successful, Twitter User Data Found.',$results);
             }
         }
@@ -724,7 +761,7 @@ class API extends Jelly
             $this->_APIFail(400,'No user defined');
         }
     }
-	
+		
 	public function _GetFakerStatus($follower)
 	{
 		
@@ -1054,6 +1091,111 @@ class API extends Jelly
         }
     }
     
+	public function GetUserDetailsCount($vars)
+	{
+		$this->ResponseFormat = $vars['rf'];
+        $user = $vars['usr'];
+        
+        $this->_CheckForResponseFormat();
+        
+        if ($user)
+        {
+			$count = $this->paymentbind->CountUserDetails($user);
+			
+			if ($count)
+			{
+				$this->_APISuccess(201,'User Exists',$count);
+			}
+			else
+			{
+				$this->_APIFail(500,'User does not exist.');
+			}
+		}
+		else
+		{
+			$this->_APIFail(400,'No user details submitted.');
+		}
+	}
+	
+	public function PostAddUserDetails()
+	{
+		$this->ResponseFormat = $_POST['rf'];
+        $user = $_POST['usr'];
+		$email = $_POST['em'];
+		$title = $_POST['tt'];
+		$fname = $_POST['fn'];
+		$lname = $_POST['ln'];
+        
+        $this->_CheckForResponseFormat();
+		
+		$valid[] = $this->validationchutney->ValidateEmail($email);
+		$valid[] = $this->validationchutney->ValidateString($title,'Title'); 
+		$valid[] = $this->validationchutney->ValidateString($fname,'First Name'); 
+		$valid[] = $this->validationchutney->ValidateString($lname,'Last Name'); 
+		
+		$isvalid = true;
+		$messages = array();
+		
+		foreach ($valid as $v)
+		{
+			if (!$v[0])
+			{
+				$isvalid = false;
+				$messages[] = $v[1];
+			}
+		}
+		
+		if ($isvalid)
+		{
+			$count = $this->paymentbind->CountUserDetails($user);
+			
+			if ($count)
+			{
+				$searches = $this->dbbind->GetSearches($user);
+				$add = $searches[0]+5;
+				$this->dbbind->UpdateSearches($user,$add);
+				$data['searches'] = $add;
+				
+				$this->_APISuccess(201, 'User already exists.',$data);
+			}
+			else
+			{
+				$adddetails = $this->paymentbind->AddUserDetails($user,$email,$title,$fname,$lname,time());
+				
+				if ($adddetails>0)
+                {
+                    $searches = $this->dbbind->GetSearches($user);
+					$add = $searches[0]+5;
+					$this->dbbind->UpdateSearches($user,$add);
+					$data['searches'] = $add;
+					
+					$headers['from'] = 'StatusPeople <fakers@statuspeople.com>';
+					$headers['reply'] = 'fakers@statuspeople.com';
+					$headers['return'] = 'fakers@statuspeople.com';
+					
+					$message = '<p>Dear '.$fname.',</p>';
+					$message .= '<p>Thanks for connecting with StatusPeople Fakers App. To help you get more insight on the Fakers universe we have given you 5 free extra friend searches. Cool huh?</p>';
+					$message .= '<p>If you want unlimited friend searches <a href="http://fakers.statuspeople.com/Payments/Subscriptions" style="color:#36b6d5;">Sign up for a subscription</a> and get access to all our other dashboard tools.</p>';
+					$message .= '<p style="text-align:center;"><a href="https://statuspeoplestatuspeople01.s3.amazonaws.com/8dea3263d6d60ab01e5bec28aaad8aa9d5dc3dbdf780cef278dd0237cacf1a36"><img src="https://statuspeoplestatuspeople01.s3.amazonaws.com/8dea3263d6d60ab01e5bec28aaad8aa9d5dc3dbdf780cef278dd0237cacf1a36" height="250px" width="185px" border="0px" align="center"/></a></p>';
+					$message .= '<p>And if you have any questions just drop us a line at info@statuspeople.com or <a href="http://twitter.com/StatusPeople" style="color:#36b6d5;">@StatusPeople</a>.</p>';
+					$message .= '<p>Cheers, StatusPeople</p>';
+					
+					$this->emailchutney->SendEmail($email,'Welcome to StatusPeople Fakers App',$message,$headers);
+					
+					$this->_APISuccess(201, 'User added successfully.',$data);
+				}
+                else
+				{
+					$this->_APIFail(500,'Failed to create user.');
+				}
+			}
+		}
+		else
+		{
+			$this->_APIFail(400,'Details submitted were not valid.',$message);
+		}
+	}
+	
     public function GetCompetitorCount($vars)
     {
         $this->ResponseFormat = $vars['rf'];
@@ -1788,6 +1930,52 @@ class API extends Jelly
     
     # End Twitter #
     
+	public function PostChangeAutoRemoveStatus()
+	{
+		$this->ResponseFormat = $_POST['rf'];
+		$twid = $_POST['twid'];
+        
+        $this->_CheckForResponseFormat();
+		
+		if ($twid)
+		{
+			$count = $this->dbbind->CheckForFakerCheck($twid,$twid);	
+			
+			if ($count)
+			{
+				$getstatus = $this->dbbind->GetAutoRemoveStatus($twid);
+				
+				$autoremove = 1;
+				
+				if ($getstatus[0])
+				{
+					$autoremove = 0;
+				}
+				
+				$update = $this->dbbind->UpdateAutoRemoveStatus($twid,$autoremove);
+				
+				if ($update)
+				{
+					$this->_APISuccess(201, 'Auto remove status updated.','');
+				}
+				else
+				{
+					$this->_APIFail(500,'Updating auto remove status failed.');
+				}
+				
+			}
+			else
+			{
+				$this->_APIFail(500,'User could not be found.');
+			}
+		}
+		else
+		{
+			$this->_APIFail(400,'No data submitted.');
+		}
+		
+	}
+	
     # End Public Function #
     
     
