@@ -6,6 +6,7 @@ $(document).ready(function(){
     var srv = new Server();
     var ln = new Lengths();
     var pop = new Popup();
+	var ms = new Messages();
     
     function Build()
     {
@@ -50,8 +51,9 @@ $(document).ready(function(){
         Loader();
         
 //        GetScores(twid,twuser,1);
-
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',1);
+		var srchs = parseInt($.cookie('searches'));
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser+'&srchs='+srchs,'Spam_ProcessSpamData',1);
+		srv.CallServer('GET','json','/API/GetUserDetailsCount','rf=json&usr='+twid,'Spam_ProcessUserCheck');
     }
     
     $('#searchsubmit').bind('click',function(e){
@@ -63,23 +65,31 @@ $(document).ready(function(){
         var usersearch = $('#searchquery').val();
         
         var sl = ln.StringLength(usersearch);
-        
-        if (sl > 0)
-        {
-            Build();
-            Loader();
-            
-            $('#handle').text(usersearch);
-
-    //        GetScores(twid,usersearch,2);
-            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch,'Spam_ProcessSpamData',2);
-        }
-        else
-        {
-            pop.Loader();
-            pop.AddMessage('Please enter a Twitter username to search for.',true);
-            $(this).removeAttr('disabled');
-        }
+        var srchs = parseInt($.cookie('searches'));
+		
+		if (srchs>0)
+		{
+			if (sl > 0)
+			{
+				Build();
+				Loader();
+				
+				$('#handle').text(usersearch);
+	
+		//        GetScores(twid,usersearch,2);
+				srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch+'&srchs='+srchs,'Spam_ProcessSpamData',2);
+			}
+			else
+			{
+				ms.Build('alert',['Please enter a Twitter username to search for.'],'.header');
+				$(this).removeAttr('disabled');
+			}
+		}
+		else
+		{
+			ms.Build('alert',['You have no more friend searches left, please purchase a <a href="/Payments/Subscriptions">subscription</a> for unlimited searches.'],'.header');
+			$(this).removeAttr('disabled');
+		}
     });
     
     $(document).on('click','#resetscores',function(e){
@@ -103,6 +113,54 @@ $(document).ready(function(){
         
     });
     
+	$(document).on('click','#freesearches',function(e){
+		
+		e.preventDefault();
+		
+		pop.BuildPopup();
+		
+		var form = $('<p>Fill in your details to get 5 Free Searches.</p>'+
+					 '<form>'+
+					 '<fieldset><label>Email:</label><input type="text" id="F5email"/></fieldset>'+
+					 '<fieldset><label>Title:</label><select id="F5title">'+
+					 '<option value="Mr">Mr</option>'+
+					 '<option value="Mrs">Mrs</option>'+
+					 '<option value="Miss">Miss</option>'+
+					 '<option value="Ms">Ms</option>'+
+					 '<option value="Dr">Dr</option>'+
+					 '</select></fieldset>'+
+					 '<fieldset><label>First Name:</label><input type="text" id="F5fname"/></fieldset>'+
+					 '<fieldset><label>Last Name:</label><input type="text" id="F5lname"/></fieldset>'+
+					 '<fieldset><input type="submit" id="F5submit"/></fieldset>'+
+					 '</form>');
+		
+		pop.Content(form);
+		
+	});
+	
+	$(document).on('click','#F5submit',function(e){
+		
+		e.preventDefault();
+		
+		var email = $('#F5email').val();
+		var title = $('#F5title').val();
+		var fname = $('#F5fname').val();
+		var lname = $('#F5lname').val();
+		
+		pop.TinyLoader();
+		
+		srv.CallServer('POST','json','/API/PostAddUserDetails','rf=json&usr='+twid+'&em='+email+'&tt='+title+'&fn='+fname+'&ln='+lname,'Spam_ProcessUserAddDetails',1);
+		
+	});
+	
+	$(document).on('click','#rightinfoclose',function(e){
+		
+		e.preventDefault();
+		
+		pop.RightInfoClose();
+		
+	});
+	
     Begin();
     
 });

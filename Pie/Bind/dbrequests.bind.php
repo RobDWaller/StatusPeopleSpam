@@ -92,6 +92,33 @@ class DBRequests extends DB
             return $result;
         }
         
+		public function GetSearches($twid)
+		{
+			$query = "SELECT searches
+						FROM spsp_users
+						WHERE twitterid = :twid AND live = 1";
+			
+			$params = array('twid'=>array($twid,'INT',0));
+			
+			$result = $this->SelectRecord($query,$params);
+			
+			return $result;
+		}
+		
+		public function UpdateSearches($twid,$searches)
+		{
+			$query = "UPDATE spsp_users
+						SET searches = :searches
+						WHERE twitterid = :twid AND live = 1";
+			
+			$params = array('twid'=>array($twid,'INT',0),
+						   	'searches'=>array($searches,'INT',0));
+			
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+	
         public function GetSpamDetails($twitterid)
         {
             $query = "SELECT *
@@ -453,12 +480,26 @@ class DBRequests extends DB
             
         }
         
+		public function CountAutoRemoveRecords($userid)
+		{
+			$query = "SELECT COUNT(*)
+						FROM spsp_checks
+						WHERE userid = :userid AND twitterid = :twitterid AND autoremove = 1";
+			
+			$params = array('userid'=>array($userid,'INT',0),
+						   'twitterid'=>array($twitterid,'INT',0));
+			
+			$result = $this->SelectCount($query,$params);
+			
+			return $results;
+		}
+	
         public function GetAutoSpamUsers()
         {
             $query = "SELECT c.userid
                     FROM spsp_checks AS c
                     JOIN (SELECT userid FROM spsp_fakes WHERE live = 1) AS f
-                    ON c.userid = f.userid
+                    ON c.userid = f.userid AND c.twitterid = f.userid
                     WHERE c.autoremove = 1 AND c.accounttype = 1
                     GROUP BY c.userid
                     ORDER BY c.autocheck ASC
@@ -469,6 +510,20 @@ class DBRequests extends DB
             return $result;
         }
         
+		public function GetAutoRemoveStatus($twid)
+		{
+			$query = "SELECT autoremove
+						FROM spsp_checks AS c
+						WHERE userid = :userid AND twitterid = :twitterid";
+			
+			$params = array('userid'=>array($twid,'INT',0),
+						   	'twitterid'=>array($twid,'INT',0));
+				
+			$result = $this->SelectRecord($query,$params);
+			
+			return $result;
+		}
+	
         public function UpdateAutoRemove($userid,$twitterid,$time)
         {
             
@@ -484,6 +539,34 @@ class DBRequests extends DB
             
             return $result;
         }
+	
+		public function UpdateAutoRemoveStatus($twid,$autoremove)
+		{
+			$query = "UPDATE spsp_checks
+						SET autoremove = :autoremove
+						WHERE userid = :userid AND twitterid = :twitterid";
+			
+			$params = array('autoremove'=>array($autoremove,'INT',0),
+						   	'userid'=>array($twid,'INT',0),
+						   	'twitterid'=>array($twid,'INT',0));
+			
+			$update = $this->UpdateRecord($query,$params);
+			
+			return $update;
+		}
+	
+		public function AddLogin($twitterid,$created)
+		{
+			$query = "INSERT INTO spsp_logins (twitterid,created)
+						VALUES (:twitterid,:created)";
+			
+			$params = array('twitterid'=>array($twitterid,'INT',0),
+						   	'created'=>array($created,'INT',0));
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
         
 }
 

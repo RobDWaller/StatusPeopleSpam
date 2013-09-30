@@ -23,8 +23,10 @@ class Email
 		// Turns headers array into header string.
 		$header = self::BuildHeaders($headers);
 		
+		$email = self::MessageTemplate($subject,$message);
+		
 		// Sends email.
-		mail($to, $subject, $message, $header);
+		mail($to, $subject, $email, $header);
 		
 	}	
 	
@@ -37,6 +39,36 @@ class Email
 		
 	}
 	
+	protected function MessageTemplate($title,$message)
+	{
+		$email = '<html>
+					<head>
+						<title>'.$title.'</title>
+					</head>
+					<body style="background-color:#eef8fb;">
+						<div style="width:100%; background-color:#eef8fb;">
+							<table width="600px" cellpadding="0px" cellspacing="0px" align="center">
+								<tr>
+									<td width="80px" height="40px" style="background-color:#36b6d5; padding:0px 10px;"><img src="http://tools.statuspeople.com/Pie/Crust/Template/img/logo_white_hires_compressed.png" height="30px" width="58px" style="padding:5px;" /></td>
+									<td width="480px" height="40px" style="background-color:#36b6d5; color:#fefefe; padding:0px 10px; text-align:right;"><strong><a href="http://tools.statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Website</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://fakers.statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Fakers</a></strong></td>
+								</tr>
+								<tr>
+									<td width="580px" style="background-color:#fefefe; padding:10px;" colspan="2">
+										'.$message.'
+									</td>
+								</tr>
+								<tr>
+									<td width="580px" height="40px" style="background-color:#fe7d1d; padding:10px; color:#fefefe; font-size:12px; font-family:tahoma,arial;" colspan="2">
+										&copy; 2013 StatusPeople.com <a href="http://twitter.com/statuspeople" style="color:#fefefe;">@StatusPeople</a> 
+									</td>
+								</tr>
+							</table>
+						</div>
+					</body>
+				</html>';
+		
+		return $email;
+	}
 }
 
 ?>

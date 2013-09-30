@@ -212,7 +212,7 @@ function Payments()
         
         var cur = '&pound;';
         var base = 3.49;
-        var tax = 0.00;
+        var tax = 0.70;
         
         if (currency == 'USD')
         {
@@ -224,7 +224,7 @@ function Payments()
         {
             cur = '&euro;';
             base = 4.49;
-            tax = 0.00;
+            tax = 0.90;
         }
         
         var tms = 1;
@@ -431,6 +431,22 @@ function Popup()
 		
 		div.appendTo('body');
 	}
+	
+	this.BuildRightInfoBox = function()
+	{
+		var div = $('<div id="rightinfobox"><div id="rightinfoclose">x</div><div class="content"></div></div>');	
+		div.appendTo('body');
+	}
+	
+	this.RightInfoContent = function(content)
+	{
+		content.appendTo('#rightinfobox .content');
+	}
+	
+	this.RightInfoClose = function()
+	{
+		$('#rightinfobox').remove();
+	}
 }
 
 function Scroll()
@@ -543,7 +559,15 @@ function Spam()
             button.appendTo(div2);
             
             div2.insertAfter('#scoresholder');
-                        
+			
+			$.cookie('searches',result.data.searches,{expires:1000});
+			$('#friendsearches').text(result.data.searches);
+            
+			if (parseInt(result.data.searches)==0)
+			{
+				var ms = new Messages();
+				ms.Build('alert',['To run unlimited friend searches please purchase a <a href="/Payments/Subscriptions">subscription</a>.'],'.header');
+			}
         }
         else
         {
@@ -1084,6 +1108,62 @@ function Spam()
         srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
         
     }
+	
+	this.ProcessUserCheck = function(result)
+	{
+		var pop = new Popup();
+		
+		if (result.code == 500)
+		{
+			pop.BuildRightInfoBox();
+			var p = $('<p><strong>Get 5 Free Friend Searches.</strong></p>'+
+								 '<p>Just give us a few details.</p>'+
+								 '<input type="button" id="freesearches" value="Free Searches" />'+
+								 '<p><strong>Get Unlimited Friend Searches</strong></p>'+
+								 '<p>Sign up for a subscription.</p>'+
+								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>');
+			pop.RightInfoContent(p);
+		}
+		else if (result.code == 201)
+		{
+			pop.BuildRightInfoBox();
+			var p = $('<p><strong>Get Unlimited Friend Searches</strong></p>'+
+								 '<p>Sign up for a subscription.</p>'+
+								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>');
+			pop.RightInfoContent(p);
+		}
+	}
+	
+	this.ProcessUserAddDetails = function(result)
+	{
+		var pop = new Popup();
+		var ms = new Messages();
+		
+		if (result.code == 201)
+		{
+			ms.Build('success',['User details added successfully. And you now have 5 extra friend searches. If you want unlimited searches <a href="/Payments/Subscriptions">sign up for a subscription</a>.'],'.header');
+			pop.RemovePopup();
+			$.cookie('searches',result.data.searches,1000);
+			$("#friendsearches").text(result.data.searches);
+			pop.RightInfoClose();
+			pop.BuildRightInfoBox();
+			var p = $('<p><strong>Get Unlimited Friend Searches</strong></p>'+
+								 '<p>Sign up for a subscription.</p>'+
+								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>');
+			pop.RightInfoContent(p);
+		}
+		else if (result.code == 500)
+		{
+			ms.Build('failure',['Failed to create user.'],'.header');
+			pop.RemovePopup();
+		}
+		else
+		{
+			pop.AddMessage(result.message,true);
+		}
+		
+		pop.RemoveTinyLoader();
+	}
 }
 
 function Tweets()
