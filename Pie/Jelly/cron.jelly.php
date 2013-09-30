@@ -415,5 +415,98 @@ class Cron extends Jelly
         }
     }
     
+	public function SendSubscriptionReminder()
+	{
+/* 		if ($_POST['ch'] == $this->cronhash)
+        { */
+			$emails = $this->paymentbind->GetEmailList();
+			
+		//$this->errorschutney->PrintArray($emails);
+		
+			$headers['from'] = 'StatusPeople <fakers@statuspeople.com>';
+			$headers['reply'] = 'fakers@statuspeople.com';
+			$headers['return'] = 'fakers@statuspeople.com';
+		
+			if (!empty($emails))
+			{
+				foreach ($emails as $e)
+				{
+					
+					if ($e['valid']<=strtotime('+2 Days')&&$e['valid']>strtotime('+1 Day'))
+					{
+						echo '+1 Day';
+						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));
+						//$email = $e['email'];
+						$email = 'rdwaller1984@googlemail.com';
+						
+						$message = '<p>Hi '.$e['forename'].',</p>';
+						$message .= '<p>We just thought we\'d let you know that your StatusPeople Fakers App Dashboard Subscription is about to expire.</p>';
+						$message .= '<p>If you would like to renew please go to your <a href="'.$this->routechutney->HREF('/Payments/Subscriptions',$this->mod_rewrite).'">subscriptions page</a>.</p>';
+						$message .= '<p>And if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
+						$message .= '<p>Cheers, StatusPeople</p>';
+						
+						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription about to Expire',$message,$headers);
+					}
+					elseif ($e['valid']<=strtotime('-1 Day')&&$e['valid']>strtotime('-2 Days'))
+					{
+						echo '-1 Day';
+						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));	
+						
+						//$email = $e['email'];
+						$email = 'rdwaller1984@googlemail.com';
+						
+						$message = '<p>Hi '.$e['forename'].',</p>';
+						$message .= '<p>We\'re sorry to say this but your StatusPeople Fakers App Dashboard Subscription has now expired.</p>';
+						$message .= '<p>If you would like to continue using the Fakers Dashboard tools please <a href="'.$this->routechutney->HREF('/Payments/Subscriptions',$this->mod_rewrite).'">purchase a new subscription</a>.</p>';
+						$message .= '<p>And if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
+						$message .= '<p>Cheers, StatusPeople</p>';
+						
+						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription has Expired',$message,$headers);
+					}
+					elseif ($e['valid']<=strtotime('-7 Days')&&$e['valid']>strtotime('-16 Days'))
+					{
+						echo '-7 Days';
+						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));
+						
+						//$email = $e['email'];
+						$email = 'rdwaller1984@googlemail.com';
+						
+						$message = '<p>Hi '.$e['forename'].',</p>';
+						$message .= '<p>This is just to remind you that your StatusPeople Fakers App Dashboard Subscription has now expired.</p>';
+						$message .= '<p>If you would like to continue using the Fakers Dashboard tools please <a href="'.$this->routechutney->HREF('/Payments/Subscriptions',$this->mod_rewrite).'">purchase a new subscription</a>.</p>';
+						$message .= '<p>And if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
+						$message .= '<p>Cheers, StatusPeople</p>';
+						
+						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription Expiry Reminder',$message,$headers);
+					}
+					elseif ($e['valid']<=strtotime('-30 Days')&&$e['valid']>strtotime('-31 Days'))
+					{
+						echo '-30 Days';
+						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));
+						
+						//$email = $e['email'];
+						$email = 'rdwaller1984@googlemail.com';
+						
+						$message = '<p>Hi '.$e['forename'].',</p>';
+						$message .= '<p>Just like to say goodbye and say thanks for using our Fakers Dashboard.</p>';
+						$message .= '<p>But if you don\'t want to say goodbye just yet remember you can purchase a <a href="'.$this->routechutney->HREF('/Payments/Subscriptions',$this->mod_rewrite).'">new subscription</a> any time.</p>';
+						$message .= '<p>We won\'t pester you with any more reminders but if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
+						$message .= '<p>Cheers, StatusPeople</p>';
+						
+						$this->emailchutney->SendEmail($email,'Goodbye from StatusPeople Fakers Dashboard',$message,$headers);
+					}
+				}
+			}
+			
+/* 		} */
+	}
+	
+	public function GetStatusPeopleSubscriberDetails()
+	{
+		$details = $this->paymentbind->GetSubscriberDetails();
+		
+		$this->errorschutney->PrintArray($details);
+	}
+	
 }
 ?>

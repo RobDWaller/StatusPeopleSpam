@@ -130,9 +130,10 @@ class Payments extends Jelly
                         'buyer_email'=>array('','Hidden','',$userdetails[2]),
                         'first_name'=>array('','Hidden','',$userdetails[4]),
                         'last_name'=>array('','Hidden','',$userdetails[5]),
+						'account_type'=>array('Type','Dropdown',array(array('Basic','Basic','Basic',1)/*,array('Premium','Premium','Premium',2)*/),'','','Basic'),
                         'currency_code'=>array('Currency','Dropdown',array(array('GBP','GBP','GB Pound Sterling','GBP'),array('USD','USD','US Dollar','USD'),array('EUR','EUR','EU Euro','EUR')),'','','GBP'),
                         'period'=>array('Period','Dropdown',array(array('1','1','1 Month','1'),array('6','6','6 Months','6'),array('12','12','12 Months','12')),'','','GBP'),
-                        'tax'=>array('','Hidden','','0.00'),
+                        'tax'=>array('','Hidden','','0.70'),
                         'saving'=>array('','Hidden','','0.00'),
                         'months'=>array('','Hidden','',1),
                         'checkout'=>array('Check Out','Submit')); 
@@ -141,8 +142,8 @@ class Payments extends Jelly
         
         $data['currency'] = '&pound;';
         $data['subtotal'] = '3.49';
-        $data['tax'] = '0.00';
-        $data['total'] = '3.49';
+        $data['tax'] = '0.70';
+        $data['total'] = $data['subtotal'] + $data['tax'];
         $data['saving'] = '0.00';
         $data['months'] = '1';
         
@@ -175,7 +176,7 @@ class Payments extends Jelly
             
         setcookie('transactionid',$transactionid,time()+3600);
         
-        $create = $this->paymentbind->CreatePurchase($userid,$transactionid,$_POST['currency_code'],$_POST['subtotal'],time());
+        $create = $this->paymentbind->CreatePurchase($userid,$transactionid,$_POST['currency_code'],$_POST['subtotal'],$_POST['account_type'],time());
         
         if ($create)
         {
@@ -204,6 +205,7 @@ class Payments extends Jelly
             setcookie('months',$_POST['period'],time()+3600);
             setcookie('saving',$_POST['saving'],time()+3600);
             setcookie('tax',$_POST['tax'],time()+3600);
+			setcookie('type',$_POST['account_type'],time()+3600);
             
             $currency = '&pound;';
             
@@ -217,6 +219,7 @@ class Payments extends Jelly
             }
             
             $data['currency'] = $currency;
+			$data['type'] = ($_POST['account_type']==1?'Basic':'Premium');
             $data['subtotal'] = $_POST['subtotal'];
             $data['tax'] = $_POST['tax'];
             $data['total'] = $_POST['subtotal']+$_POST['tax'];
@@ -247,6 +250,7 @@ class Payments extends Jelly
         if ($transaction)
         {
             
+			$data['type'] = ($_COOKIE['type']==1?'Basic':'Premium');
             $data['months'] = $_COOKIE['months'];
             $data['subtotal'] = $_COOKIE['subtotal'];
             $data['saving'] = $_COOKIE['saving'];
@@ -257,7 +261,9 @@ class Payments extends Jelly
             
             $purchase = $this->paymentbind->GetPurchaseDetails($transactionid);
             
-            if (!$purchase[5])
+			//$this->errorschutney->DebugArray($purchase);
+			
+            if (!$purchase[6])
             {
                 $this->paymentbind->CompletePurchase($transactionid);
 

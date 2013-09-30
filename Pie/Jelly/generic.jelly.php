@@ -33,12 +33,23 @@ class Generic extends Jelly
         
 	public function _IsLogin()
 	{
-                
-                if ($_SESSION['userid'] < 1)
+        
+		setcookie('lastpage',$_SERVER['REQUEST_URI'],time()+300,'/');
+		
+        if ($_SESSION['userid'] < 1)
 		{
                     self::Logout();
 		}
                             
+	}
+	
+	public function _LastPage()
+	{
+		if (isset($_COOKIE['lastpage']))
+		{
+			header('Location:'.$this->routechutney->BuildUrl($_COOKIE['lastpage'],$this->mod_rewrite));
+			die();
+		}
 	}
         
         public function _SubscriptionValidity()

@@ -13,6 +13,9 @@
 					<h2>Cart</h2>
 					<table id="checkoutcart">
 						<tr>
+							<td>Account Type:</td><td><span id="type"><?=$type;?></span></td>
+						</tr>
+						<tr>
 							<td>Subscription Period:</td><td><span id="cartmonths"><?=$months;?></span> Month(s)</td>
 						</tr>
 						<tr>

@@ -19,6 +19,9 @@
 					<div class="row connect" id="SearchForm">
 						<p>Find out how many fake followers your friends have.</p>
 						<p class="bree sp2"><form action="/Fakers/GetScores" method="post" id="searchform"><input type="text" name="name" id="searchquery" placeholder="Twitter username..." /><input type="submit" value="Search" id="searchsubmit" /></form></p>
+						<p class="f2 sp2 blue">
+								You have <span id="friendsearches"><?=$searches;?></span> friend searches left.
+						</p>
 					</div>
 					<div class="row one center">
 						<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="http://tools.statuspeople.com" target="_blank">Sign Up For a StatusPeople Account</a> | <a href="http://eepurl.com/mveWD" target="_blank">Sign Up To Our Email Newsletter</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>
@@ -40,6 +43,9 @@
 									<h2>UK</h2>
 									<h1>&pound;3.49</h1>
 									<small>Per Month</small>
+									<p>
+										Unlimited Searches
+									</p>
 									<p>Block Spam</p>
 									<p>Track 5 Accounts</p>
 								</div>
@@ -47,6 +53,9 @@
 									<h2>US</h2>
 									<h1>&#36;5.49</h1>
 									<small>Per Month</small>
+									<p>
+										Unlimited Searches
+									</p>
 									<p>Block Spam</p>
 									<p>Track 5 Accounts</p>
 								</div>
@@ -54,6 +63,9 @@
 									<h2>EU</h2>
 									<h1>&euro;4.49</h1>
 									<small>Per Month</small>
+									<p>
+										Unlimited Searches
+									</p>
 									<p>Block Spam</p>
 									<p>Track 5 Accounts</p>
 								</div>

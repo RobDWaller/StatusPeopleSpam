@@ -27,6 +27,22 @@
 							<p class="bree sp2"><form action="/Fakers/GetScores" method="post" id="searchform"><input type="text" name="name" id="searchquery" placeholder="Twitter username..." /><input type="submit" value="Search" id="searchsubmit" /></form></p>
 						</div>
 					</div>
+					<?php if($_SESSION['type']==2){?>
+						<div class="row">
+							<div class="two a">
+								<h2>
+									Auto Remove Spam
+								</h2>
+								<?=$autoremoveform;?>
+							</div>
+							<div class="two">
+								<h2>
+									Your Deep Dive Score
+								</h2>
+								<?=$rundeepdiveform;?>
+							</div>
+						</div>
+					<?php } ?>
 					<div class="row">
 						<div class="twoma a">
 							<h2>Fake Followers</h2>

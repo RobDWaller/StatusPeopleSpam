@@ -7,7 +7,7 @@ class PaymentRequests Extends DB
     {
         $query = "SELECT COUNT(*)
                     FROM spsp_user_details
-                    WHERE twitterid = :twitterid";
+                    WHERE twitterid = :twitterid AND live = 1";
         
         $params = array('twitterid'=>array($twitterid,'INT',0));
         
@@ -48,16 +48,17 @@ class PaymentRequests Extends DB
         return $result;
     }
     
-    public function CreatePurchase($userid,$transactionid,$currency,$amount,$created)
+    public function CreatePurchase($userid,$transactionid,$currency,$amount,$type,$created)
     {
 
-        $query = "INSERT INTO spsp_purchases (userid,transactionid,currency,amount,created)
-                    VALUES (:userid,:transactionid,:currency,:amount,:created)";
+        $query = "INSERT INTO spsp_purchases (userid,transactionid,currency,amount,type,created)
+                    VALUES (:userid,:transactionid,:currency,:amount,:type,:created)";
 
         $params = array('userid'=>array($userid,'INT',0),
                         'transactionid'=>array($transactionid,'STR',64),
                         'currency'=>array($currency,'STR',3),
                         'amount'=>array($amount,'INT',0),
+						'type'=>array($type,'INT',0),
                         'created'=>array($created,'INT',0));
         
         $result = $this->InsertRecord($query,$params);
@@ -120,9 +121,10 @@ class PaymentRequests Extends DB
 
     public function GetValidDate($userid)
     {
-        $query = "SELECT valid
-                    FROM spsp_valid
-                    WHERE userid = :userid";
+        $query = "SELECT sv.valid,sp.type
+                    FROM spsp_valid AS sv
+					JOIN spsp_purchases AS sp ON sv.userid = sp.userid AND sv.purchaseid = sp.id
+                    WHERE sv.userid = :userid";
 
         $params = array('userid'=>array($userid,'INT',0));
 
@@ -160,6 +162,29 @@ class PaymentRequests Extends DB
         return $result;
     }
     
+	public function GetEmailList()
+	{
+		$query = "SELECT sv.userid,sv.valid,sd.email,sd.forename
+					FROM spsp_valid AS sv
+					JOIN spsp_user_details AS sd ON sv.userid = sd.twitterid";
+			
+		$result = $this->SelectRecords($query);
+		
+		return $result;
+	}
+	
+	public function GetSubscriberDetails()
+	{
+		$query = "SELECT sv.userid,sd.email,su.screen_name
+					FROM spsp_valid AS sv
+					JOIN spsp_user_details AS sd ON sv.userid = sd.twitterid
+					JOIN spsp_user_info AS su ON sv.userid = su.twitterid";
+		
+		$result = $this->SelectRecords($query);
+		
+		return $result;
+	}
+	
 }
 
 ?>

@@ -35,6 +35,9 @@ class Fakers extends Jelly
 #//                    $_SESSION['userid'] = 41901771;
 ##                    $_SESSION['userid'] = 14859772;
 #                    $_SESSION['userid'] = 31386162;
+#					$_SESSION["userid"] = 633786383;
+#					 $_SESSION['userid'] = 707016673;
+#                    $_SESSION['userid'] = 72903889;
                     
                     if (isset($_SESSION['message']))
                     {
@@ -66,11 +69,12 @@ class Fakers extends Jelly
         
         public function Scores($vars)
         {
-            
-                Generic::_IsLogin();
+            	Generic::_IsLogin();
                
                 $validity = $this->_CheckValidity($_SESSION['userid']);
-
+				
+			//$this->errorschutney->DebugArray($validity);
+			
                 if (!$validity[0])
                 {
                     
@@ -102,8 +106,8 @@ class Fakers extends Jelly
                     $data['form'] = $this->formschutney->FormBuilder('detailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
 
                     $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.$_SESSION['userid'],$this->mod_rewrite);
-
-                    if (isset($vars[5]))
+					
+					if (isset($vars[5]))
                     {
                         $data['twitterhandle'] = $vars[5];
                     }
@@ -115,6 +119,13 @@ class Fakers extends Jelly
                         $data['twitterhandle'] = $bio->data->screenname;
 
                     }
+					
+					$searches = $this->dbbind->GetSearches($_SESSION['userid']);
+					//$this->errorschutney->PrintArray($_SESSION);
+					//$this->errorschutney->PrintArray($searches);
+					setcookie('searches',$searches[0],time()+3600000);
+					$data['searches'] = $searches[0];
+					//$this->errorschutney->DebugArray($_COOKIE);
 
                     $this->sessionschutney->UnsetSessions(array('message'));
 
@@ -182,6 +193,8 @@ class Fakers extends Jelly
 
                 $data['twitterid'] = $userid;
 
+				setcookie('searches',1000,time()+3600000,'/');
+				
                 $this->glaze->view('Spam/advanced.php',$data); 
             }
             else
@@ -376,7 +389,8 @@ class Fakers extends Jelly
                 if ($ok)
                 {
                     //$_SESSION['message'] = $this->buildchutney->PageMessage('success',array('Twitter successfully authenticated.'));
-                    
+                    $this->dbbind->AddLogin($userid,time());
+					Generic::_LastPage();
                     header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
                 }
                 else
@@ -625,13 +639,18 @@ class Fakers extends Jelly
             
             $count = $this->paymentbind->CountValidRecords($userid);
             
+			//$this->errorschutney->PrintArray($count);
+			
             if ($count)
             {
                 $validdate = $this->paymentbind->GetValidDate($userid);
                 
+				//$this->errorschutney->DebugArray($validdate);
+				
                 if ($validdate[0]>time())
                 {
                     $valid = true;
+					$_SESSION['type'] = $validdate[1];
                 }
                 else
                 {
@@ -642,7 +661,44 @@ class Fakers extends Jelly
             return array($valid,$message);    
             
         }
+	
+		protected function _GetAutoRemoveForm($userid)
+		{
+			$isautoremove = $this->dbbind->CountAutoRemoveRecords($userid);
+			
+			if ($isautoremove)
+			{
+				$input = '<input type="button" id="autoremoveOff" value="Turn Off"/>';
+			}
+			else
+			{
+				$input = '<input type="button" id="autoremoveON" value="Turn On"/>';
+			}
+			
+			$output = '<form id="autoremoveform"><fieldset>'.$input.'</fieldset></form>';
+			
+			return $output;
+		}
+	
+		public function EmailTest()
+		{
+			$headers['from'] = 'StatusPeople <info@statuspeople.com>';
+			$headers['reply'] = 'info@statuspeople.com';
+			$headers['return'] = 'info@statuspeople.com';
+			
+			$email = 'benj.christensen01@gmail.com';
+			
+			$message = '<p>Dear Rob</p><p>Hello World!!</p><p>Cheers, StatusPeople</p>';
+			
+			$this->emailchutney->SendEmail($email,'StatusPeople',$message,$headers);
+		}
         
+		public function Server()
+		{
+			$this->errorschutney->PrintArray($_SERVER['REQUEST_URI']);
+			$this->errorschutney->DebugArray($_SERVER);
+		}
+	
 }
 
 ?>
