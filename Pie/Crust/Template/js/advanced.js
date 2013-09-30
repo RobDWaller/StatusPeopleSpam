@@ -273,8 +273,10 @@ $(document).ready(function(){
            $('#checkform').remove();
        }
        
-       Loader('Checking For New Fake Followers','#spammers');
+       //Loader('Checking For New Fake Followers','#spammers');
        
+		pop.TinyLoader();	
+		
        srv.CallServer('GET','json','/API/GetUpdateFakersList','rf=json&usr='+twid+'&srch='+twuser,'Spam_UpdateFakersList',twid);
        
     });

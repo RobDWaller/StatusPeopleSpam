@@ -789,7 +789,7 @@ function Spam()
             
             var srv = new Server();
             
-            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+usr,'Spam_BuildFakersList','')
+            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+usr,'Spam_BuildFakersList','');
             
             var button = $('<input/>');
             button.attr('type','button');
@@ -960,7 +960,7 @@ function Spam()
                 good = (100-(fake+inactive));
                 
                 var tr = $('<tr/>');
-                tr.html('<td><img src="'+r.avatar+'" width="36px" height="36px" /></td><td><span class="blue">'+r.screen_name+'</span></td><td><span class="red">Fake: '+fake+'%</span></td><td><span class="orange">Inactive: '+inactive+'%</span></td><td><span class="green">Good: '+good+'%</span></td><td><input type="hidden" value="'+r.twitterid+'" class="ti"/><input type="hidden" value="'+r.screen_name+'" class="sc"/><span class="chart" title="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td><td><input type="hidden" value="'+r.twitterid+'"/><span class="delete" title="Remove">X</span></td>');
+                tr.html('<td><img src="'+r.avatar+'" width="36px" height="36px" /></td><td><span class="blue">'+r.screen_name+'</span></td><td><span class="red">Fake: '+fake+'%</span></td><td><span class="orange">Inactive: '+inactive+'%</span></td><td><span class="green">Good: '+good+'%</span></td><td><input type="hidden" value="'+r.twitterid+'" class="ti"/><input type="hidden" value="'+r.screen_name+'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td><td><input type="hidden" value="'+r.twitterid+'"/><span class="delete icon" data-tip="Remove">X</span></td>');
                 tr.appendTo(tbl);
             });
             
@@ -971,11 +971,8 @@ function Spam()
     
     this.BuildFakersList = function(result)
     {
-        
-        if ($('#loader').length)
-        {
-            $('#loader').remove();
-        }
+        var pop = new Popup();
+		pop.RemoveTinyLoader();
         
         if (result.code == 201)
         {
@@ -1003,18 +1000,22 @@ function Spam()
                 $('.fakeslist').remove();
             }
             
-            var div = $('<div id="checkform"/>');
-            
-            var p = $('<p/>');
-            p.text('No Fake Followers found at this time.');
-            
-            p.appendTo(div);
-            
-            var f = $('<p><fieldset><input type="button" id="checkfakes" value="Check For New Fakes"/></fieldset></p>');
-            
-            f.appendTo(div);
-            
-            div.appendTo('#spammers');
+			if (!$('#checkform').length)
+			{
+			
+				var div = $('<div id="checkform"/>');
+				
+				var p = $('<p/>');
+				p.text('No Fake Followers found at this time.');
+				
+				p.appendTo(div);
+				
+				var f = $('<p><fieldset><input type="button" id="checkfakes" value="Check For New Fakes"/></fieldset></p>');
+				
+				f.appendTo(div);
+				
+				div.appendTo('#spammers');
+			}
         }
     }
     
@@ -1240,7 +1241,7 @@ function Tweets()
         return newtxt;
     }
     
-    this.BuildUser = function(result)
+/*     this.BuildUser = function(result)
     {
         var li = $('<li/>');
         
@@ -1276,8 +1277,68 @@ function Tweets()
         div.appendTo(li);
         
         return li;
-    }
+    } */
     
+	this.BuildUser = function(result,gk)
+    {
+        var li = $('<li/>');
+        
+        var div = $('<div class="userholder"/>');
+
+        var div1 = $('<div/>');
+
+        var img = $('<img width="48" height="48" src="'+result.image+'"/>');
+        img.appendTo(div1);
+        
+        var fkclass = 'green';
+        
+        if (result.spam == 'Inactive')
+        {
+            fkclass = 'orange';
+        }
+        else if (result.spam == 'Fake')
+        {
+            fkclass = 'red';
+        }
+        
+        var fake = $('<div class="fakers center orange"><strong>Fakers</strong><br/><strong><span class="'+fkclass+'">'+result.spam+'</span></strong></div>');
+        fake.appendTo(div1);
+
+        var kred = $('<div class="kredsmall"><div class="influence"></div><div class="outreach"></div></div>'); 
+        kred.appendTo(div1);
+
+        div1.appendTo(div);
+
+        var div2 = $('<div/>');
+
+        div2.html('<span class="screenname">'+result.screenname+'</span><br/>'+result.location+'<br/><a href="'+result.url+'" target="_blank">Website</a><br/>Tweets: '+result.tweets+'<br/>Followers: '+result.followers+' <a href="http://twitter.com/'+result.screenname+'" class="tweetfollowers">View</a><br/>Friends: '+result.friends+'<br/>Days Active: '+result.daysactive); 
+       
+        var srv = new Server();
+        srv.CallServer('GET','json','/API/GetKredScore','rf=json&gk='+gk+'&usr='+result.screenname,'Tweets_AddKredScore',kred);
+        
+        div2.appendTo(div);
+        
+        var div3 = $('<div/>');
+
+        div3.text(result.description);
+        
+        div3.appendTo(div);
+        
+        var div4 = $('<div/>');
+
+        //var following = (result.following==1)?'<a href="/SocialMedia/FollowTweeter/V/'+result.id+'/'+result.screenname+'" class="unfollow" title="Unfollow">t9</a>':'<a href="/SocialMedia/FollowTweeter/V/'+result.id+'/'+result.screenname+'" class="follow" title="Follow">t;</a>';
+
+        //div4.html(following+'<a href="" data-tweetname="'+result.screenname+'" class="reply" title="Reply">y</a><a href="http://twitter.com/'+result.screenname+'" class="usertweettimeline" title="User Timeline">"</a><a href="#" class="senddm" rel="'+result.screenname+'" title="Direct Message">%</a>');
+        
+		div4.html('<a href="http://twitter.com/'+result.screenname+'" class="usertweettimeline" title="User Timeline">"</a>');
+		
+        div4.appendTo(div);
+        
+        div.appendTo(li);
+        
+        return li;
+    }
+	
     this.BuildDM = function(DM)
     {
         
@@ -1288,7 +1349,7 @@ function Tweets()
         
     }
     
-    this.AddKredScore = function(result,p2)
+/*     this.AddKredScore = function(result,p2)
     {
         if (result.code == 201)
         {
@@ -1297,6 +1358,20 @@ function Tweets()
         else
         {
             p2.html('<img src="/Pie/Crust/Template/img/Kred_Logo.png" /> N/A');
+        }
+    } */
+	
+	this.AddKredScore = function(result,kred)
+    {
+        if (result.code == 201)
+        {
+            kred.children('.influence').html(result.data.influence);
+            kred.children('.outreach').html(result.data.outreach);
+        }
+        else
+        {
+            kred.children('.influence').html('0');
+            kred.children('.outreach').html('0');
         }
     }
     
@@ -1436,14 +1511,14 @@ function Tweets()
         
         if (result.code == 201)
         {
-            var ul = $('<ul/>');
+            var ul = $('<ul class="twittertimeline"/>');
             
             $.each(result.data,function(i,t){
                 var tweet = tw.BuildTweet(t);
                 tweet.prependTo(ul);
             });
             
-            pop.Content(ul);
+            pop.Content(ul,'popupscroll');
         }
         else
         {

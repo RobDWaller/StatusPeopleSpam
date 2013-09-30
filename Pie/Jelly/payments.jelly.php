@@ -328,14 +328,15 @@ class Payments extends Jelly
     
     protected function _SendPurchaseEmail($email,$firstname,$data)
     {
-        $headers['from'] = 'StatusPeople <info@statuspeople.com>';
-        $headers['reply'] = 'info@statuspeople.com';
-        $headers['return'] = 'info@statuspeople.com';
+        $headers['from'] = 'StatusPeople <fakers@statuspeople.com>';
+        $headers['reply'] = 'fakers@statuspeople.com';
+        $headers['return'] = 'fakers@statuspeople.com';
 
         $message = '<p>Dear '.$firstname.',</p>';
         $message .= '<p>Thank you for purchasing our Fakers Dashboard. Your purchase details are below and remember to keep your purchase id safe.</p>';
         $message .= '<ul>';
         $message .= '<li>Purchase ID: '.$data['transactionid'].'</li>';
+        $message .= '<li>Account Type: '.$data['type'].'</li>';
         $message .= '<li>Subscription Period: '.$data['months'].' month(s)</li>';
         $message .= '<li>Sub-Total: '.$data['currency'].' '.$data['subtotal'].'</li>';
         $message .= '<li>Tax: '.$data['currency'].' '.$data['tax'].'</li>';
