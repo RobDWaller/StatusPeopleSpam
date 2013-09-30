@@ -389,11 +389,11 @@ class Cron extends Jelly
                 {
                     $details = $this->dbbind->GetTwitterDetails($u['userid']);
                     
-                    //$this->errorschutney->PrintArray($details);
+					//$this->errorschutney->PrintArray($details);
                     
                     $fakes = $this->dbbind->GetFakes($u['userid'],30);
                     
-                    //$this->errorschutney->PrintArray($fakes);
+					//$this->errorschutney->PrintArray($fakes);
                     
                     foreach ($fakes as $f)
                     {
@@ -403,7 +403,7 @@ class Cron extends Jelly
                         
                         if ($destroy)
                         {
-                            $block = $this->dbbind->BlockSpam($u['userid'],$f['twitterid']);
+							$block = $this->dbbind->BlockSpam($u['userid'],$f['twitterid']);
                         }
                     }
                     
@@ -412,7 +412,7 @@ class Cron extends Jelly
                 
             }
             
-        }
+         } 
     }
     
 	public function SendSubscriptionReminder()

@@ -520,7 +520,7 @@ class API extends Jelly
 //                    $spamrecords = $this->dbbind->GetSpamDetails($uid);
 
 
-            $followers = $bio['user']->followers_count; 
+/*             $followers = $bio['user']->followers_count; 
 
             $requests = round($followers/5000);
 
@@ -550,16 +550,16 @@ class API extends Jelly
             $h = 0; 
             $i = 0;
 
-//                $this->errorschutney->PrintArray($fids);
+			//$this->errorschutney->PrintArray($fids);
 
             foreach ($fids as $ids)
             {
-//                    $this->errorschutney->DebugArray($ids);
+				//$this->errorschutney->PrintArray($ids);
 
-                if (!isset($ids->errors)&&!isset($ids->error)&&!empty($ids->ids))
+                if (!isset($ids->errors)&&!isset($ids->error)&&!empty($ids['data']->ids))
                 {
-
-                    foreach ($ids->ids as $id)
+					//die();
+                    foreach ($ids['data']->ids as $id)
                     {
                         $hndrds[$h][] = $id; 
 
@@ -577,15 +577,20 @@ class API extends Jelly
                 }
             }
 
-            $h++;
+            $h++; */
 
 //                echo $h.'<br/>';
 
-//                $this->errorschutney->PrintArray($hndrds);
-
+			//$this->errorschutney->PrintArray($hndrds);
+			
+			$gethundreds = $this->_GetHundreds($search,$bio,$details,20);
+			$hndrds = $gethundreds[0];
+			$h = $gethundreds[1];
+			$followers = $gethundreds[2];
+				
             if (!empty($hndrds))
             {
-                if ($h < 5)
+/*                 if ($h < 5)
                 {
                     $checks = $h;
                 }
@@ -630,27 +635,27 @@ class API extends Jelly
 
                     $y++;
                     $z++;
-                }
+                } */
 
 //                    $this->errorschutney->PrintArray($chcks);
-
+				$chcks = $this->_GetChecks($h,$hndrds,$followers);
                 $c = 0;
                 $sc = 0;
                 $p = 0;
 
                 foreach ($chcks as $ch)
                 {
-                    if (!empty($hndrds[$ch]))
-                    {
+/*                     if (!empty($hndrds[$ch]))
+                    { */
                         $followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
 
                         if ($followerdetails!=false)
                         {
 
-                            foreach ($followerdetails as $follower)
+                            foreach ($followerdetails['data'] as $follower)
                             {
 
-//                                    $this->errorschutney->PrintArray($follower);
+								//$this->errorschutney->DebugArray($follower);
 
 /*                                 $ffratio = 0;
 
@@ -698,9 +703,10 @@ class API extends Jelly
 								}
 								
 								$c++;
+								//echo $c;
                             }
                         }
-                    }
+/*                     } */
                 }
 
                 $results['followers']=$followers;
@@ -722,17 +728,19 @@ class API extends Jelly
                 $s = 0;
 
 //                        $this->errorschutney->PrintArray($spam);
-
-                foreach ($spam as $spm)
-                {
-                    if ($s < 20)
-                    {
-                        $insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
-                    }
-
-                    $s++;
-                }
-
+				if (!empty($spam))
+				{
+					foreach ($spam as $spm)
+					{
+						if ($s < 20)
+						{
+							$insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
+						}
+	
+						$s++;
+					}
+				}
+				
                 $is = substr($insertstring,0,-1);
 
 //                        $this->errorschutney->PrintArray($is);
@@ -1688,7 +1696,7 @@ class API extends Jelly
 
                 $is = substr($insertstring,0,-1);
 
-//                        $this->errorschutney->PrintArray($is);
+				//$this->errorschutney->DebugArray($is);
 
                 $this->dbbind->AddFakes($is);
 

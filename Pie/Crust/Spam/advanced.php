@@ -19,6 +19,7 @@
 						<input type="hidden" id="checks" value="0" />
 						<input type="hidden" id="followers" value="0" />
 						<input type="hidden" id="firsttime" value="<?=$firsttime;?>" />
+						<!--<input type="hidden" id="firsttime" value="1" />-->
 						<div class="row connect one" id="GetScoresForms">
 							<p class="bree sp2"><form action="/Fakers/GetScores" method="post" id="myscoreform"><input type="hidden" name="name" value="<?=$twitterhandle;?>" /><input type="submit" value="Get Faker Scores" /></form></p>
 						</div>
