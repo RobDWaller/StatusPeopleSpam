@@ -209,11 +209,13 @@ class TwitterRequests
             
             $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
             
-            $this->twitter->post('blocks/create',array('user_id'=>$friendid));
+            $destroy = $this->twitter->post('blocks/create',array('user_id'=>$friendid));
            
+			//ERRORS::PrintArray($destroy);
+			
             if ($this->twitter->http_code == 200);
             {
-		$result = true;	
+				$result = true;	
             }
 		
             return $result;

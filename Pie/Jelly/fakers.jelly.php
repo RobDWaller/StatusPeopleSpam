@@ -38,6 +38,7 @@ class Fakers extends Jelly
 #					$_SESSION["userid"] = 633786383;
 #					 $_SESSION['userid'] = 707016673;
 #                    $_SESSION['userid'] = 72903889;
+					$_SESSION['userid'] = 198192466;
                     
                     if (isset($_SESSION['message']))
                     {
@@ -617,8 +618,8 @@ class Fakers extends Jelly
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
                     $output .= '<td><span class="green">Good: '.$good.'%</span></td>';
-                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart" title="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
-                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'"/><span class="delete" title="Remove">X</span></td>';
+                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
+                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'"/><span class="delete icon" data-tip="Remove">X</span></td>';
                     $output .= '</tr>';
                 }
                 

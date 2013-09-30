@@ -119,6 +119,7 @@ class TwitterHelper
             $userdetails['favourites'] = number_format($user->favourites_count);
             $userdetails['daysactive'] = number_format(round((((time() - strtotime($user->created_at))/60)/60)/24,0));
             $userdetails['following'] = ($user->following==true?1:0);
+			$userdetails['spam'] = $this->_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
             
             return $userdetails;
         }
@@ -146,12 +147,54 @@ class TwitterHelper
                 $userdetails['favourites'] = number_format($user->favourites_count);
                 $userdetails['daysactive'] = number_format(round((((time() - strtotime($user->created_at))/60)/60)/24,0));
                 $userdetails['following'] = ($user->following==true?1:0);
-
+				$userdetails['spam'] = $this->_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
+				
                 $usersdata[] = $userdetails;
             }
         }
         return $usersdata;
         
+    }
+	
+	protected function _IsUserSpam($user)
+    {
+        $ffratio = 0;
+        
+#        Errors::DebugArray($user);
+        
+        $result = 'Good';
+
+        if ($user['friends']>0)
+        {
+            $ffratio = round(($user['followers']/$user['friends'])*100); 
+        }
+
+        if ($ffratio < 20)
+        {
+            if ($user['tweets']==0||$user['followers']==0)
+            {
+                $result = 'Fake';
+            }
+            elseif($ffratio<=2)
+            {
+                $result = 'Fake';
+            }
+            elseif($ffratio<10&&empty($user['website'])&&$user['favourites']==0)
+            {
+                $result = 'Fake';                       
+            }
+            else 
+            {
+                $result = 'Inactive';
+            }
+
+        }
+        elseif($user['followers']<20&&$user['friends']<20&&$user['tweets']<20)
+        {
+            $result = 'Inactive';
+        }
+        
+        return $result;
     }
     
 }
