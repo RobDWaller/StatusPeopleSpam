@@ -10,6 +10,17 @@ class Payments extends Jelly
         
         $count = $this->paymentbind->CountUserDetails($_SESSION['userid']);
         
+		$logout = 1;
+		
+		$validity = Fakers::_CheckValidity($_SESSION['userid']);
+		
+		if ($validity[0])
+		{
+			$logout = 0;
+		}
+		
+		$data["logout"] = $logout;
+		
         if ($count==0)
         {
             $fields = array('email'=>array('Email','Text','',$_SESSION['email']),
@@ -120,6 +131,17 @@ class Payments extends Jelly
         
 //        $this->errorschutney->DebugArray($userdetails);
         
+		$logout = 1;
+		
+		$validity = Fakers::_CheckValidity($_SESSION['userid']);
+		
+		if ($validity[0])
+		{
+			$logout = 0;
+		}
+		
+		$data["logout"] = $logout;
+		
         if (isset($_SESSION['message']))
         {
             $data['message'] = $_SESSION['message'];
@@ -172,6 +194,17 @@ class Payments extends Jelly
         
         $userid = $_SESSION['userid'];
         
+		$logout = 1;
+		
+		$validity = Fakers::_CheckValidity($_SESSION['userid']);
+		
+		if ($validity[0])
+		{
+			$logout = 0;
+		}
+		
+		$data["logout"] = $logout;
+		
         $transactionid = substr($this->validationchutney->HashString($userid.time().rand(1,9999)),0,12);
             
         setcookie('transactionid',$transactionid,time()+3600);
@@ -307,6 +340,17 @@ class Payments extends Jelly
                 $this->_SendPurchaseEmail($email, $firstname, $data);    
             }
             
+			$logout = 1;
+		
+			$validity = Fakers::_CheckValidity($_SESSION['userid']);
+			
+			if ($validity[0])
+			{
+				$logout = 0;
+			}
+			
+			$data["logout"] = $logout;
+			
             $this->glaze->view('Payments/confirmation.php',$data);
         }
         else
@@ -323,6 +367,17 @@ class Payments extends Jelly
     {
         Generic::_IsLogin();
         
+		$logout = 1;
+		
+		$validity = Fakers::_CheckValidity($_SESSION['userid']);
+		
+		if ($validity[0])
+		{
+			$logout = 0;
+		}
+		
+		$data["logout"] = $logout;
+		
         $this->glaze->view('Payments/cancellation.php');
     }
     

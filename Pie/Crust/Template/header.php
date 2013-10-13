@@ -32,10 +32,24 @@
 					<a href="<?=$homelink;?>"><img src="http://tools.statuspeople.com/Pie/Crust/Template/img/logo_white_hires_compressed.png" height="30" width="58" alt="StatusPeople" /></a>
 				</div>
 				<div class="threeb a">
-					<?=$menu;?>
+					<?php
+					if ($logout == 1)
+					{
+						echo $menu;	
+					}
+					else
+					{
+						echo "&nbsp;";
+					}	
+					?>
 				</div>
 				<div class="threea">
-					
+					<?php
+					if ($logout != 1)
+					{
+						echo '<ul><li><a href="/Fakers/Dashboard" class="ico3 icon" data-tip="Fakers Dashboard">"</a></li><li><a href="/Fakers/Followers" class="ico icon" data-tip="Your Followers">t</a></li></ul>';	
+					}
+					?>
 				</div>
 			</div>
 			<?=$message;?>

@@ -36,6 +36,15 @@
 				</div>
 			</div>
 		</div>
+		<div class="column row bg2">
+			<div class="row one">
+				<h2 class="white">Want to see what you'll get for your money?</h2>
+			</div>
+			<div class="row">
+				<div class="two a center"><a href="/Pie/Crust/Template/img/fakers_dboard_1.png" target="_blank"><img src="/Pie/Crust/Template/img/fakers_dboard_1.png" width="300px" height="318px" style="float:none; border:1px solid #fefefe;" /></a></div>
+				<div class="two center"><a href="/Pie/Crust/Template/img/fakers_dboard_2.png" target="_blank"><img src="/Pie/Crust/Template/img/fakers_dboard_2.png" width="300px" height="318px" style="float:none; border:1px solid #fefefe;" /></a></div>
+			</div>
+		</div>
 	</div>
 <script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
 <script src="/Pie/Crust/Template/js/payments.js"></script>
