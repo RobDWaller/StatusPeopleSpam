@@ -22,7 +22,7 @@ class Cron extends Jelly
     {
         if ($_POST['ch'] == $this->cronhash)
         {
-            $records = $this->dbbind->GetUsersToCheck(6);
+            $records = $this->dbbind->GetUsersToCheck(5);
             
 //            $this->errorschutney->PrintArray($records);
             
@@ -309,12 +309,12 @@ class Cron extends Jelly
                             $results['potential']=$p;
                             $results['spam']=$sc;
 
-    //                        $this->errorschutney->PrintArray($results);
+                            //$this->errorschutney->PrintArray($results);
 
     //                        $rb = ($checks*100)-100;
     //                        $rt = $checks*100;
 
-							$this->_UpdateCache($r['userid'],$langs,$avg,array($spam[0],$spam[1]));
+							API::_UpdateCache($r['userid'],$langs,$avg,array($spam[0],$spam[1]));
 							
                             if ($results['followers']>500)
                             {

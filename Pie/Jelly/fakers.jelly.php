@@ -705,7 +705,7 @@ class Fakers extends Jelly
             return $output;
         }
         
-        protected function _CheckValidity($userid)
+        public function _CheckValidity($userid)
         {
             $valid = false;
             $message = '';
