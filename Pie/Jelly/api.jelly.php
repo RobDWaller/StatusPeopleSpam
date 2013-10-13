@@ -103,9 +103,9 @@ class API extends Jelly
 			
             $spamrecords = $this->dbbind->GetSpamDetails($uid);
             
-            $true = true;
+			$true = true;
             
-			//$Days1 = strtotime('-1 Day');
+			$Days1 = strtotime('-1 Day');
             
 			if ($spamrecords[7]<$Days1)
 			//if ($true)
@@ -230,6 +230,7 @@ class API extends Jelly
             }
             else 
             {
+				//die();
                 $spamscores = $this->dbbind->GetSpamDetails($uid);
                 $cache = $this->_GetCache($uid);
 				
@@ -576,13 +577,13 @@ class API extends Jelly
 	
 		//$this->errorschutney->PrintArray($follower);
 		
-			if ($follower['friends']>0)
+			if ($follower['friends']>0&&$follower['followers']>0)
 			{
 				$ffratio = round(($follower['followers']/$follower['friends'])*100); 
 			}
-			else
+			elseif($follower['friends']==0&&$follower['followers']>50)
 			{
-				//$this->errorschutney->PrintArray($follower);
+				$ffratio = 21;
 			}
 		
 			if ($ffratio < 20)
@@ -612,7 +613,7 @@ class API extends Jelly
 			{
 				$status = 2;
 			}
-			elseif($follower['tweetsperday']<0.5||$follower['lasttweet']>=90)
+			elseif($follower['tweetsperday']<=0.1||$follower['lasttweet']>=90)
 			{
 				$status = 2;
 			}
@@ -624,7 +625,7 @@ class API extends Jelly
 		
 	}
     
-	protected function _GetLanguageDetails($followers,$langs)
+	public function _GetLanguageDetails($followers,$langs)
 	{
 		$languages = $this->validationchutney->LanguageList();
 		
@@ -660,7 +661,7 @@ class API extends Jelly
 		return $langs;
 	}
 	
-	protected function _GetAverages($followers,$averages)
+	public function _GetAverages($followers,$averages)
 	{
 		
 		foreach ($followers as $fl)
@@ -2239,7 +2240,7 @@ class API extends Jelly
 		return $cache;
 	}
 	
-	protected function _UpdateCache($uid,$langs,$avg,$spam)
+	public function _UpdateCache($uid,$langs,$avg,$spam)
 	{
 		$count = $this->dbbind->CountCache($uid);
 		

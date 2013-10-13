@@ -82,7 +82,7 @@ $(document).ready(function(){
             Build();
             Loader('Getting Faker Scores','#scoresholder');
 
-            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch,'Spam_ProcessSpamDataAdvanced',twid);
+            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataAdvanced',twid);
 
         }
         else
