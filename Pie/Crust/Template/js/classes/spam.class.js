@@ -1,7 +1,7 @@
 function Charts()
 {
     
-    this.BuildChart = function(result)
+/*     this.BuildChart = function(result)
     {
         
         if (result.code == 201)
@@ -70,8 +70,218 @@ function Charts()
             var chart = new Highcharts.Chart(options);
         }
         
+    } */
+    
+	this.Chart = function(graph,data,exportbutton)
+    {
+        options = {
+            chart: {
+                renderTo: data[0].id,
+                defaultSeriesType: data[0].type,
+                height: data[0].height,
+                backgroundColor: data[0].backgroundcolor,
+                zoomType: data[0].zoom
+            },
+            title: {
+                text: data[0].title,
+                x: 0, //center
+                align:'center',
+                style: {color: '#fe7d1d',fontSize:'16px'}
+            },
+            subtitle: {
+                text: data[0].subtitle,
+                x: 0,
+                style: { color: '#36b6d5' }
+            },
+            xAxis: {
+                title: {
+                        text: data[0].xtitle,
+                        style: { color: '#444' }
+                    },
+                categories: [],
+                labels: {
+                    enabled: data[0].xenabled
+                },
+                reversed:data[0].xreverse
+            },
+            yAxis: {
+                title: {
+                    text: data[0].ytitle,
+                    style: {color: '#36b6d5'}
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1
+                }],
+                min:data[0].ymin,
+                offset: data[0].yoffset,
+                showFirstLabel:data[0].yfirstlabel
+            },
+            tooltip:{
+                enabled:true,
+                formatter: function(){
+                    if (this.series.chart.options.chart.defaultSeriesType == 'pie')
+                    {
+                        return '<b>'+this.point.name+':</b> '+Highcharts.numberFormat(this.percentage,1)+'%';
+                    }
+                    else if (this.series.chart.options.chart.defaultSeriesType == 'column')
+                    {
+                        return 'Hour: ' + this.x + ' | Count: ' + this.y;
+                    }
+                    else
+                    {
+                        return this.series.name + ': ' + this.y;
+                    }
+                }
+            },
+            legend: {
+                enabled: data[0].legendenabled,
+                borderWidth:0
+            },
+            plotOptions:{
+                pie:{
+                    showInLegend:true,
+                    dataLabels: {
+                        enabled: false
+                    }
+                },
+                column:{
+                    stacking:'normal'
+                }
+            },
+            colors: data[0].colors,
+            series: []
+        };
+        
+        if (data[0].multi && (data[0].type == 'line'||data[0].type == 'column'))
+        {
+            $.each(graph.data, function (i, result) {
+
+                var interactions = {
+                    data: []
+                };
+
+                interactions.name = i;
+
+                $.each(result, function (i, grdata) {
+
+                    options.xAxis.categories.push(grdata.date);
+                    interactions.data.push(parseFloat(grdata.count));
+
+                });
+
+                options.series.push(interactions);
+
+            });
+        }
+        else if (data[0].type == 'pie')
+        {
+            options.series = [{
+                type: 'pie',
+                name: data[0].xtitle
+            }]; 
+
+            var interactions = {
+                data: []
+            };
+
+            $.each(graph.data, function (i, result) {
+
+                interactions.data.push({ name: result.name, y: parseFloat(result.count) });
+
+            });
+            
+            options.series.push(interactions);
+        }
+        else
+        {
+            var interactions = {
+                data: []
+            };
+            
+            interactions.name = data[0].interactions;
+            
+            $.each(graph.data, function (i, result) {
+
+                options.xAxis.categories.push(result.date);
+                interactions.data.push(parseFloat(result.count));
+
+            });
+            
+            options.series.push(interactions);
+        }
+        
+        var chart = new Highcharts.Chart(options);
+        
+        if (exportbutton)
+        {
+            this.ExportButton(exportbutton);
+        }
     }
     
+    this.BuildChart = function(result,data)
+    {
+        
+        if (result.code == 201)
+        {
+            var chart;
+            
+            if (data[0].size=='small')
+            {
+                chart = [{
+                        id:data[0].id,
+                        type:data[0].type,
+                        multi:data[0].multi,
+                        height:200,
+                        backgroundcolor:data[0].backgroundcolor,
+                        zoom:'',
+                        title:'',
+                        subtitle:'',
+                        xtitle:'',
+                        xreverse:data[0].xreverse,
+                        xenabled:data[0].xenabled,
+                        ytitle:'',
+                        ymin:'',
+                        yoffset:-40,
+                        yfirstlabel:false,
+                        legendenabled:false,
+                        interactions:data[0].interactions,
+                        colors:data[0].colors
+                }]
+            }
+            else
+            {
+                chart = [{
+                        id:data[0].id,
+                        type:data[0].type,
+                        multi:data[0].multi,
+                        height:null,
+                        backgroundcolor:data[0].backgroundcolor,
+                        zoom:'x',
+                        title:data[0].title,
+                        subtitle:data[0].subtitle,
+                        xtitle:'Date',
+                        xreverse:data[0].xreverse,
+                        xenabled:true,
+                        ytitle:'',
+                        ymin:'',
+                        yoffset:'',
+                        yfirstlabel:true,
+                        legendenabled:true,
+                        interactions:data[0].interactions,
+                        colors:data[0].colors
+                }]
+            }
+            
+            this.Chart(result,chart,data[1]);
+            
+        }
+        else
+        {
+            $('#'+data[0].id).html('<p>No Data Returned</p>');
+        }
+        
+    }
 }
 
 function Lengths()
@@ -545,7 +755,7 @@ function Spam()
             var button = $('<input/>');
             button.attr('type','button');
             
-            if (source==1)
+            if (source==1||source==3)
             {
                 button.attr('id','sharescores');
                 button.val('Share Your Scores on Twitter');
@@ -567,6 +777,71 @@ function Spam()
 			{
 				var ms = new Messages();
 				ms.Build('alert',['To run unlimited friend searches please purchase a <a href="/Payments/Subscriptions">subscription</a>.'],'.header');
+			}
+			
+			if (!$('#extrainfo').length&&source!=3)
+			{
+				var langcount = 0;
+				var langname = 'English';
+				
+				if (result.data.lang!=null)
+				{
+					langcount = result.data.lang.count;
+					var langname = result.data.lang.name;
+				}
+				
+				var huncount = 0;
+				
+				if (result.data.hundred!=null)
+				{
+					huncount = result.data.hundred;
+				}
+				
+				var fr250count = 0;
+				
+				if (result.data.fr250!=null)
+				{
+					fr250count = result.data.fr250;
+				}
+				
+				var langper = Math.round((langcount/result.data.checks)*100);
+				var hunper = Math.round((huncount/result.data.checks)*100);
+				var fr250 = Math.round((fr250count/result.data.checks)*100);
+				var exinf = $('<div id="extrainfo" class="textleft row"></div>');
+				var extra = $('<div class="two a"><h2>Your Followers</h2>'
+							  +'<p class="f2 sp2 blue">'+langper+'% speak '+langname+'</p>'
+							  +'<p class="f2 sp2 blue">'+hunper+'% have not tweeted in 100 days</p>'
+							  +'<p class="f2 sp2 blue">'+fr250+'% follow less than 250 people</p></div>');
+				
+				var fakers = '';
+				
+				if (result.data.spam1!=null&&result.data.spam2==null)
+				{
+					fakers = $('<div class="two"><h2>Your Fakers</h2>'
+									+'<ul class="fakeslist">'
+									+'<li><img src="'+result.data.spam1.image+'" height="48px" width="48px"/> <span class="red">'+result.data.spam1.screen_name+'</span><small><a href="#details" class="details" data-sc="'+result.data.spam1.screen_name+'">Details</a></small></li>'
+									+'</ul></div>');
+				}
+				else if (result.data.spam1!=null&&result.data.spam2!=null)
+				{
+					fakers = $('<div class="two"><h2>Your Fakers</h2>'
+									+'<ul class="fakeslist">'
+									+'<li><img src="'+result.data.spam1.image+'" height="48px" width="48px"/> <span class="red">'+result.data.spam1.screen_name+'</span><small><a href="#details" class="details" data-sc="'+result.data.spam1.screen_name+'">Details</a></small></li>'
+									+'<li><img src="'+result.data.spam2.image+'" height="48px" width="48px"/> <span class="red">'+result.data.spam2.screen_name+'</span><small><a href="#details" class="details" data-sc="'+result.data.spam2.screen_name+'">Details</a></small></li>'
+									+'</ul></div>');
+				}
+				else
+				{
+					fakers = $('<div class="two"><h2>Your Fakers</h2>'
+								+'<p class="f2 sp2 green">Yay!! You have no Fake Followers</p></div>');
+				}
+				
+				var subscrp = $('<div class="row"><div class="one center f2 sp2"><a href="/Payments/Details" class="orange">Find out more about your followers &mdash; purchase a subscription</a></div></div>');
+				
+				extra.appendTo(exinf);
+				fakers.appendTo(exinf);
+				subscrp.appendTo(exinf);
+				exinf.insertAfter('#SearchForm');
 			}
         }
         else
@@ -849,7 +1124,71 @@ function Spam()
         $('#sharing').remove();
         h2.appendTo('#shareform');
     }
+	
+	this.ProcessCacheData = function(result)
+	{
+		if (result.code == 201)
+		{
+			var data = new Object();
+			data.code = 201;
+			data.data = result.data.lang
+		
+			var chr = new Charts();
+			chr.BuildChart(data,[{'id':'langchart','type':'pie','multi':false,'size':'large','xreverse':false,'backgroundcolor':'#fefefe','colors':['#FE7D1D','#36B6D5','#2AFE1B','#FE1B2A','#7D1BFE']}]);
+			
+			this.BuildAverages(result.data.avg);
+		}
+		else
+		{
+			var ms = new Messages();
+			ms.build("failure",["No language or average data was returned."],".header");
+		}
+		
+		var pop = new Popup();
+		pop.RemoveTinyLoader();
+	}
     
+	this.BuildAverages = function(data)
+	{
+		if ($("#averages").length)
+		{
+			$("#averages").remove();
+		}
+		
+		var frm = new Format();
+	
+		var ul = $('<ul id="averages"/>');
+		var tbd = $("<li>Tweet "+Math.round(data.tweets_pd/data.count)+" time(s) per day</li>");
+		var one = $("<li>"+Math.round((data.one/data.count)*100)+"% have not tweeted in one day</li>");
+		var thirty = $("<li>"+Math.round((data.thirty/data.count)*100)+"% have not tweeted in thrity days</li>");
+		var hundred = $("<li>"+Math.round((data.hundred/data.count)*100)+"% have not tweeted in a hundred days</li>");
+		var fo = $("<li>On average have "+frm.Number(Math.round(data.followers/data.count))+" followers</li>");
+		var fo250 = $("<li>"+Math.round((data.fo250/data.count)*100)+"% have less than 250 followers</li>");
+		var fo500 = $("<li>"+Math.round((data.fo500/data.count)*100)+"% have about 500 followers</li>");
+		var fo1000 = $("<li>"+Math.round((data.fo1000/data.count)*100)+"% have more than 1,000 followers</li>");
+		var fr = $("<li>On average follow "+frm.Number(Math.round(data.friends/data.count))+" friends</li>");
+		var fr250 = $("<li>"+Math.round((data.fr250/data.count)*100)+"% follow less than 250 friends</li>");
+		var fr500 = $("<li>"+Math.round((data.fr500/data.count)*100)+"% follow about 500 friends</li>");
+		var fr1000 = $("<li>"+Math.round((data.fr1000/data.count)*100)+"% follow more than 1,000 friends</li>");
+		 
+		
+		tbd.appendTo(ul);
+		one.appendTo(ul);
+		thirty.appendTo(ul);
+		hundred.appendTo(ul);
+		fo.appendTo(ul);
+		fo250.appendTo(ul);
+		fo500.appendTo(ul);
+		fo1000.appendTo(ul);
+		fr.appendTo(ul);
+		fr250.appendTo(ul);
+		fr500.appendTo(ul);
+		fr1000.appendTo(ul);
+		
+		ul.appendTo("#followerdata");
+		
+	}
+	
     this.Sharing = function()
     {
         $('#sharescores').remove();
@@ -929,8 +1268,8 @@ function Spam()
         }
         else
         {
-            ma[0]='Failed to remove user from Fakers List, please try again';
-            mes.Build('failure',ma,'.header');
+            //ma[0]='Failed to remove user from Fakers List, please try again';
+            mes.Build('failure',[result.message],'.header');
         }
         
         srv.CallServer('GET','json','/API/GetCompetitorList','rf=json&usr='+user,'Spam_BuildCompetitorList','');
@@ -976,9 +1315,14 @@ function Spam()
         
         if (result.code == 201)
         {
-            if ($('.fakeslist').length)
+			if ($('#checkform').length)
+		   	{
+			   $('#checkform').remove();
+		   	}
+			
+            if ($('#spammers .fakeslist').length)
             {
-                $('.fakeslist').remove();
+                $('#spammers .fakeslist').remove();
             }
             
             var ul = $('<ul class="fakeslist"/>');
@@ -995,9 +1339,9 @@ function Spam()
         }
         else
         {
-            if ($('.fakeslist').length)
+            if ($('#spammers .fakeslist').length)
             {
-                $('.fakeslist').remove();
+                $('#spammers .fakeslist').remove();
             }
             
 			if (!$('#checkform').length)
@@ -1016,6 +1360,35 @@ function Spam()
 				
 				div.appendTo('#spammers');
 			}
+			
+			var ms = new Messages();
+			ms.Build('alert',['No Fake Followers found at this time, please try again later.'],'.header');
+        }
+    }
+	
+	this.BuildBlockedList = function(result)
+    {
+        var pop = new Popup();
+		pop.RemoveTinyLoader();
+        
+        if (result.code == 201)
+        {
+            if ($('#blocked .fakeslist').length)
+            {
+                $('#blocked .fakeslist').remove();
+            }
+            
+            var ul = $('<ul class="fakeslist"/>');
+            
+            $.each(result.data,function(i,f){
+                
+                var li = $('<li/>');
+                li.html('<input type="hidden" value="'+f.screen_name+'" class="sc" /><input type="hidden" value="'+f.twitterid+'" class="ti"/><img src="'+f.avatar+'" width="48px" height="48px" /> '+f.screen_name+'<small><a href="#details" class="details">Details</a> | <a href="#block" class="unblock">Unblock</a>');
+                li.appendTo(ul);
+                
+            });
+            
+            ul.appendTo('#blocked');
         }
     }
     
@@ -1032,9 +1405,10 @@ function Spam()
         {
             if (result.code==429)
             {
-                pop.Loader();
-                var pop = new Popup();
-                pop.AddMessage(result.message,true);
+                //pop.Loader();
+                //var pop = new Popup();
+                var ms = new Messages();
+				ms.build('alert',result.message,'.header');
             }
             
             srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
@@ -1086,6 +1460,29 @@ function Spam()
         }
         
         srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
+		srv.CallServer('GET','json','/API/GetBlockedList','rf=json&usr='+user,'Spam_BuildBlockedList','');
+        
+    }
+	
+	this.UnBlockUser = function(result,user)
+    {
+        var mes = new Messages();
+        var ma = new Array();
+        var srv = new Server();
+        
+        if (result.code == 201)
+        {
+            ma[0]='User unblocked successfully.';
+            mes.Build('success',ma,'.header');
+        }
+        else
+        {
+            ma[0]='Failed to unblock user, please try again.';
+            mes.Build('failure',ma,'.header');
+        }
+        
+        srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
+		srv.CallServer('GET','json','/API/GetBlockedList','rf=json&usr='+user,'Spam_BuildBlockedList','');
         
     }
     
@@ -1527,4 +1924,14 @@ function Tweets()
             
     }
     
+}
+
+function Format()
+{
+	this.Number = function(val)
+	{
+		
+	    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+	}
 }

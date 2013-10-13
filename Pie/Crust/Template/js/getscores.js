@@ -161,6 +161,45 @@ $(document).ready(function(){
 		
 	});
 	
+	$(document).on('click','.details',function(e){
+        
+        e.preventDefault();
+        
+        var srch = $(this).attr('data-sc');
+        
+        pop.Loader('Loading...');
+       
+        srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+twid+'&srch='+srch,'Spam_BuildUser','');
+    });
+	
+	$(document).on('click','.tweetfollowers',function(e){
+       
+        e.preventDefault();
+
+        var content = $(this).attr("href");
+        var sp = content.split("//");
+        var sn = sp[1].split("/");
+
+        pop.Loader('Loading...');
+
+        srv.CallServer('GET','json','/API/GetFollowerData','rf=json&usr='+twid+'&ct=10&nm='+sn[1],'Tweets_Followers');
+        
+    });
+    
+    $(document).on("click",".usertweettimeline", function (e){
+       
+       e.preventDefault();
+       
+       pop.Loader('Loading...');
+       pop.Content('');
+       
+       var url = $(this).attr("href");
+       var sn = url.split("/");
+       
+       srv.CallServer('GET','json','/API/GetUserTwitterTimeline','rf=json&usr='+twid+'&srch='+sn[3]+'&cnt=10','Tweets_BuildUserTimeline');
+       
+    });
+	
     Begin();
     
 });

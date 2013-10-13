@@ -22,7 +22,7 @@ class Cron extends Jelly
     {
         if ($_POST['ch'] == $this->cronhash)
         {
-            $records = $this->dbbind->GetUsersToCheck(3);
+            $records = $this->dbbind->GetUsersToCheck(6);
             
 //            $this->errorschutney->PrintArray($records);
             
@@ -46,7 +46,7 @@ class Cron extends Jelly
 
 //                    $spamrecords = $this->dbbind->GetSpamDetails($uid);
 
-                    $followers = $bio['user']->followers_count; 
+/*                     $followers = $bio['user']->followers_count; 
 
                     $requests = round($followers/5000);
 
@@ -118,11 +118,16 @@ class Cron extends Jelly
 
         //                echo $h.'<br/>';
 
-        //                $this->errorschutney->PrintArray($hndrds);
+        //                $this->errorschutney->PrintArray($hndrds); */
+					
+						$gethundreds = API::_GetHundreds($search,$bio,$details,10);
+						$hndrds = $gethundreds[0];
+						$h = $gethundreds[1];
+						$followers = $gethundreds[2];
 
                         if (!empty($hndrds))
                         {
-                            if ($h < 5)
+/*                             if ($h < 5)
                             {
                                 $checks = $h;
                             }
@@ -175,8 +180,10 @@ class Cron extends Jelly
                                 $z++;
                             }
 
-        //                    $this->errorschutney->PrintArray($chcks);
-
+        //                    $this->errorschutney->PrintArray($chcks); */
+							
+							$chcks = API::_GetChecks($h,$hndrds,$followers);
+							
                             $c = 0;
                             $sc = 0;
                             $p = 0;
@@ -287,6 +294,12 @@ class Cron extends Jelly
 											
 											$c++;
                                         }
+										
+										
+										$langs = API::_GetLanguageDetails($followerdetails['data'],$langs);
+								
+										$avg = API::_GetAverages($followerdetails['data'],$avg);
+										
                                     }
                                 }
                             }
@@ -301,6 +314,8 @@ class Cron extends Jelly
     //                        $rb = ($checks*100)-100;
     //                        $rt = $checks*100;
 
+							$this->_UpdateCache($r['userid'],$langs,$avg,array($spam[0],$spam[1]));
+							
                             if ($results['followers']>500)
                             {
                                 $cks = $checks*100;
@@ -391,7 +406,7 @@ class Cron extends Jelly
                     
 					//$this->errorschutney->PrintArray($details);
                     
-                    $fakes = $this->dbbind->GetFakes($u['userid'],30);
+                    $fakes = $this->dbbind->GetFakes($u['userid'],15);
                     
 					//$this->errorschutney->PrintArray($fakes);
                     
@@ -434,10 +449,10 @@ class Cron extends Jelly
 					
 					if ($e['valid']<=strtotime('+2 Days')&&$e['valid']>strtotime('+1 Day'))
 					{
-						echo '+1 Day';
+						//echo '+1 Day';
 						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));
-						//$email = $e['email'];
-						$email = 'rdwaller1984@googlemail.com';
+						$email = $e['email'];
+						//$email = 'rdwaller1984@googlemail.com';
 						
 						$message = '<p>Hi '.$e['forename'].',</p>';
 						$message .= '<p>We just thought we\'d let you know that your StatusPeople Fakers App Dashboard Subscription is about to expire.</p>';
@@ -446,14 +461,16 @@ class Cron extends Jelly
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
 						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription about to Expire',$message,$headers);
+						
+						$this->dbbind->AddEmailSend($email,'StatusPeople Fakers Dashboard Subscription about to Expire',time());
 					}
 					elseif ($e['valid']<=strtotime('-1 Day')&&$e['valid']>strtotime('-2 Days'))
 					{
-						echo '-1 Day';
+						//echo '-1 Day';
 						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));	
 						
-						//$email = $e['email'];
-						$email = 'rdwaller1984@googlemail.com';
+						$email = $e['email'];
+						//$email = 'rdwaller1984@googlemail.com';
 						
 						$message = '<p>Hi '.$e['forename'].',</p>';
 						$message .= '<p>We\'re sorry to say this but your StatusPeople Fakers App Dashboard Subscription has now expired.</p>';
@@ -462,14 +479,16 @@ class Cron extends Jelly
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
 						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription has Expired',$message,$headers);
+						
+						$this->dbbind->AddEmailSend($email,'StatusPeople Fakers Dashboard Subscription has Expired',time());
 					}
-					elseif ($e['valid']<=strtotime('-7 Days')&&$e['valid']>strtotime('-16 Days'))
+					elseif ($e['valid']<=strtotime('-7 Days')&&$e['valid']>strtotime('-8 Days'))
 					{
-						echo '-7 Days';
+						//echo '-7 Days';
 						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));
 						
-						//$email = $e['email'];
-						$email = 'rdwaller1984@googlemail.com';
+						$email = $e['email'];
+						//$email = 'rdwaller1984@googlemail.com';
 						
 						$message = '<p>Hi '.$e['forename'].',</p>';
 						$message .= '<p>This is just to remind you that your StatusPeople Fakers App Dashboard Subscription has now expired.</p>';
@@ -478,14 +497,16 @@ class Cron extends Jelly
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
 						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription Expiry Reminder',$message,$headers);
+						
+						$this->dbbind->AddEmailSend($email,'StatusPeople Fakers Dashboard Subscription Expiry Reminder',time());
 					}
 					elseif ($e['valid']<=strtotime('-30 Days')&&$e['valid']>strtotime('-31 Days'))
 					{
-						echo '-30 Days';
+						//echo '-30 Days';
 						$this->errorschutney->PrintArray(array($e['email'],date('y/m/d h:i',$e['valid'])));
 						
-						//$email = $e['email'];
-						$email = 'rdwaller1984@googlemail.com';
+						$email = $e['email'];
+						//$email = 'rdwaller1984@googlemail.com';
 						
 						$message = '<p>Hi '.$e['forename'].',</p>';
 						$message .= '<p>Just like to say goodbye and say thanks for using our Fakers Dashboard.</p>';
@@ -494,6 +515,8 @@ class Cron extends Jelly
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
 						$this->emailchutney->SendEmail($email,'Goodbye from StatusPeople Fakers Dashboard',$message,$headers);
+						
+						$this->dbbind->AddEmailSend($email,'Goodbye from StatusPeople Fakers Dashboard',time());
 					}
 				}
 			}
@@ -506,6 +529,13 @@ class Cron extends Jelly
 		$details = $this->paymentbind->GetSubscriberDetails();
 		
 		$this->errorschutney->PrintArray($details);
+	}
+
+	public function TestEmailSend()
+	{
+		$email = 'test@test.com';
+		
+		$this->dbbind->AddEmailSend($email,'Goodbye from StatusPeople Fakers Dashboard',time());
 	}
 	
 }

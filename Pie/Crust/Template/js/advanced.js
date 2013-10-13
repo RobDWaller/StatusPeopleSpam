@@ -8,11 +8,6 @@ $(document).ready(function(){
     var sc = new Scroll();
     var ln = new Lengths();
 
-    function BuildChart()
-    {
-       srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+twid,'Charts_BuildChart');
-    }
-
     function Build()
     {
         if ($('#scoresholder').length)
@@ -110,7 +105,7 @@ $(document).ready(function(){
         $('#searchquery').val('');
         $('#searchquery').attr('placeholder','Twitter username...');
 
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',1);
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',3);
 
     });
 
@@ -133,60 +128,9 @@ $(document).ready(function(){
         $('#searchquery').val('');
         $('#searchquery').attr('placeholder','Twitter username...');
 
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',1);
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',3);
 
 
-    });
-    
-    $(document).on('click','.delete',function(){
-        var pr = $(this).parent();
-        var inp = pr.children('input');
-        var id = inp.val();
-        
-        var mes = new Messages();
-        mes.DeleteCheck(id);
-    });
-    
-    $(document).on('click','#deleteno',function(){
-
-        pop.RemovePopup();
-
-    });
-
-    $(document).on('click','#popupclose',function(){
-
-        pop.RemovePopup();
-
-    });
-
-    $(document).on('click','#deleteyes',function(){
-
-        var id = $('#deletedata').val();
-        pop.RemovePopup();
-        
-        srv.CallServer('POST','json','/API/PostDeleteFaker','rf=json&usr='+twid+'&twid='+id,'Spam_DeleteFaker',twid);        
-    });
-
-    $(document).on('click','.chart',function(){
-        var pr = $(this).parent();
-        var inp1 = pr.children('.ti');
-        var id = inp1.val();
-        var inp2 = pr.children('.sc');
-        var nm = inp2.val();
-        
-        $('#charthandle').text(nm);
-        
-        srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+id,'Charts_BuildChart');
-        
-        sc.To('#charthandle',500,10);
-        
-        if (!$('#chartreset').length)
-        {
-            var span = $('<span id="chartreset"/>');
-            span.text('Reset');
-            span.insertAfter('#charttitle');
-        }
-        
     });
 
     $(document).on('click','.details',function(e){
@@ -213,6 +157,17 @@ $(document).ready(function(){
         srv.CallServer('POST','json','/API/PostBlockSpam','rf=json&usr='+twid+'&twid='+srch,'Spam_BlockUser',twid);
     });
     
+	$(document).on('click','.unblock',function(e){
+        
+        e.preventDefault();
+        
+        var li = $(this).parent().parent();
+        var inp = li.children('.ti');
+        var srch = inp.val();
+        
+        srv.CallServer('POST','json','/API/PostUnBlockSpam','rf=json&usr='+twid+'&twid='+srch,'Spam_UnBlockUser',twid);
+    });
+	
     $(document).on('click','.notspam',function(e){
         
         e.preventDefault();
@@ -268,10 +223,10 @@ $(document).ready(function(){
     
     $(document).on('click','#checkfakes',function(){
        
-       if ($('#checkform').length)
+/*        if ($('#checkform').length)
        {
            $('#checkform').remove();
-       }
+       } */
        
        //Loader('Checking For New Fake Followers','#spammers');
        
@@ -281,8 +236,12 @@ $(document).ready(function(){
        
     });
 
+	$(document).on('click','#popupclose',function(){
+
+        pop.RemovePopup();
+
+    });
+	
     Begin();
 
-    BuildChart();
-    
 });

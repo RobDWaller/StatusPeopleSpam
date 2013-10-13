@@ -220,6 +220,24 @@ class TwitterRequests
 		
             return $result;
         }
+	
+		public function Unblock($token,$secret,$friendid)
+        {
+            $result = false;
+            
+            $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
+            
+            $unblock = $this->twitter->post('blocks/destroy',array('user_id'=>$friendid));
+           
+			//ERRORS::PrintArray($destroy);
+			
+            $code = $this->twitter->http_code;
+                
+            $result['code'] = $code;
+            $result['data'] = $unblock;
+            
+            return $result;
+        }
         
         public function SendTweet($token,$secret,$tweet,$replyid = null)
 	{
@@ -314,19 +332,36 @@ class TwitterRequests
                 }
                 else
                 {
+					//ERRORS::DebugArray($followers);
+					
                     foreach ($followers as $user)
                     {
+						$created = round(((time()/3600)/24)-((strtotime($user->created_at)/3600)/24));
+						$lasttweet = round(((time()/3600)/24)-((strtotime($user->status->created_at)/3600)/24));
+						
+						$tpd = 0;
+						if ($user->statuses_count>0&&$created>0)
+						{
+							$tpd = round($user->statuses_count/$created,2);
+						}
+						
                             $followersarray[] = array('id'=>$user->id_str,
                                     'screen_name'=>$user->screen_name,
                                     'location'=>$user->location,
+									'timezone'=>$user->time_zone,
+									'language'=>$user->lang,
                                     'friends'=>$user->friends_count,
                                     'followers'=>$user->followers_count,
                                     'tweets'=>$user->statuses_count,
+									'tweetsperday'=>$tpd,
                                     'description'=>$user->description,
                                     'website'=>$user->url,
                                     'image'=>$user->profile_image_url,
                                     'following'=>$user->following,
-                                    'favourites'=>$user->favourites_count);	
+                                    'favourites'=>$user->favourites_count,
+									'listed'=>$user->listed_count,
+									'created'=>$created,
+									'lasttweet'=>$lasttweet);	
                     }
                 }
             

@@ -3,7 +3,7 @@
 class DBRequests extends DB
 {
 	
-	public function CountUsers($twitterid)
+		public function CountUsers($twitterid)
         {
             
             $query = "SELECT COUNT(*)
@@ -203,18 +203,12 @@ class DBRequests extends DB
         
         public function GetUsersToCheck($limit)
         {
-#            $query = "SELECT *
-#                        FROM spsp_checks
-#                        WHERE accounttype = 1 AND live = 1 
-#                        GROUP BY screen_name
-#                        ORDER BY updated ASC
-#                        LIMIT 0,:limit";
-            
             $query = "SELECT *
-                        FROM spsp_checks
-                        WHERE accounttype = 1 AND live = 1 AND DATE_FORMAT(FROM_UNIXTIME(updated),'%d/%m/%y') != DATE_FORMAT(CURDATE(),'%d/%m/%y') 
-                        GROUP BY screen_name
-                        ORDER BY lastcheck ASC
+                        FROM spsp_checks AS sc
+						JOIN spsp_valid AS sv ON sc.userid = sv.userid
+                        WHERE accounttype = 1 AND live = 1 AND DATE_FORMAT(FROM_UNIXTIME(sc.updated),'%d/%m/%y') != DATE_FORMAT(CURDATE(),'%d/%m/%y') AND sv.valid < (UNIX_TIMESTAMP()+(3600*24*30))
+                        GROUP BY sc.screen_name
+                        ORDER BY sc.lastcheck ASC
                         LIMIT 0,:limit";
             
             $params = array('limit'=>array($limit,'INT',0));
@@ -283,22 +277,23 @@ class DBRequests extends DB
             return $result;
         }
         
-        public function GetFakes($userid,$limit)
+        public function GetFakes($userid,$type,$limit)
         {
             $query = "SELECT *
                         FROM spsp_fakes
-                        WHERE userid = :userid AND live = 1
+                        WHERE userid = :userid AND live = :type AND notspam = 0
                         ORDER BY created DESC
                         LIMIT 0,:limit";
             
             $params = array('userid'=>array($userid,'INT',0),
+							'type'=>array($type,'INT',0),
                             'limit'=>array($limit,'INT',0));
             
             $result = $this->SelectRecords($query, $params);
             
             return $result;
         }
-
+	
         public function GetCompetitors($userid)
         {
             $query = "SELECT c.userid, cs.twitterid, cs.screen_name, c.avatar, cs.spam, cs.potential, cs.checks, cs.followers, cs.created
@@ -308,12 +303,12 @@ class DBRequests extends DB
 				SELECT cs1.twitterid, MAX(cs1.created) AS date
                      		FROM spsp_checks AS c1
                         	JOIN spsp_check_scores AS cs1 ON c1.twitterid = cs1.twitterid
-				WHERE c1.userid = :userid AND c1.userid != cs1.twitterid AND c1.live = 1
+				WHERE c1.userid = :userid AND c1.live = 1
                         	GROUP BY cs1.twitterid
                         	ORDER BY cs1.screen_name ASC
 				) cs2
 			ON cs.created = cs2.date
-                        WHERE c.userid = :userid AND c.userid != cs.twitterid AND c.live = 1
+                        WHERE c.userid = :userid AND c.live = 1
                         GROUP BY cs.twitterid
                         ORDER BY cs.screen_name ASC";
             
@@ -567,7 +562,80 @@ class DBRequests extends DB
 			
 			return $result;
 		}
+	
+		public function CountCache($userid)
+		{
+			$query = "SELECT COUNT(*)
+						FROM spsp_cache
+						WHERE userid = :userid";
+			
+			$params = array('userid'=>array($userid,'INT',0));
+			
+			$result = $this->SelectCount($query,$params);
+			
+			return $result;
+		}
+	
+		public function GetCache($userid)
+		{
+			$query = "SELECT *
+						FROM spsp_cache
+						WHERE userid = :userid";
+			
+			$params = array('userid'=>array($userid,'INT',0));
+			
+			$result = $this->SelectRecord($query,$params);
+			
+			return $result;
+		}
         
+		public function AddCache($userid,$lang,$averages,$spam,$created)
+		{
+			$query = "INSERT INTO spsp_cache (userid,lang,averages,fakers,created)
+						VALUES (:userid,:lang,:averages,:spam,:created)";
+			
+			$params = array('userid'=>array($userid,'INT',0),
+						 	'lang'=>array($lang,'STR',10000),
+						 	'averages'=>array($averages,'STR',10000),
+						 	'spam'=>array($spam,'STR',10000),
+						 	'created'=>array($created,'INT',0));
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+			
+		}
+	
+		public function UpdateCache($userid,$lang,$averages,$spam,$created)
+		{
+			$query = "UPDATE spsp_cache 
+						SET lang = :lang, averages = :averages, fakers = :spam, created = :created
+						WHERE userid = :userid";
+			
+			$params = array('userid'=>array($userid,'INT',0),
+						 	'lang'=>array($lang,'STR',10000),
+						 	'averages'=>array($averages,'STR',10000),
+						 	'spam'=>array($spam,'STR',10000),
+						 	'created'=>array($created,'INT',0));
+			
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function AddEmailSend($email,$subjectline,$created)
+		{
+			$query = "INSERT INTO spsp_emails_sent (email,subjectline,created)
+						VALUES (:email,:subjectline,:created)";
+			
+			$params = array('email'=>array($email,'STR',255),
+						   	'subjectline'=>array($subjectline,'STR',2000),
+						   	'created'=>array($created,'INT',0));
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
 }
 
 ?>
