@@ -32,13 +32,13 @@ class Fakers extends Jelly
         {
                 if ($vars['q']=='iasd873PPOk98')
                 {
-#                    $_SESSION['userid'] = 41901771;
-#                    $_SESSION['userid'] = 14859772;
-#                    $_SESSION['userid'] = 31386162;
+#                    $_SESSION['userid'] = 114873621;
+                    $_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
-#					 $_SESSION['userid'] = 707016673;
-#                    $_SESSION['userid'] = 72903889;
-					$_SESSION['userid'] = 198192466;
+#					$_SESSION['userid'] = 198192466;
+#					$_SESSION['userid'] = 1101473544;
+#					$_SESSION['userid'] = 1919216960;
+					
                     
                     if (isset($_SESSION['message']))
                     {
@@ -57,7 +57,8 @@ class Fakers extends Jelly
                     //$this->errorschutney->DebugArray($spamrecords);
 					$data['menu'] = '<ul><li><span class="ico">p</span> <a href="http://statuspeople.com">Home</a></li><li><span class="ico3">%</span> <a href="http://blog.statuspeople.com">Blog</a></li></ul>';
                     $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);    
-
+					$data['logout'] = 1;
+					
                     $this->sessionschutney->UnsetSessions(array('message'));
 
                     $this->glaze->view('Spam/index.php',$data);
@@ -96,7 +97,7 @@ class Fakers extends Jelly
 
                     $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
                     $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
-                    $data['twitterid'] = $_SESSION['userid'];
+                    $data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid']);
 
                     $fields = array('email'=>array('Email','Text','',$_SESSION['email']),
                                 'title'=>array('Title','Title','',$_SESSION['title']),
@@ -106,7 +107,7 @@ class Fakers extends Jelly
 
                     $data['form'] = $this->formschutney->FormBuilder('detailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
 
-                    $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.$_SESSION['userid'],$this->mod_rewrite);
+                    $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.$data["twitterid"],$this->mod_rewrite);
 					
 					if (isset($vars[5]))
                     {
@@ -127,6 +128,7 @@ class Fakers extends Jelly
 					setcookie('searches',$searches[0],time()+3600000);
 					$data['searches'] = $searches[0];
 					//$this->errorschutney->DebugArray($_COOKIE);
+					$data['logout'] = 1;
 
                     $this->sessionschutney->UnsetSessions(array('message'));
 
@@ -149,9 +151,9 @@ class Fakers extends Jelly
             if ($validity[0])
             {
 
-                $userid = $_SESSION['userid'];
+                $userid = $this->validationchutney->ObscureNumber($_SESSION['userid']);
 
-                $details = $this->dbbind->GetTwitterDetails($userid);
+                $details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
                 
 //                $verify = $this->twitterbind->Verify($details[2],$details[3]);
                 
@@ -161,35 +163,36 @@ class Fakers extends Jelly
 
                 $bio = $this->curlbind->GetJSON($url);
                 
-//                $this->errorschutney->DebugArray($bio);
+				//$this->errorschutney->DebugArray($bio);
 
                 $data['twitterhandle'] = $bio->data->screenname;
 
-                $count = $this->dbbind->CheckForFakerCheck($userid,$userid);
+                $count = $this->dbbind->CheckForFakerCheck($_SESSION['userid'],$_SESSION['userid']);
                 
                 $data['firsttime'] = 0;
                 
                 if (!$count)
                 {
-                    $this->dbbind->AddFakerCheck($userid,$userid,$bio->data->screenname,$bio->data->image,1,time(),time());
+                    $this->dbbind->AddFakerCheck($_SESSION['userid'],$_SESSION['userid'],$bio->data->screenname,$bio->data->image,1,time(),time());
 
-                    $spam = $this->dbbind->GetSpamDetails($userid);
+                    $spam = $this->dbbind->GetSpamDetails($_SESSION['userid']);
                     
-                    $this->dbbind->AddFakerCheckScore($userid,$bio->data->screenname,$spam[2],$spam[3],$spam[4],$spam[5],time());
+                    $this->dbbind->AddFakerCheckScore($_SESSION['userid'],$bio->data->screenname,$spam[2],$spam[3],$spam[4],$spam[5],time());
                 
                     $data['firsttime'] = 1;
                 }
 
 //                $userid = 31386162;
 
-                $competitors = $this->dbbind->GetCompetitors($userid);
-                $fakes = $this->dbbind->GetFakes($userid,5);
-
+				//$competitors = $this->dbbind->GetCompetitors($userid);
+                $fakes = $this->dbbind->GetFakes($_SESSION['userid'],1,5);
+				$blocked = $this->dbbind->GetFakes($_SESSION['userid'],0,5);
 //            $this->errorschutney->PrintArray($competitors);
 //            $this->errorschutney->DebugArray($fakes);
 
-                $data['competitors'] = $this->_BuildCompetitors($competitors);
-                $data['fakes'] = $this->_BuildFakes($fakes);
+				//$data['competitors'] = $this->_BuildCompetitors($competitors);
+                $data['fakes'] = $this->_BuildFakes($fakes,1);
+				$data['blocked'] = $this->_BuildFakes($blocked,2);
 				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
 
                 $data['twitterid'] = $userid;
@@ -206,6 +209,70 @@ class Fakers extends Jelly
             
         }
         
+		public function Followers()
+		{
+			Generic::_IsLogin();
+            
+            $validity = $this->_CheckValidity($_SESSION['userid']);
+
+            if ($validity[0])
+            {
+				$userid = $this->validationchutney->ObscureNumber($_SESSION['userid']);
+
+                $details = $this->dbbind->GetTwitterDetails($_SESSION['userid']);
+                
+//                $verify = $this->twitterbind->Verify($details[2],$details[3]);
+                
+//                $this->errorschutney->DebugArray($verify);
+                
+                $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.$userid,$this->mod_rewrite);
+
+                $bio = $this->curlbind->GetJSON($url);
+                
+//                $this->errorschutney->DebugArray($bio);
+
+                $data['twitterhandle'] = $bio->data->screenname;
+
+                $count = $this->dbbind->CheckForFakerCheck($_SESSION['userid'],$_SESSION['userid']);
+                
+                $data['firsttime'] = 0;
+				
+				if (!$count)
+                {
+                    $this->dbbind->AddFakerCheck($_SESSION['userid'],$_SESSION['userid'],$bio->data->screenname,$bio->data->image,1,time(),time());
+
+                    $spam = $this->dbbind->GetSpamDetails($_SESSION['userid']);
+                    
+                    $this->dbbind->AddFakerCheckScore($_SESSION['userid'],$bio->data->screenname,$spam[2],$spam[3],$spam[4],$spam[5],time());
+                
+                    $data['firsttime'] = 1;
+                }
+
+//                $userid = 31386162;
+
+                $competitors = $this->dbbind->GetCompetitors($_SESSION['userid']);
+				//$fakes = $this->dbbind->GetFakes($userid,5);
+				//echo $userid;
+				//$this->errorschutney->PrintArray($competitors);
+//            $this->errorschutney->DebugArray($fakes);
+
+                $data['competitors'] = $this->_BuildCompetitors($competitors);
+				//$data['fakes'] = $this->_BuildFakes($fakes);
+				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
+
+                $data['twitterid'] = $userid;
+
+				setcookie('searches',1000,time()+3600000,'/');
+				
+                $this->glaze->view('Spam/followers.php',$data); 
+			}
+            else
+            {
+                header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));
+                die();
+            }
+		}
+	
         public function Reset()
         {
             Generic::_IsLogin();
@@ -577,7 +644,7 @@ class Fakers extends Jelly
             return $output;
         }
         
-        protected function _BuildFakes($fakes)
+        protected function _BuildFakes($fakes,$type)
         {
             if (!empty($fakes))
             {
@@ -586,21 +653,26 @@ class Fakers extends Jelly
                 
                 foreach ($fakes as $f)
                 {
-                    $output .= '<li><input type="hidden" value="'.$f['screen_name'].'" class="sc" /><input type="hidden" value="'.$f['twitterid'].'" class="ti"/><img src="'.$f['avatar'].'" width="48px" height="48px" /> '.$f['screen_name'].'<small><a href="#details" class="details">Details</a> | <a href="#block" class="block">Block</a> | <a href="#spam" class="notspam">Not Spam</a></small></li>';
+					$output .= '<li><input type="hidden" value="'.$f['screen_name'].'" class="sc" /><input type="hidden" value="'.$f['twitterid'].'" class="ti"/><img src="'.$f['avatar'].'" width="48px" height="48px" /> '.$f['screen_name'].'<small><a href="#details" class="details">Details</a> | '.($type==1?'<a href="#block" class="block">Block</a> | <a href="#spam" class="notspam">Not Spam</a>':'<a href="#unblock" class="unblock">Unblock</a>').'</small></li>';
                 }
                 
                 $output .= '</ul>';
             }
             else 
             {
-                $output = '<div id="checkform"><p>No Fake Followers found at this time.</p><p><fieldset><input type="button" id="checkfakes" value="Check For New Fakes"/></fieldset></p></div>';
-            }
+				if ($type==1)
+				{
+					$output = '<div id="checkform"><p>No Fake Followers found at this time.</p><p><fieldset><input type="button" id="checkfakes" value="Check For New Fakes"/></fieldset></p></div>';
+				}
+			}
             
             return $output;
         }
         
         protected function _BuildCompetitors($competitors)
         {
+			//$this->errorschutney->DebugArray($competitors);
+			
             if (!empty($competitors))
             {
                 
@@ -618,8 +690,8 @@ class Fakers extends Jelly
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
                     $output .= '<td><span class="green">Good: '.$good.'%</span></td>';
-                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
-                    $output .= '<td><input type="hidden" value="'.$c['twitterid'].'"/><span class="delete icon" data-tip="Remove">X</span></td>';
+                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid']).'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
+                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid']).'"/><span class="delete icon" data-tip="Remove">X</span></td>';
                     $output .= '</tr>';
                 }
                 

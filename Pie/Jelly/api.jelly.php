@@ -29,7 +29,7 @@ class API extends Jelly
     {
         
         $this->ResponseFormat = $vars['rf'];
-        $twid = $vars['twid'];
+        $twid = $this->validationchutney->UnobscureNumber($vars['twid']);
         
 //        $this->ResponseFormat = 'json';
 //        $twid = '31386162';
@@ -38,13 +38,15 @@ class API extends Jelly
         
         if ($twid)
         {
+			//$this->errorschutney->PrintArray($twid);
+			
             $details = $this->dbbind->GetTwitterDetails($twid);
             
-//            $this->errorschutney->PrintArray($details);
+			//$this->errorschutney->DebugArray($details);
             
             $bio = $this->twitterbind->GetUserByID($details[2],$details[3],$twid);
             
-//            $this->errorschutney->DebugArray($bio);
+			//$this->errorschutney->DebugArray($bio);
             
             $bio = $this->twitterchutney->ProcessTwitterBio($bio);
             
@@ -70,7 +72,7 @@ class API extends Jelly
 	{
 		
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         $search = $vars['srch'];
 		$searches = $vars['srchs'];
         
@@ -103,10 +105,11 @@ class API extends Jelly
             
             $true = true;
             
-            $Days1 = strtotime('-1 Day');
+			//$Days1 = strtotime('-1 Day');
             
-            if ($spamrecords[7]<$Days1)
-            {   
+			if ($spamrecords[7]<$Days1)
+			//if ($true)
+			{   
 				$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 				$hndrds = $gethundreds[0];
 				$h = $gethundreds[1];
@@ -137,6 +140,7 @@ class API extends Jelly
 									if ($faker['status']==1)
 									{
 										$sc++;
+										$spam[] = $faker['follower'];
 									}
 									elseif ($faker['status']==2)
 									{
@@ -145,17 +149,34 @@ class API extends Jelly
 									
                                     $c++;
                                 }
+								
+								$langs = $this->_GetLanguageDetails($followerdetails['data'],$langs);
+								
+								$avg = $this->_GetAverages($followerdetails['data'],$avg);
+							
                             }
                         }
                     }
                     
+					//$this->errorschutney->DebugArray($avg);
+					
+					$langs = $this->_ReorderLanguages($langs);
+					//$this->errorschutney->PrintArray($langs);
+					//$this->errorschutney->PrintArray($avg);
+					
                     $results['followers']=$followers;
                     $results['checks']=$c;
                     $results['potential']=$p;
                     $results['spam']=$sc;
-                    
+                    $results['lang'] = $langs[0];
+					$results['hundred'] = $avg['hundred'];
+					$results['fr250'] = $avg['fr250'];
+					$results['spam1'] = $spam[0];
+					$results['spam2'] = $spam[1];
 //                    $this->errorschutney->DebugArray($results);
                     
+					$this->_UpdateCache($uid,$langs,$avg,array($spam[0],$spam[1]));
+					
                     if (isset($spamrecords[7])&&$spamrecords[7]>0)
                     {
                         $this->dbbind->UpdateSpamDetails($uid,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
@@ -180,6 +201,26 @@ class API extends Jelly
                         }
                         
                     }
+					
+					if (!empty($spam))
+					{
+						foreach ($spam as $spm)
+						{
+							if ($s < 5)
+							{
+								$insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
+							}
+		
+							$s++;
+						}
+						
+						$is = substr($insertstring,0,-1);
+	
+	//                        $this->errorschutney->PrintArray($is);
+	
+						$this->dbbind->AddFakes($is);
+					}
+					
                    
                 }
                 else 
@@ -190,11 +231,21 @@ class API extends Jelly
             else 
             {
                 $spamscores = $this->dbbind->GetSpamDetails($uid);
-                
+                $cache = $this->_GetCache($uid);
+				
+				//$this->errorschutney->DebugArray($cache);
+				
                 $results['followers']=$spamscores[5];
                 $results['checks']=$spamscores[4];
                 $results['potential']=$spamscores[3];
                 $results['spam']=$spamscores[2];
+				
+				$results['lang'] = $cache['lang'];
+				$results['hundred'] = $cache['hundred'];
+				$results['fr250'] = $cache['fr250'];
+				$results['spam1'] = $cache['spam1'];
+				$results['spam2'] = $cache['spam2'];
+				
             }
             
 			
@@ -271,119 +322,13 @@ class API extends Jelly
             if ($true)
             {
             
-                //die('Hello!!');
-                
-/*                 $followers = $bio['user']->followers_count; 
-
-                $requests = round($followers/5000);
-                
-                if ($requests > 20)
-                {
-                    $requests = 20;
-                }
-                elseif ($requests < 1)
-                {
-                    $requests = 1;
-                }
-                
-                $a = 0;
-                $c = 1;
-                $cursor = '-1';
-                
-                while ($c <= $requests)
-                {
-                    $fids[$a] = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
-                    
-                    $cursor = $fids[$a]->next_cursor_str;
-                    
-                    $a++;
-                    $c++;
-                }
-
-                $h = 0; 
-                $i = 0;
-                
-//                $this->errorschutney->PrintArray($fids);
-                
-                foreach ($fids as $ids)
-                {
-//                    $this->errorschutney->DebugArray($ids);
-                    
-                    if (!isset($ids->errors)&&!isset($ids->error)&&!empty($ids->ids))
-                    {
-                    
-                        foreach ($ids->ids as $id)
-                        {
-                            $hndrds[$h][] = $id; 
-
-                            if ($i == 99)
-                            {
-                                $h++;
-                                $i = 0;
-                            }
-                            else
-                            {
-                                $i++;
-                            }
-                        }
-                    
-                    }
-                } */
-                
-//                echo $h.'<br/>';
-                
-//                $this->errorschutney->PrintArray($hndrds);
-                
-				$gethundreds = $this->_GetHundreds($search,$bio,$details,20);
+				$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 				$hndrds = $gethundreds[0];
 				$h = $gethundreds[1];
 				$followers = $gethundreds[2];
 				
                 if (!empty($hndrds))
                 {
-/*                     if ($h < 5)
-                    {
-                            $checks = $h;
-                    }
-                    elseif ($h >= 5 && $h < 100)
-                    {
-                            $checks = 5;
-                    }
-                    elseif ($h >= 100 && $h < 300)
-                    {
-                            $checks = 8;
-                    }
-                    elseif ($h >= 300)
-                    {
-                            $checks = 10;
-                    }
-
-                    $incr = round($h/$checks,0,PHP_ROUND_HALF_DOWN);
-
-                    if ($incr < 2)
-                    {
-                        $incr = 1;
-                    }
-
-                    //echo $incr.'<br/>';
-
-                    $y = 0;
-                    $z = 1;
-
-                    while ($z <= $checks)
-                    {
-                        if(count($hndrds[round($y*$incr)])<100&&$z==$checks&&$followers>500)
-    					{
-							$chcks[$y] = round(($y*$incr)-1);
-						}
-						else
-						{
-							$chcks[$y] = round($y*$incr);  
-						}
-                        
-                        $y++;
-                        $z++;
-                    } */
 
 					$chcks = $this->_GetChecks($h,$hndrds,$followers);
 					$c = 0;
@@ -400,45 +345,13 @@ class API extends Jelly
 
                             foreach ($followerdetails as $follower)
                             {
-
-//                                    $this->errorschutney->PrintArray($follower);
-
-/*                                 $ffratio = 0;
-
-                                if ($follower['friends']>0)
-                                {
-                                    $ffratio = round(($follower['followers']/$follower['friends'])*100); 
-                                }
-
-                                if ($ffratio < 20)
-                                {
-                                    if ($follower['tweets']==0||$follower['followers']==0)
-                                    {
-                                        $sc++;
-//                                        $this->errorschutney->PrintArray($follower);
-                                    }
-                                    elseif($ffratio<=2)
-                                    {
-                                        $sc++;
-//                                        $this->errorschutney->PrintArray($follower);
-                                    }
-                                    else 
-                                    {
-                                        $p++;
-                                    }
-
-                                }
-                                elseif($follower['followers'] < 20&&$follower['friends']<20&&$follower['tweets']<20)
-                                {
-                                    $p++;
-                                }
-                                $c++; */
 								
 								$faker = $this->_GetFakerStatus($follower);
 									
 								if ($faker['status']==1)
 								{
 									$sc++;
+									$spam[] = $faker['follower'];
 								}
 								elseif ($faker['status']==2)
 								{
@@ -447,6 +360,10 @@ class API extends Jelly
 								
 								$c++;
                             }
+							
+							$langs = $this->_GetLanguageDetails($followerdetails['data'],$langs);
+								
+							$avg = $this->_GetAverages($followerdetails['data'],$avg);
                         }
                     }
                     
@@ -457,6 +374,8 @@ class API extends Jelly
                     
 //                    $this->errorschutney->DebugArray($results);
                     
+					$this->_UpdateCache($uid,$langs,$avg,array($spam[0],$spam[1]));
+					
                     $this->dbbind->UpdateSpamDetails($uid,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
                     
                     $countinfo = $this->dbbind->CountUserInfoRecords($uid); 
@@ -512,132 +431,15 @@ class API extends Jelly
             $search = $this->validationchutney->StripNonAlphanumeric($search);
 
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
-
-//                    $this->errorschutney->PrintArray($bio);
-
-//                    $uid = $bio['user']->id;
-
-//                    $spamrecords = $this->dbbind->GetSpamDetails($uid);
-
-
-/*             $followers = $bio['user']->followers_count; 
-
-            $requests = round($followers/5000);
-
-            if ($requests > 20)
-            {
-                $requests = 20;
-            }
-            elseif ($requests < 1)
-            {
-                $requests = 1;
-            }
-
-            $a = 0;
-            $c = 1;
-            $cursor = '-1';
-
-            while ($c <= $requests)
-            {
-                $fids[$a] = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
-
-                $cursor = $fids[$a]->next_cursor_str;
-
-                $a++;
-                $c++;
-            }
-
-            $h = 0; 
-            $i = 0;
-
-			//$this->errorschutney->PrintArray($fids);
-
-            foreach ($fids as $ids)
-            {
-				//$this->errorschutney->PrintArray($ids);
-
-                if (!isset($ids->errors)&&!isset($ids->error)&&!empty($ids['data']->ids))
-                {
-					//die();
-                    foreach ($ids['data']->ids as $id)
-                    {
-                        $hndrds[$h][] = $id; 
-
-                        if ($i == 99)
-                        {
-                            $h++;
-                            $i = 0;
-                        }
-                        else
-                        {
-                            $i++;
-                        }
-                    }
-
-                }
-            }
-
-            $h++; */
-
-//                echo $h.'<br/>';
-
-			//$this->errorschutney->PrintArray($hndrds);
 			
-			$gethundreds = $this->_GetHundreds($search,$bio,$details,20);
+			$gethundreds = $this->_GetHundreds($search,$bio,$details,10);
 			$hndrds = $gethundreds[0];
 			$h = $gethundreds[1];
 			$followers = $gethundreds[2];
 				
             if (!empty($hndrds))
             {
-/*                 if ($h < 5)
-                {
-                    $checks = $h;
-                }
-                elseif ($h >= 5 && $h < 100)
-                {
-                    $checks = 5;
-                }
-                elseif ($h >= 100 && $h < 300)
-                {
-                    $checks = 8;
-                }
-                elseif ($h >= 300)
-                {
-                    $checks = 10;
-                }
 
-                $incr = round($h/$checks,0,PHP_ROUND_HALF_DOWN);
-
-                if ($incr < 2)
-                {
-                    $incr = 1;
-                }
-
-                //echo $incr.'<br/>';
-
-                $y = 0;
-                $z = 1;
-
-//                    echo $h;
-//                    echo $checks;
-
-                while ($z <= $checks)
-                {
-                    if(count($hndrds[round($y*$incr)])<100&&$z==$checks&&$followers>500)
-					{
-						$chcks[$y] = round(($y*$incr)-1);
-					}
-					else
-					{
-						$chcks[$y] = round($y*$incr);  
-					}  
-
-                    $y++;
-                    $z++;
-                } */
-
-//                    $this->errorschutney->PrintArray($chcks);
 				$chcks = $this->_GetChecks($h,$hndrds,$followers);
                 $c = 0;
                 $sc = 0;
@@ -654,41 +456,6 @@ class API extends Jelly
 
                             foreach ($followerdetails['data'] as $follower)
                             {
-
-								//$this->errorschutney->DebugArray($follower);
-
-/*                                 $ffratio = 0;
-
-                                if ($follower['friends']>0)
-                                {
-                                    $ffratio = round(($follower['followers']/$follower['friends'])*100); 
-                                }
-
-                                if ($ffratio < 20)
-                                {
-                                    if ($follower['tweets']==0||$follower['followers']==0)
-                                    {
-                                        $sc++;
-//                                        $this->errorschutney->PrintArray($follower);
-                                        $spam[] = $follower;
-                                    }
-                                    elseif($ffratio<=2)
-                                    {
-                                        $sc++;
-//                                        $this->errorschutney->PrintArray($follower);
-                                        $spam[] = $follower;
-                                    }
-                                    else 
-                                    {
-                                        $p++;
-                                    }
-
-                                }
-                                elseif($follower['followers'] < 20&&$follower['friends']<20&&$follower['tweets']<20)
-                                {
-                                    $p++;
-                                }
-                                $c++; */
 								
 								$faker = $this->_GetFakerStatus($follower);
 									
@@ -705,6 +472,10 @@ class API extends Jelly
 								$c++;
 								//echo $c;
                             }
+							
+							$langs = $this->_GetLanguageDetails($followerdetails['data'],$langs);
+								
+							$avg = $this->_GetAverages($followerdetails['data'],$avg);
                         }
 /*                     } */
                 }
@@ -714,6 +485,7 @@ class API extends Jelly
                 $results['potential']=$p;
                 $results['spam']=$sc;
 
+				$this->_UpdateCache($uid,$langs,$avg,array($spam[0],$spam[1]));
 //                        $this->errorschutney->PrintArray($results);
 //                        $this->errorschutney->DebugArray($spam);
 
@@ -770,30 +542,65 @@ class API extends Jelly
         }
     }
 		
+	public function GetCacheData($vars)
+	{
+		$this->ResponseFormat = $vars['rf'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        
+		$this->_CheckForResponseFormat();
+        
+        if ($user)
+        {
+			$cache = $this->_GetAllCache($user);
+			
+			if (!empty($cache))
+			{
+				 $this->_APISuccess(201, 'Request Successful, Cache Data Found.',$cache);
+			}
+			else
+			{
+				$this->_APIFail(500,'Cache data could not be found');
+			}
+		}
+        else 
+        {
+            $this->_APIFail(400,'No user defined');
+        }
+	}
+	
 	public function _GetFakerStatus($follower)
 	{
 		
 			$ffratio = 0;
 			$status = 0;
 	
+		//$this->errorschutney->PrintArray($follower);
+		
 			if ($follower['friends']>0)
 			{
 				$ffratio = round(($follower['followers']/$follower['friends'])*100); 
 			}
-			
+			else
+			{
+				//$this->errorschutney->PrintArray($follower);
+			}
+		
 			if ($ffratio < 20)
 			{
 				if ($follower['tweets']==0||$follower['followers']==0)
 				{
 					$status = 1;
+					//$this->errorschutney->PrintArray($follower);
 				}
 				elseif($ffratio<=2)
 				{
 					$status = 1;
+					//$this->errorschutney->PrintArray($follower);
 				}
 				elseif($ffratio<10&&empty($follower['website'])&&$follower['favourites']==0)
 				{
 					$status = 1;
+					//$this->errorschutney->PrintArray($follower);
 				}
 				else 
 				{
@@ -805,7 +612,11 @@ class API extends Jelly
 			{
 				$status = 2;
 			}
-			
+			//elseif($follower['tweetsperday']<0.5||$follower['lasttweet']>=90)
+			//{
+				//$status = 2;
+			//}
+		
 			$result['status'] = $status;
 			$result['follower'] = $follower;
 			
@@ -813,6 +624,100 @@ class API extends Jelly
 		
 	}
     
+	protected function _GetLanguageDetails($followers,$langs)
+	{
+		$languages = $this->validationchutney->LanguageList();
+		
+		//$this->errorschutney->DebugArray($languages);
+		
+		foreach ($followers as $fl)
+		{
+			foreach ($languages as $k => $l)
+			{
+				if ($k==substr($fl['language'],0,2))
+				{
+					$langs[$k]['name'] = $l->name;
+					$langs[$k]['count'] = $langs[$k]['count'] += 1; 
+				}
+			}
+		}
+		
+		return $langs;
+	}
+	
+	protected function _ReorderLanguages($langs)
+	{
+		function reorder($a,$b)
+		{
+			if ($a['count'] == $b['count']) {
+				return 0;
+			}
+			return ($a['count'] < $b['count']) ? 1 : -1;
+		}
+		
+		usort($langs,'reorder');
+		
+		return $langs;
+	}
+	
+	protected function _GetAverages($followers,$averages)
+	{
+		
+		foreach ($followers as $fl)
+		{
+			$averages['tweets_pd'] += $fl['tweetsperday'];
+			$averages['followers'] += $fl['followers'];
+			//$this->errorschutney->PrintArray($fl['screen_name']);
+			//$this->errorschutney->PrintArray($averages['followers']);
+			//$this->errorschutney->PrintArray($fl['followers']);
+			
+			$averages['friends'] += $fl['friends'];
+			if ($fl['lasttweet']>1&&$fl['lasttweet']<30)
+			{
+				$averages['one'] += 1;
+			}
+			elseif ($fl['lasttweet']>=30&&$fl['lasttweet']<100)
+			{
+				$averages['thirty'] += 1;
+			}
+			elseif ($fl['lasttweet']>=100)
+			{
+				$averages['hundred'] += 1;
+			}
+			
+			if ($fl['friends']<250)
+			{
+				$averages['fr250'] += 1;
+			}
+			elseif ($fl['friends']>=250&&$fl['friends']<1000)
+			{
+				$averages['fr500'] += 1;
+			}
+			elseif ($fl['friends']>=1000)
+			{
+				$averages['fr1000'] += 1;
+			}
+			
+			if ($fl['followers']<250)
+			{
+				$averages['fo250'] += 1;
+			}
+			elseif ($fl['followers']>=250&&$fl['followers']<1000)
+			{
+				$averages['fo500'] += 1;
+			}
+			elseif ($fl['followers']>=1000)
+			{
+				$averages['fo1000'] += 1;
+			}
+			
+			$averages['tweets_pd'] += $fl['tweetsperday'];
+			$averages['count'] += 1;
+		}
+		
+		return $averages;
+	}
+	
 	protected function _GetFollowerDetails($details,$hndrds,$ch)
 	{
 		$fllwrs = false;
@@ -980,7 +885,7 @@ class API extends Jelly
     public function GetSpamScoresOverTime($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         
         $this->_CheckForResponseFormat();
         
@@ -1058,7 +963,7 @@ class API extends Jelly
     public function GetCachedSpamScore($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         
         $this->_CheckForResponseFormat();
         
@@ -1102,7 +1007,7 @@ class API extends Jelly
 	public function GetUserDetailsCount($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         
         $this->_CheckForResponseFormat();
         
@@ -1128,7 +1033,7 @@ class API extends Jelly
 	public function PostAddUserDetails()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-        $user = $_POST['usr'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
 		$email = $_POST['em'];
 		$title = $_POST['tt'];
 		$fname = $_POST['fn'];
@@ -1207,7 +1112,7 @@ class API extends Jelly
     public function GetCompetitorCount($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         
         $this->_CheckForResponseFormat();
         
@@ -1233,7 +1138,7 @@ class API extends Jelly
     public function GetCompetitorList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         
         $this->_CheckForResponseFormat();
         
@@ -1247,6 +1152,14 @@ class API extends Jelly
             }
             else
             {
+				foreach ($competitors as $k => $cmp)
+				{
+					$competitors[$k]['userid'] = $this->validationchutney->ObscureNumber($cmp['userid']);
+					$competitors[$k][0] = $this->validationchutney->ObscureNumber($cmp['userid']);
+					$competitors[$k]['twitterid'] = $this->validationchutney->ObscureNumber($cmp['twitterid']);
+					$competitors[$k][1] = $this->validationchutney->ObscureNumber($cmp['twitterid']);
+				}
+				
                 $this->_APISuccess(201, 'Data returned successfully.',$competitors);
             }
         }
@@ -1259,7 +1172,7 @@ class API extends Jelly
     public function GetTwitterUserData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -1300,7 +1213,7 @@ class API extends Jelly
     public function GetFollowerData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         $count = $vars['ct'];
         $name = $vars['nm'];
         
@@ -1337,7 +1250,7 @@ class API extends Jelly
     public function GetUserTwitterTimeline($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         $search = $vars['srch'];
         $count = $vars['cnt'];
         
@@ -1414,13 +1327,39 @@ class API extends Jelly
     public function GetSpamList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         
         $this->_CheckForResponseFormat();
         
         if ($user)
         {
-            $fakes = $this->dbbind->GetFakes($user,5);
+            $fakes = $this->dbbind->GetFakes($user,1,5);
+            
+            if (empty($fakes))
+            {
+                $this->_APIFail(500,'No data was returned.');
+            }
+            else
+            {
+                $this->_APISuccess(201, 'Data returned successfully.',$fakes);
+            }
+        }
+        else
+        {
+            $this->_APIFail(400,'No user details submitted.');
+        }
+    }
+	
+	public function GetBlockedList($vars)
+    {
+        $this->ResponseFormat = $vars['rf'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        
+        $this->_CheckForResponseFormat();
+        
+        if ($user)
+        {
+            $fakes = $this->dbbind->GetFakes($user,0,5);
             
             if (empty($fakes))
             {
@@ -1440,7 +1379,7 @@ class API extends Jelly
     public function GetUpdateFakersList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $vars['usr'];
+        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -1724,7 +1663,7 @@ class API extends Jelly
     public function PostTweet()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $_POST['usr'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
         $tweet = urldecode($_POST['txt']);
         
         $this->_CheckForResponseFormat();
@@ -1768,7 +1707,7 @@ class API extends Jelly
     public function PostAddFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $_POST['usr'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
         $search = $_POST['srch'];
         $spam = $_POST['sp'];
         $potential = $_POST['pt'];
@@ -1843,35 +1782,41 @@ class API extends Jelly
     public function PostDeleteFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $_POST['usr'];
-        $twid = $_POST['twid'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
+        $twid = $this->validationchutney->UnobscureNumber($_POST['twid']);
         
         $this->_CheckForResponseFormat();
         
         if ($user&&$twid)
         {
-            $delete = $this->dbbind->DeleteFakerCheck($user,$twid);
-            
-            if ($delete)
-            {
-                $this->_APISuccess(201, 'User successfully removed from fakers list.','');
-            }
-            else
-            {
-                $this->_APIFail(500,'Failed to remove user from fakers list.');
-            }
-                    
+            if ($user!=$twid)
+			{
+				$delete = $this->dbbind->DeleteFakerCheck($user,$twid);
+				
+				if ($delete)
+				{
+					$this->_APISuccess(201, 'User successfully removed from fakers list.','');
+				}
+				else
+				{
+					$this->_APIFail(500,'Failed to remove user from fakers list.');
+				}
+			}   
+			else
+			{
+				$this->_APIFail(500,'You cannot delete your primary account.');
+			}
         }
         else
         {
-            $this->_APIFail(400,'No data submitted.');
+            $this->_APIFail(400,'Failed to delete user. No user data submitted.');
         }
     }
 
     public function PostBlockSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $_POST['usr'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -1896,6 +1841,40 @@ class API extends Jelly
                 {
                     $this->_APISuccess(201, 'User blocked.',$destroy);
                 }
+            }
+            else
+            {
+                $this->_APIFail(500,'Failed to block twitter user.');
+            }
+        }
+        else
+        {
+            $this->_APIFail(400,'No data submitted.');
+        }
+    }
+	
+	public function PostUnBlockSpam()
+    {
+        $this->ResponseFormat = $_POST['rf'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
+        $twid = $_POST['twid'];
+        
+        $this->_CheckForResponseFormat();
+        
+        if ($user&&$twid)
+        {
+            $details = $this->dbbind->GetTwitterDetails($user);
+            
+            $unblock = $this->twitterbind->Unblock($details[2],$details[3],$twid);
+            
+//            $this->errorschutney->DebugArray($destroy);
+            
+            if ($unblock['code']==200)
+            {
+                $this->dbbind->NotSpam($user,$twid);
+                
+                $this->_APISuccess(201, 'User successfully unblocked.',$destroy);
+                
             }
             else
             {
@@ -2218,6 +2197,65 @@ class API extends Jelly
         
     }
 
+	protected function _GetCache($uid)
+	{
+		$count = $this->dbbind->CountCache($uid);
+		
+		if ($count)
+		{
+			$data = $this->dbbind->GetCache($uid);
+		}
+		
+		$lang = json_decode($data[1]); 
+		$avg = json_decode($data[2]);
+		$spam = json_decode($data[3]);
+		
+		//$this->errorschutney->DebugArray(json_decode($data[3]));
+		
+		$cache['lang'] = $lang[0];
+		$cache['hundred'] = $avg->hundred;
+		$cache['fr250'] = $avg->fr250;
+		$cache['spam1'] = $spam[0];
+		$cache['spam2'] = $spam[1];
+		
+		return $cache;
+	}
+	
+	protected function _GetAllCache($uid)
+	{
+		$count = $this->dbbind->CountCache($uid);
+		
+		if ($count)
+		{
+			$data = $this->dbbind->GetCache($uid);
+		}
+		
+		$cache['lang'] = json_decode($data[1]); 
+		$cache['avg'] = json_decode($data[2]);
+		$cache['spam'] = json_decode($data[3]);
+		
+		//$this->errorschutney->DebugArray(json_decode($data[3]));
+		
+		return $cache;
+	}
+	
+	protected function _UpdateCache($uid,$langs,$avg,$spam)
+	{
+		$count = $this->dbbind->CountCache($uid);
+		
+		$langs = json_encode($langs);
+		$avg = json_encode($avg);
+		$spam = json_encode($spam);
+		
+		if ($count)
+		{
+			$this->dbbind->UpdateCache($uid,$langs,$avg,$spam,time());	
+		}
+		else
+		{
+			$this->dbbind->AddCache($uid,$langs,$avg,$spam,time());
+		}
+	}
 
     # End Protected Functions #
     
