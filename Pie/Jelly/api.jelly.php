@@ -612,10 +612,10 @@ class API extends Jelly
 			{
 				$status = 2;
 			}
-			//elseif($follower['tweetsperday']<0.5||$follower['lasttweet']>=90)
-			//{
-				//$status = 2;
-			//}
+			elseif($follower['tweetsperday']<0.5||$follower['lasttweet']>=90)
+			{
+				$status = 2;
+			}
 		
 			$result['status'] = $status;
 			$result['follower'] = $follower;
@@ -756,7 +756,7 @@ class API extends Jelly
 		
 	}
 	
-	protected function _GetHundreds($search,$bio,$details,$reqs)
+	public function _GetHundreds($search,$bio,$details,$reqs)
 	{
 		$followers = $bio['user']->followers_count; 
 
@@ -784,7 +784,7 @@ class API extends Jelly
 			
 			if ($idslist['code']==429)
 			{
-				$this->_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.');
+				self::_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.');
 			}
 			
 			$fids[$a] = $idslist['data'];
@@ -830,7 +830,7 @@ class API extends Jelly
 		return array($hndrds,$h,$followers);
 	}
 	
-	protected function _GetChecks($h,$hndrds,$followers)
+	public function _GetChecks($h,$hndrds,$followers)
 	{
 		if ($h < 5)
 		{
