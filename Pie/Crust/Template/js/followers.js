@@ -70,6 +70,57 @@ $(document).ready(function(){
         
     });
 	
+	$(document).on('click','#friendsearch',function(e){
+		
+		e.preventDefault();
+		
+		pop.Loader();
+		
+		var form = $('<p>Search for a friend\'s faker score</p><form><fieldset><input type="text" id="friendsearchquery" /></fieldset><fieldset><input type="submit" value="Search" id="searchforfriend" /></fieldset></form>');
+		
+		pop.Content(form);
+	});
+	
+	$(document).on('click','#searchforfriend',function(e){
+
+        e.preventDefault();
+        
+        var usersearch = $('#friendsearchquery').val();
+
+        var sl = ln.StringLength(usersearch);
+        
+        if (sl > 0)
+        {
+			pop.TinyLoader();
+
+            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataPopup',twid);
+		}
+        else
+        {
+            pop.AddMessage('Please enter a Twitter username to search for',true);
+        }
+
+    });
+	
+	$(document).on('click','#addfakerpopup',function(e){
+       
+        e.preventDefault();
+
+        var usersearch = $('#friendsearchname').text();
+        var spam = $('#spam').val();
+        var potential = $('#potential').val();
+        var checks = $('#checks').val();
+        var followers = $('#followers').val();
+
+        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+twid+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
+
+        pop.RemovePopup();
+
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',3);
+
+
+    });
+	
 	BuildChart();
 	GetStats();
 	

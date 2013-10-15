@@ -540,6 +540,11 @@ function Popup()
 
         content.appendTo("#popupdata");
     }
+	
+	this.AddContent = function(data,style)
+    {
+        data.appendTo('#popupcontent');
+    }
 
     this.AddMessage = function(message,error)
     {
@@ -959,6 +964,82 @@ function Spam()
         
     }
     
+	this.ProcessSpamDataPopup = function(result,usr)
+    {
+		var pop = new Popup();
+		
+        if (result.code == 201)
+        {
+            var spamscore = 0;
+            var potentialscore = 0;
+            var goodscore = 0;
+            
+            var checks = result.data.checks;
+            
+            if (checks>0)
+            {
+                spamscore = Math.round((result.data.spam/checks)*100);
+                potentialscore = Math.round((result.data.potential/checks)*100);
+                goodscore = 100-(spamscore+potentialscore);
+            }
+            
+			var name = $('<h2 id="friendsearchname">'+$('#friendsearchquery').val()+'</h2>');
+			
+            var spam = $('<div/>');
+            spam.attr('class','three a red');
+            spam.html('<h1 class="red">Fake</h1><h2 class="red">'+spamscore+'%</h2>');
+            
+            var inactive = $('<div/>');
+            inactive.attr('class','three a');
+            inactive.html('<h1>Inactive</h1><h2>'+potentialscore+'%</h2>');
+                        
+            var good = $('<div/>');
+            good.attr('class','three');
+            good.html('<h1 class="green">Good</h1><h2 class="green">'+goodscore+'%</h2>');
+            
+			var div2 = $('<div/>');
+			
+			name.appendTo(div2);
+            spam.appendTo(div2);
+            inactive.appendTo(div2);
+            good.appendTo(div2);
+            
+            pop.Content(div2);
+            
+			var srv = new Server();
+            srv.CallServer('GET','JSON','/API/GetCompetitorCount','rf=json&usr='+usr,'Spam_AddCompetitorButtonPopup');
+			
+            $('#spam').val(result.data.spam);
+            $('#potential').val(result.data.potential);
+            $('#checks').val(result.data.checks);
+            $('#followers').val(result.data.followers);
+        }
+        else
+        {
+            var h1 = $('<h1/>');
+            var s = $('<small/>');
+            
+            if (result.code == 429)
+            {
+                h1.text('We are sorry but you have breached your Twitter API 1.1 Limit.');
+                pop.Content(h1);
+                
+                s.html('Please wait 15 minutes and try again. For more information on Twitter API limits please read their <a href="https://dev.twitter.com/docs/rate-limiting/1.1" target="_blank">rate limiting policies</a> or contact info@statuspeople.com.');
+                pop.Content(s);
+            }
+            else
+            {
+                h1.text('No data returned for this user.');
+                pop.Content(h1);
+            
+                s.html('If you are having any persistant problems accessing data with StatusPeople please <a href="/Fakers/Reset">reset your connection details</a>.');
+                pop.Content(s);
+            }
+        }
+        
+        pop.RemoveTinyLoader();
+    }
+	
     this.ProcessCachedSpamData = function(result)
     {
         if (result.code == 201)
@@ -1233,6 +1314,31 @@ function Spam()
         }
         
     }
+	
+	this.AddCompetitorButtonPopup = function(result)
+    {
+        var mes = new Messages();
+        var ma = new Array();
+		var pop = new Popup();
+        
+        if (result.code == 201)
+        {
+			var input = $('<form><fieldset><input type="button" id="addfakerpopup" value="Add User To Friend List"/></fieldset></form>');
+            
+			if (result.data >= 6)
+            {
+                input.attr('disabled','disabled');
+                pop.AddMessage('You cannot add any more users to your fakers list.',true);
+            }
+            
+			pop.AddContent(input);        
+		}
+        else
+        {
+            pop.AddMessage('Could not find user details on Twitter please try your search again.',true);
+        }
+        
+    }
     
     this.AddFaker = function(result,user)
     {
@@ -1242,7 +1348,7 @@ function Spam()
         
         if (result.code == 201)
         {
-            ma[0]='User added to Fakers List.';
+            ma[0]='User added to <a href="/Fakers/Followers">Friend List</a>.';
             mes.Build('success',ma,'.header');
         }
         else
