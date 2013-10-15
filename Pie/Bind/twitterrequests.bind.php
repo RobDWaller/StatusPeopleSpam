@@ -270,19 +270,22 @@ class TwitterRequests
             $followeridlist = '';
 		
             $i = 1;
-		
-            foreach ($followerids->ids as $id)
-            {
-                    if ($i <= $count)
-                    {
-                            $followeridlist .= $id.',';
-                    }
-                    $i++;
-            }
-
-            $followeridlist = substr($followeridlist,0,-1);
-
-            $followers = $this->twitter->get('users/lookup',array('user_id'=>$followeridlist));
+			
+			if (!empty($followerids->ids))
+			{
+				foreach ($followerids->ids as $id)
+				{
+						if ($i <= $count)
+						{
+								$followeridlist .= $id.',';
+						}
+						$i++;
+				}
+	
+				$followeridlist = substr($followeridlist,0,-1);
+	
+				$followers = $this->twitter->get('users/lookup',array('user_id'=>$followeridlist));
+			}
 
 //            foreach ($followers as $user)
 //            {

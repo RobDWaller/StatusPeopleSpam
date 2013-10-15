@@ -656,7 +656,10 @@ class API extends Jelly
 			return ($a['count'] < $b['count']) ? 1 : -1;
 		}
 		
-		usort($langs,'reorder');
+		if (!empty($langs))
+		{
+			usort($langs,'reorder');
+		}
 		
 		return $langs;
 	}
