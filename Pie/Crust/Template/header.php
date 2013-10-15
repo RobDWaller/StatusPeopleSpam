@@ -39,7 +39,7 @@
 					}
 					else
 					{
-						echo "&nbsp;";
+						echo '<ul><li><a href="" class="ico icon" data-tip="Search for Friends" id="friendsearch">s</a></li></ul>';
 					}	
 					?>
 				</div>
