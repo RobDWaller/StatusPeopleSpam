@@ -465,42 +465,364 @@ class Validation
             
         }
 	
-	public function TrimWords($string)
-	{
-		
-                $string = preg_replace("/ [ \t\n\r]+$/", "", $string);
-                $string = preg_replace("/ [a-zA-Z0-9-]*$/", "...", $string);
-                $string = preg_replace("/ \.\.\.\.$/", "...", $string);
-                
-		return $string;	
-                
-	}
+		public function TrimWords($string)
+		{
+			
+			$string = preg_replace("/ [ \t\n\r]+$/", "", $string);
+			$string = preg_replace("/ [a-zA-Z0-9-]*$/", "...", $string);
+			$string = preg_replace("/ \.\.\.\.$/", "...", $string);
+					
+			return $string;	
+					
+		}
         
-        public function ObscureNumber($number)
+        public function ObscureNumber($number,$salt)
         {
-            
-            $obs = $number + 5;
-            $rand = rand(100000,999999);
-
-            $num = $obs.$rand;
-            
-            $base = base_convert($num,10,36);
-            
-            return $base;
+			try
+			{
+				if (empty($number)||empty($salt))
+				{
+					throw new Exception('Inadequate data submitted.');
+				}
+				else
+				{
+			
+					$ob = $number + 11;
+					
+					$obs = base_convert($ob,10,36);
+					
+					$obsalt = $obs.$salt;
+					
+					$digit = base64_encode($obsalt);
+					
+					//Errors::DebugArray($digit);
+					
+					$len = strlen($digit);
+					
+					$split = rand(1,($len-1));
+					
+					$part0 = substr($digit,0,$split);
+					$part1 = substr($digit,$split,($len-$split));
+					
+					
+					$reverse = '1'.$part1.$part0.'1';
+					//Errors::PrintArray(array('obsalt'=>$obsalt,'forward'=>$digit,'part0'=>$part0,'part1'=>$part1,'split'=>$split,'len'=>$len,'reverse'=>$reverse,'basereverse'=>$basereverse));
+					
+					
+					$rand1 = rand(10,99);
+					$rand2 = rand(10,99);
+					
+					if ($rand1==$rand2)
+					{
+						while ($rand1==$rand2)
+						{
+							$rand2 = rand(10,99);
+						}
+					}
+					
+					$days = round((time()/3600)/24);
+					
+					if ($rand1>$rand2)
+					{
+						$num = round($days/$rand1);
+					}
+					else
+					{
+						$num = round($days/$rand2);
+					}
+					
+					$num1 = $split*$num;
+					
+					$base1 = base_convert(($num1),10,36);
+					$rand3 = rand(1000,9999);
+					$base2 = base_convert($rand3,10,36);
+					$base3 = base_convert($base2.$salt,36,12);
+					
+					$newstring = $rand1.$reverse.$base3.$base1.$rand3.$rand2;
+					
+					$base = $this->Obscure($newstring,$salt);
+					
+					return $base;
+				}
+			}
+			catch(Exception $e)
+			{
+				die($e->getMessage());
+			}
             
         }
-        
-        public function UnObscureNumber($base)
+	
+		public function UnobscureNumber($base,$salt)
         {
-            $obscureid = base_convert($base,36,10);
-		
-            $removelastint = substr($obscureid,0,-6);
-		
-            $id = $removelastint -5;
-		
-            return intval($id);
+			try
+			{
+				if (empty($base)||empty($salt))
+				{
+					throw new Exception('Inadequate data submitted.');
+				}
+				
+				//Errors::DebugArray($base);
+				
+				if (!preg_match('|^[a-zA-Z0-9=+/]{1,1000}$|',$base))
+				{
+					throw new Exception('Invalid data submitted.');
+				}
+				
+				$unobscure = $this->Unobscure($base,$salt);
+				
+				$rand1 = substr($unobscure,0,2);
+				$rand2 = substr($unobscure,-2);
+				$rand3 = substr($unobscure,-6,4);
+				
+				if ($rand1==0||$rand2==0)
+				{
+					throw new Exception('Process Failed.');
+				}
+				
+				$base2 = base_convert($rand3,10,36);
+				$base3 = base_convert($base2.$salt,36,12);
+				
+				$strings = explode($base3,$unobscure);
+				
+				$reverse = substr($strings[0],2); 
+				
+				$days = round((time()/3600)/24);
+				
+				if ($rand1>$rand2)
+				{
+					$num = round($days/$rand1);
+				}
+				else
+				{
+					$num = round($days/$rand2);
+				}
+				
+				$base1 = substr($strings[1],0,-6);
+				
+				$num1 = base_convert($base1,36,10);
+				
+				$split = $num1/$num;
+				
+				$reverse = substr($reverse,1,-1);
+				
+				$len = strlen($reverse);
+				
+				$part1 = substr($reverse,0,($len-$split));
+				$part0 = substr($reverse,($len-$split),$split);
+				
+				$forward = $part0.$part1;
+				
+				$obsalt = base64_decode($forward);
+				
+				$obs = str_replace($salt,'',$obsalt);
+				
+				$ob = base_convert($obs,36,10);
+				
+				$id = $ob-11;
+				
+				//Errors::PrintArray(array('obsalt'=>$obsalt,'forward'=>$forward,'part0'=>$part0,'part1'=>$part1,'split'=>$split,'len'=>$len,'reverse'=>$reverse,'basereverse'=>$basereverse));
+				return intval($id);
+			}
+			catch(Exception $e)
+			{
+				die($e->getMessage());
+			}
         }
-        
+	
+		public function Obscure($string,$salt)
+		{
+			$strings = str_split($string);
+			$index = $this->HashIndex();
+			$hashindex = $this->GenerateIndex($salt);
+			
+			//Errors::PrintArray($string);
+			//Errors::PrintArray($index);
+			//Errors::PrintArray($hashindex);
+			
+			foreach ($strings as $s)
+			{
+				$found = false;
+				$c = 0;
+				
+				while (!$found)
+				{
+					if ($index[$c]==$s)
+					{
+						$found = true;
+					}
+					else
+					{
+						$c++;
+					}
+				}
+				
+				//Errors::PrintArray(array($index[$c],$hashindex[$c]));
+					
+				$newstring .= $hashindex[$c];
+			}
+			
+			$newstring = $this->Confuse($salt,$newstring);
+		
+			return $newstring;
+		}
+	
+		public function Unobscure($string,$salt)
+		{
+			$string = $this->Confuse($salt,$string);
+			
+			$strings = str_split($string);
+			$index = $this->HashIndex();
+			$hashindex = $this->GenerateIndex($salt);
+			
+			foreach ($strings as $s)
+			{
+				$found = false;
+				$c = 0;
+				
+				while (!$found)
+				{
+					if ($hashindex[$c]==$s)
+					{
+						$found = true;
+					}
+					else
+					{
+						$c++;
+					}
+				}
+				
+				$newstring .= $index[$c];
+			}
+			
+			return $newstring;
+		}
+	
+		public function Confuse($salt,$string)
+		{
+			$salts = str_split($salt);
+			
+			$k = round(count($salts)/2);
+			
+			$c = $k;
+			
+			$strings = str_split($string);
+			
+			$exists = true;
+			
+			while ($exists)
+			{
+				if (!empty($strings[$c])&&!empty($strings[$c+1]))
+				{
+					$s = $strings[$c];
+					$strings[$c] = $strings[$c+1];
+					$strings[$c+1] = $s;
+					$c+=$k;
+				}
+				else
+				{
+					$exists = false;	
+				}
+			}
+			
+			$newstring = implode('',$strings);
+			
+			return $newstring;
+		}
+	
+		public function GenerateIndex($salt)
+		{
+			$index = $this->HashIndex();
+	
+			//Errors::PrintArray($index);
+			
+			$salts = str_split($salt);
+			
+			$count = count($salts);
+			
+			if ($count>4)
+			{
+				$i1 = 'a';
+				$c1 = 1;
+				
+				foreach ($index as $k => $ind)
+				{
+					if ($ind == $salts[0])
+					{
+						$i1 = $k; 
+					}
+					
+					if ($ind == $salts[$count-2])
+					{
+						$c1 = $k;
+					}
+				}
+			}
+			
+			//Errors::PrintArray(array('i1'=>$i1,'c1'=>$c1));
+			
+			$randomindex = $this->CreateIndex($index,$i1,$c1);
+			
+			return $randomindex;
+		}
+	
+		public function CreateIndex($index,$start,$count)
+		{
+			$newindex = array();
+			
+			$c = 0;
+			$position = $start;
+			
+			while ($c<65)
+			{
+				$in = true;
+				
+				while ($in)
+				{
+					if (in_array($index[$position],$newindex))
+					{
+						$position++;
+						
+						if ($position>64)
+						{
+							$position = $position - 65;
+						}
+					}
+					else
+					{
+						$newindex[$c] = $index[$position];
+						$c++;
+						$position = $position + $count;
+						
+						if ($position>64)
+						{
+							$position = $position - 65;
+						}
+						
+						$count++;
+						
+						if ($count>64)
+						{
+							$count = 0;
+						}
+						
+						$in = false;
+					}
+				}
+			}
+			
+			return $newindex;
+		}
+	
+		public function HashIndex()
+		{
+			$index = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S',
+						   'T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l',
+						   'm','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4',
+						   '5','6','7','8','9','+','/','=');
+			
+			return $index;
+		}
+	
         public function ProcessDateMetrics($metrics,$limit,$offset,$format,$outputformat,$period)
         {
             

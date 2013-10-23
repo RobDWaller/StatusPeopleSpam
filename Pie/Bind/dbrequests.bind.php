@@ -217,6 +217,21 @@ class DBRequests extends DB
             
             return $result;            
         }
+	
+		public function GetUserToCheck($userid)
+		{
+			$query = "SELECT *
+						FROM spsp_checks
+						WHERE accounttype = 1 AND live = 1 AND userid = :userid AND lastcheck < (UNIX_TIMESTAMP()-(3600*24))
+						ORDER BY lastcheck ASC
+						LIMIT 0,1";
+			
+			$params = array('userid'=>array($userid,'INT',0));
+			
+			$result = $this->SelectRecords($query,$params);
+			
+			return $result;
+		}
         
         public function UpdateUsersToCheckTime($twitterid,$screen_name,$time)
         {
@@ -293,6 +308,21 @@ class DBRequests extends DB
             
             return $result;
         }
+	
+		public function FindFake($userid,$string)
+		{
+			$query = "SELECT * 
+						FROM spsp_fakes
+						WHERE live = 0 AND notspam = 0 AND userid = :userid AND screen_name LIKE :string
+						LIMIT 0,10";
+			
+			$params = array('userid'=>array($userid,'INT',0),
+						   'string'=>array('%'.$string.'%','INT',0));
+			
+			$result = $this->SelectRecords($query,$params);
+			
+			return $result;
+		}
 	
         public function GetCompetitors($userid)
         {
@@ -482,19 +512,26 @@ class DBRequests extends DB
 						WHERE userid = :userid AND twitterid = :twitterid AND autoremove = 1";
 			
 			$params = array('userid'=>array($userid,'INT',0),
-						   'twitterid'=>array($twitterid,'INT',0));
+						   'twitterid'=>array($userid,'INT',0));
 			
 			$result = $this->SelectCount($query,$params);
 			
-			return $results;
+			return $result;
 		}
 	
         public function GetAutoSpamUsers()
         {
-            $query = "SELECT c.userid
+/*             $query = "SELECT c.userid
                     FROM spsp_checks AS c
                     JOIN (SELECT userid FROM spsp_fakes WHERE live = 1) AS f
                     ON c.userid = f.userid AND c.twitterid = f.userid
+                    WHERE c.autoremove = 1 AND c.accounttype = 1
+                    GROUP BY c.userid
+                    ORDER BY c.autocheck ASC
+                    LIMIT 0,3"; */
+			
+			$query = "SELECT c.userid
+                    FROM spsp_checks AS c
                     WHERE c.autoremove = 1 AND c.accounttype = 1
                     GROUP BY c.userid
                     ORDER BY c.autocheck ASC
@@ -631,6 +668,44 @@ class DBRequests extends DB
 			$params = array('email'=>array($email,'STR',255),
 						   	'subjectline'=>array($subjectline,'STR',2000),
 						   	'created'=>array($created,'INT',0));
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function GetCheckersFromChecks()
+		{
+			$query = "SELECT userid
+						FROM spsp_checks
+						WHERE userid = twitterid AND accounttype = 1
+						AND live = 1";
+			
+			$result = $this->SelectRecords($query);
+			
+			return $result;
+		}
+	
+		public function GetCheckers()
+		{
+			$query = "SELECT sc.userid,FROM_UNIXTIME(sv.valid)
+						FROM spsp_checkers AS sc
+						JOIN spsp_valid AS sv ON sc.userid = sv.userid
+						WHERE sv.valid > (UNIX_TIMESTAMP()-(3600*24*30))";
+			
+			$result = $this->SelectRecords($query);
+			
+			return $result;
+		}
+	
+		public function AddChecker($userid,$updated,$created)
+		{
+			$query = "INSERT INTO spsp_checkers (userid,updated,created)
+						VALUES (:userid,:updated,:created)";
+			
+			$params = array('userid'=>array($userid,'INT',0),
+						   'updated'=>array($updated,'INT',0),
+						   'created'=>array($created,'INT',0));
 			
 			$result = $this->InsertRecord($query,$params);
 			

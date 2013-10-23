@@ -6,7 +6,10 @@ class API extends Jelly
     # Header #
     
     private $ResponseFormat;
-    
+	private $Salt1;
+	private $Salt2;
+	
+	
     # End Header #
     
     function __construct() {
@@ -19,6 +22,9 @@ class API extends Jelly
         {        
             header('Access-Control-Allow-Origin:'.$httporigin);
         }
+		
+		$this->Salt1 = SALT_ONE;
+		$this->Salt2 = SALT_TWO;
     }
     
     # Public Functions #
@@ -29,7 +35,7 @@ class API extends Jelly
     {
         
         $this->ResponseFormat = $vars['rf'];
-        $twid = $this->validationchutney->UnobscureNumber($vars['twid']);
+        $twid = $this->validationchutney->UnobscureNumber(urldecode($vars['twid']),$this->Salt1);
         
 //        $this->ResponseFormat = 'json';
 //        $twid = '31386162';
@@ -72,7 +78,7 @@ class API extends Jelly
 	{
 		
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
 		$searches = $vars['srchs'];
         
@@ -546,7 +552,7 @@ class API extends Jelly
 	public function GetCacheData($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
         
 		$this->_CheckForResponseFormat();
         
@@ -889,7 +895,7 @@ class API extends Jelly
     public function GetSpamScoresOverTime($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
         
         $this->_CheckForResponseFormat();
         
@@ -967,7 +973,7 @@ class API extends Jelly
     public function GetCachedSpamScore($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1008,10 +1014,37 @@ class API extends Jelly
         }
     }
     
+	public function PostBlockedSearch()
+	{
+		$this->ResponseFormat = $_POST['rf'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $search = $_POST['srch'];
+		
+        $this->_CheckForResponseFormat();
+        
+        if ($user&&$search)
+        {
+			$fakes = $this->dbbind->FindFake($user,$search);
+			
+			if (!empty($fakes))
+			{
+				$this->_APISuccess(201, 'Fake Data returned successfully.',$fakes);
+			}
+			else
+			{
+				$this->_APIFail(500,'No fake data was returned.');
+			}
+		}
+		else
+		{
+			$this->_APIFail(400,'No user details submitted.');
+		}
+	}
+	
 	public function GetUserDetailsCount($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1037,7 +1070,7 @@ class API extends Jelly
 	public function PostAddUserDetails()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
 		$email = $_POST['em'];
 		$title = $_POST['tt'];
 		$fname = $_POST['fn'];
@@ -1116,17 +1149,18 @@ class API extends Jelly
     public function GetCompetitorCount($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
         if ($user)
         {
             $competitors = $this->dbbind->GetCompetitorCount($user);
+			$valid = $this->paymentbind->GetValidDate($user);
             
             if ($competitors>=0)
             {
-                $this->_APISuccess(201, 'Data returned successfully.',$competitors);
+                $this->_APISuccess(201, 'Data returned successfully.',array('competitors'=>$competitors,'type'=>$valid[1]));
             }
             else
             {
@@ -1142,7 +1176,7 @@ class API extends Jelly
     public function GetCompetitorList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1158,10 +1192,10 @@ class API extends Jelly
             {
 				foreach ($competitors as $k => $cmp)
 				{
-					$competitors[$k]['userid'] = $this->validationchutney->ObscureNumber($cmp['userid']);
-					$competitors[$k][0] = $this->validationchutney->ObscureNumber($cmp['userid']);
-					$competitors[$k]['twitterid'] = $this->validationchutney->ObscureNumber($cmp['twitterid']);
-					$competitors[$k][1] = $this->validationchutney->ObscureNumber($cmp['twitterid']);
+					$competitors[$k]['userid'] = $this->validationchutney->ObscureNumber($cmp['userid'],$this->Salt2);
+					$competitors[$k][0] = $this->validationchutney->ObscureNumber($cmp['userid'],$this->Salt2);
+					$competitors[$k]['twitterid'] = $this->validationchutney->ObscureNumber($cmp['twitterid'],$this->Salt2);
+					$competitors[$k][1] = $this->validationchutney->ObscureNumber($cmp['twitterid'],$this->Salt2);
 				}
 				
                 $this->_APISuccess(201, 'Data returned successfully.',$competitors);
@@ -1176,7 +1210,7 @@ class API extends Jelly
     public function GetTwitterUserData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -1217,7 +1251,7 @@ class API extends Jelly
     public function GetFollowerData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $count = $vars['ct'];
         $name = $vars['nm'];
         
@@ -1254,7 +1288,7 @@ class API extends Jelly
     public function GetUserTwitterTimeline($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         $count = $vars['cnt'];
         
@@ -1331,7 +1365,7 @@ class API extends Jelly
     public function GetSpamList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1357,7 +1391,7 @@ class API extends Jelly
 	public function GetBlockedList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1383,7 +1417,7 @@ class API extends Jelly
     public function GetUpdateFakersList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber($vars['usr']);
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -1667,7 +1701,7 @@ class API extends Jelly
     public function PostTweet()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
         $tweet = urldecode($_POST['txt']);
         
         $this->_CheckForResponseFormat();
@@ -1711,7 +1745,7 @@ class API extends Jelly
     public function PostAddFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
         $search = $_POST['srch'];
         $spam = $_POST['sp'];
         $potential = $_POST['pt'];
@@ -1732,50 +1766,68 @@ class API extends Jelly
         
         if ($user&&$search)
         {
-            $details = $this->dbbind->GetTwitterDetails($user);
-
-            $search = $this->validationchutney->StripNonAlphanumeric($search);
-            
-            $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
-            
-            if ($bio)
-            {
-                $check = $this->dbbind->CheckForFakerCheck($user,$bio['user']->id);
-                
-                if (!$check)
-                {
-                
-                    $add = $this->dbbind->AddFakerCheck($user,$bio['user']->id,$search,$bio['user']->profile_image_url,$accounttype,time(),time());
-
-                    if ($add)
-                    {
-                        $addscore = $this->dbbind->AddFakerCheckScore($bio['user']->id,$search,$spam,$potential,$checks,$followers,time());
-                        
-                        if ($addscore)
-                        {
-                            $this->_APISuccess(201, 'User successfully added to fakers list.','');
-                        }
-                        else
-                        {
-                            $this->_APISuccess(201, 'User added to fakers list.','');
-                        }
-                        
-                    }
-                    else
-                    {
-                        $this->_APIFail(500,'Failed to add user to fakers list.');
-                    }
-                
-                }
-                else
-                {
-                    $this->_APIFail(400,'User already on Fakers List.');
-                }
-            }
-            else
-            {
-                $this->_APIFail(400,'User could not be found on Twitter.');
-            }
+			$valid = $this->paymentbind->GetValidDate($user);
+			
+			$allowed = 6;
+			
+			if ($valid[1]==2)
+			{
+				$allowed = 16;
+			}
+			
+			$count = $this->dbbind->GetCompetitorCount($user);
+			
+			if ($count<$allowed)
+			{
+				$details = $this->dbbind->GetTwitterDetails($user);
+	
+				$search = $this->validationchutney->StripNonAlphanumeric($search);
+				
+				$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+				
+				if ($bio)
+				{
+					$check = $this->dbbind->CheckForFakerCheck($user,$bio['user']->id);
+					
+					if (!$check)
+					{
+					
+						$add = $this->dbbind->AddFakerCheck($user,$bio['user']->id,$search,$bio['user']->profile_image_url,$accounttype,time(),time());
+	
+						if ($add)
+						{
+							$addscore = $this->dbbind->AddFakerCheckScore($bio['user']->id,$search,$spam,$potential,$checks,$followers,time());
+							
+							if ($addscore)
+							{
+								$this->_APISuccess(201, 'User successfully added to fakers list.','');
+							}
+							else
+							{
+								$this->_APISuccess(201, 'User added to fakers list.','');
+							}
+							
+						}
+						else
+						{
+							$this->_APIFail(500,'Failed to add user to fakers list.');
+						}
+					
+					}
+					else
+					{
+						$this->_APIFail(400,'User already on Fakers List.');
+					}
+				}
+				else
+				{
+					$this->_APIFail(400,'User could not be found on Twitter.');
+				}
+			}
+			else
+			{
+				$this->_APIFail(400,'Max number of trackable friends reached.');
+			}	
         }
         else 
         {
@@ -1786,8 +1838,8 @@ class API extends Jelly
     public function PostDeleteFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
-        $twid = $this->validationchutney->UnobscureNumber($_POST['twid']);
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $twid = $this->validationchutney->UnobscureNumber($_POST['twid'],$this->Salt2);
         
         $this->_CheckForResponseFormat();
         
@@ -1820,7 +1872,7 @@ class API extends Jelly
     public function PostBlockSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -1860,7 +1912,7 @@ class API extends Jelly
 	public function PostUnBlockSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr']);
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -1894,7 +1946,7 @@ class API extends Jelly
     public function PostNotSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $_POST['usr'];
+        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -1924,7 +1976,7 @@ class API extends Jelly
 	public function PostChangeAutoRemoveStatus()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-		$twid = $_POST['twid'];
+		$twid = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
         
         $this->_CheckForResponseFormat();
 		
@@ -1947,7 +1999,7 @@ class API extends Jelly
 				
 				if ($update)
 				{
-					$this->_APISuccess(201, 'Auto remove status updated.','');
+					$this->_APISuccess(201, 'Auto remove status updated.',$autoremove);
 				}
 				else
 				{

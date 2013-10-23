@@ -30,10 +30,10 @@ class Fakers extends Jelly
         
         public function Index($vars)
         {
-                if ($vars['q']=='iasd873PPOk98')
+                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
 #                    $_SESSION['userid'] = 114873621;
-#                    $_SESSION['userid'] = 31386162;
+#                  $_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
 					$_SESSION['userid'] = 198192466;
 #					$_SESSION['userid'] = 1101473544;
@@ -97,7 +97,7 @@ class Fakers extends Jelly
 
                     $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
                     $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
-                    $data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid']);
+					$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
 
                     $fields = array('email'=>array('Email','Text','',$_SESSION['email']),
                                 'title'=>array('Title','Title','',$_SESSION['title']),
@@ -107,7 +107,7 @@ class Fakers extends Jelly
 
                     $data['form'] = $this->formschutney->FormBuilder('detailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
 
-                    $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.$data["twitterid"],$this->mod_rewrite);
+                    $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($data["twitterid"]),$this->mod_rewrite);
 					
 					if (isset($vars[5]))
                     {
@@ -118,6 +118,8 @@ class Fakers extends Jelly
 
                         $bio = $this->curlbind->GetJSON($url);
 
+						//$this->errorschutney->PrintArray($bio);
+						
                         $data['twitterhandle'] = $bio->data->screenname;
 
                     }
@@ -131,7 +133,9 @@ class Fakers extends Jelly
 					$data['logout'] = 1;
 
                     $this->sessionschutney->UnsetSessions(array('message'));
-
+					
+					//$this->errorschutney->DebugArray($data);
+					
                     $this->glaze->view('Spam/scores.php',$data);
                 }
                 else 
@@ -147,11 +151,13 @@ class Fakers extends Jelly
             Generic::_IsLogin();
             
             $validity = $this->_CheckValidity($_SESSION['userid']);
+			
+			//$this->errorschutney->DebugArray($_SESSION);
 
             if ($validity[0])
             {
 
-                $userid = $this->validationchutney->ObscureNumber($_SESSION['userid']);
+                $userid = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
                 
@@ -159,7 +165,7 @@ class Fakers extends Jelly
                 
 //                $this->errorschutney->DebugArray($verify);
                 
-                $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.$userid,$this->mod_rewrite);
+                $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
                 $bio = $this->curlbind->GetJSON($url);
                 
@@ -196,7 +202,12 @@ class Fakers extends Jelly
 				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
 
                 $data['twitterid'] = $userid;
-
+				$data['type'] = $_SESSION['type'];
+				//$data['type'] = 2;
+				$data['autoon'] = $this->dbbind->CountAutoRemoveRecords($_SESSION['userid']);
+				
+				//$this->errorschutney->DebugArray($data);
+				
 				setcookie('searches',1000,time()+3600000,'/');
 				
                 $this->glaze->view('Spam/advanced.php',$data); 
@@ -217,7 +228,8 @@ class Fakers extends Jelly
 
             if ($validity[0])
             {
-				$userid = $this->validationchutney->ObscureNumber($_SESSION['userid']);
+				$userid = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$userid2 = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_TWO);
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION['userid']);
                 
@@ -225,7 +237,7 @@ class Fakers extends Jelly
                 
 //                $this->errorschutney->DebugArray($verify);
                 
-                $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.$userid,$this->mod_rewrite);
+                $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
                 $bio = $this->curlbind->GetJSON($url);
                 
@@ -261,7 +273,9 @@ class Fakers extends Jelly
 				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
 
                 $data['twitterid'] = $userid;
-
+				$data['twitterid2'] = $userid2;
+				$data['type'] = $_SESSION['type'];
+				
 				setcookie('searches',1000,time()+3600000,'/');
 				
                 $this->glaze->view('Spam/followers.php',$data); 
@@ -690,8 +704,8 @@ class Fakers extends Jelly
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
                     $output .= '<td><span class="green">Good: '.$good.'%</span></td>';
-                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid']).'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
-                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid']).'"/><span class="delete icon" data-tip="Remove">X</span></td>';
+                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid'],SALT_TWO).'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
+                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid'],SALT_TWO).'"/><span class="delete icon" data-tip="Remove">X</span></td>';
                     $output .= '</tr>';
                 }
                 
