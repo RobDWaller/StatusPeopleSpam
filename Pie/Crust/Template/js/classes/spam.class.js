@@ -1617,7 +1617,10 @@ function Spam()
 			pop.BuildRightInfoBox();
 			var p = $('<p><strong>Get Unlimited Friend Searches</strong></p>'+
 								 '<p>Sign up for a subscription.</p>'+
-								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>');
+								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>'+
+					 			'<p><strong>Auto Block</strong></p>'+
+					 		'<p>To Auto Block your Fake Followers and track up to 15 Friends upgrade to a Premium subscription.</p>'+
+					  		'<form><fieldset><input type="button" id="gotopremium" value="Go Premium" /></fieldset></form>');
 			pop.RightInfoContent(p);
 		}
 		else if (result.code == 500)
