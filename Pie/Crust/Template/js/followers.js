@@ -1,7 +1,9 @@
 $(document).ready(function(){
 	
 	var twid = $('#twitterid').val();
+	var twid2 = $('#twitterid2').val();
     var twuser = $('#twitterhandle').val();
+	var type = $('#accounttype').val();
 
     var srv = new Server();
     var pop = new Popup();
@@ -10,12 +12,12 @@ $(document).ready(function(){
 
     function BuildChart()
     {
-       	srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+twid,'Charts_BuildChart',[{'id':'chart','type':'line','multi':true,'size':'large','xreverse':true,'backgroundcolor':'#fefefe','colors':['#FE1B2A', '#fe7d1d', '#2AFE1B']}]);
+       	srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+encodeURIComponent(twid2),'Charts_BuildChart',[{'id':'chart','type':'line','multi':true,'size':'large','xreverse':true,'backgroundcolor':'#fefefe','colors':['#FE1B2A', '#fe7d1d', '#2AFE1B']}]);
     }
 	
 	function GetStats()
 	{
-		srv.CallServer('GET','json','/API/GetCacheData','rf=json&usr='+twid,'Spam_ProcessCacheData');
+		srv.CallServer('GET','json','/API/GetCacheData','rf=json&usr='+encodeURIComponent(twid2),'Spam_ProcessCacheData');
 	}
 	
 	$(document).on('click','.delete',function(){
@@ -44,7 +46,7 @@ $(document).ready(function(){
         var id = $('#deletedata').val();
         pop.RemovePopup();
         
-        srv.CallServer('POST','json','/API/PostDeleteFaker','rf=json&usr='+twid+'&twid='+id,'Spam_DeleteFaker',twid);        
+        srv.CallServer('POST','json','/API/PostDeleteFaker','rf=json&usr='+encodeURIComponent(twid)+'&twid='+encodeURIComponent(id),'Spam_DeleteFaker',twid);        
     });
 
     $(document).on('click','.chart',function(){
@@ -56,8 +58,8 @@ $(document).ready(function(){
         
         $('#charthandle').text(nm);
         
-        srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+id,'Charts_BuildChart',[{'id':'chart','type':'line','multi':true,'size':'large','xreverse':false,'backgroundcolor':'#fefefe','colors':['#FE1B2A', '#fe7d1d', '#2AFE1B']}]);
-		srv.CallServer('GET','json','/API/GetCacheData','rf=json&usr='+id,'Spam_ProcessCacheData');
+        srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+encodeURIComponent(id),'Charts_BuildChart',[{'id':'chart','type':'line','multi':true,'size':'large','xreverse':true,'backgroundcolor':'#fefefe','colors':['#FE1B2A', '#fe7d1d', '#2AFE1B']}]);
+		srv.CallServer('GET','json','/API/GetCacheData','rf=json&usr='+encodeURIComponent(id),'Spam_ProcessCacheData');
         
         sc.To('#charthandle',500,40);
         
@@ -93,7 +95,7 @@ $(document).ready(function(){
         {
 			pop.TinyLoader();
 
-            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataPopup',twid);
+            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataPopup',twid);
 		}
         else
         {
@@ -112,14 +114,39 @@ $(document).ready(function(){
         var checks = $('#checks').val();
         var followers = $('#followers').val();
 
-        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+twid+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
+        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
 
         pop.RemovePopup();
 
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',3);
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamData',3);
 
 
     });
+	
+	$(document).on('click','#gotopremium',function(e){
+		
+		e.preventDefault();
+		
+		window.location = '/Payments/Subscriptions?type=2';
+		
+	});
+	
+	$(document).on('click','#rightinfoclose',function(e){
+		
+		e.preventDefault();
+		
+		pop.RightInfoClose();
+		
+	});
+	
+	if (type==1)
+	{
+		pop.BuildRightInfoBox();
+		
+		var p = $('<p><strong>Auto Block</strong></p><p>To Auto Block your Fake Followers and track up to 15 Friends upgrade to a Premium subscription.</p><form><fieldset><input type="button" id="gotopremium" value="Go Premium" /></fieldset></form>');
+		
+		pop.RightInfoContent(p);
+	}
 	
 	BuildChart();
 	GetStats();

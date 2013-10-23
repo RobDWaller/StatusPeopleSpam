@@ -52,8 +52,8 @@ $(document).ready(function(){
         
 //        GetScores(twid,twuser,1);
 		var srchs = parseInt($.cookie('searches'));
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser+'&srchs='+srchs,'Spam_ProcessSpamData',1);
-		srv.CallServer('GET','json','/API/GetUserDetailsCount','rf=json&usr='+twid,'Spam_ProcessUserCheck');
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser+'&srchs='+srchs,'Spam_ProcessSpamData',1);
+		srv.CallServer('GET','json','/API/GetUserDetailsCount','rf=json&usr='+encodeURIComponent(twid),'Spam_ProcessUserCheck');
     }
     
     $('#searchsubmit').bind('click',function(e){
@@ -77,7 +77,7 @@ $(document).ready(function(){
 				$('#handle').text(usersearch);
 	
 		//        GetScores(twid,usersearch,2);
-				srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch+'&srchs='+srchs,'Spam_ProcessSpamData',2);
+				srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&srchs='+srchs,'Spam_ProcessSpamData',2);
 			}
 			else
 			{
@@ -103,7 +103,7 @@ $(document).ready(function(){
         $('#searchquery').val('');
         $('#searchquery').attr('placeholder','Twitter username...');
         
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',1);
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamData',1);
         
     });
     
@@ -149,7 +149,7 @@ $(document).ready(function(){
 		
 		pop.TinyLoader();
 		
-		srv.CallServer('POST','json','/API/PostAddUserDetails','rf=json&usr='+twid+'&em='+email+'&tt='+title+'&fn='+fname+'&ln='+lname,'Spam_ProcessUserAddDetails',1);
+		srv.CallServer('POST','json','/API/PostAddUserDetails','rf=json&usr='+encodeURIComponent(twid)+'&em='+email+'&tt='+title+'&fn='+fname+'&ln='+lname,'Spam_ProcessUserAddDetails',1);
 		
 	});
 	
@@ -169,7 +169,7 @@ $(document).ready(function(){
         
         pop.Loader('Loading...');
        
-        srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+twid+'&srch='+srch,'Spam_BuildUser','');
+        srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_BuildUser','');
     });
 	
 	$(document).on('click','.tweetfollowers',function(e){
@@ -182,7 +182,7 @@ $(document).ready(function(){
 
         pop.Loader('Loading...');
 
-        srv.CallServer('GET','json','/API/GetFollowerData','rf=json&usr='+twid+'&ct=10&nm='+sn[1],'Tweets_Followers');
+        srv.CallServer('GET','json','/API/GetFollowerData','rf=json&usr='+encodeURIComponent(twid)+'&ct=10&nm='+sn[1],'Tweets_Followers');
         
     });
     
@@ -196,9 +196,17 @@ $(document).ready(function(){
        var url = $(this).attr("href");
        var sn = url.split("/");
        
-       srv.CallServer('GET','json','/API/GetUserTwitterTimeline','rf=json&usr='+twid+'&srch='+sn[3]+'&cnt=10','Tweets_BuildUserTimeline');
+       srv.CallServer('GET','json','/API/GetUserTwitterTimeline','rf=json&usr='+encodeURIComponent(twid)+'&srch='+sn[3]+'&cnt=10','Tweets_BuildUserTimeline');
        
     });
+	
+	$(document).on('click','#gotopremium',function(e){
+		
+		e.preventDefault();
+		
+		window.location = '/Payments/Subscriptions?type=2';
+		
+	});
 	
     Begin();
     

@@ -13,12 +13,14 @@
 						<?=$scores;?>
 						<input type="hidden" id="twitterhandle" value="<?=$twitterhandle;?>" />
 						<input type="hidden" id="twitterid" value="<?=$twitterid;?>" />
+						<input type="hidden" id="twitterid2" value="<?=$twitterid2;?>" />
 						<input type="hidden" id="spamscore" value="0" />
 						<input type="hidden" id="spam" value="0" />
 						<input type="hidden" id="potential" value="0" />
 						<input type="hidden" id="checks" value="0" />
 						<input type="hidden" id="followers" value="0" />
 						<input type="hidden" id="firsttime" value="<?=$firsttime;?>" />
+						<input type="hidden" id="accounttype" value="<?=$type;?>"/>
 						<!--<input type="hidden" id="firsttime" value="1" />-->
 					</div>
 					<div class="row">

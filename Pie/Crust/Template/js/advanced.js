@@ -2,6 +2,7 @@ $(document).ready(function(){
    
     var twid = $('#twitterid').val();
     var twuser = $('#twitterhandle').val();
+	var type = $('#accounttype').val();
 
     var srv = new Server();
     var pop = new Popup();
@@ -58,11 +59,11 @@ $(document).ready(function(){
 
         if (ft==1)
         {
-            srv.CallServer('GET','json','/API/GetSpamRecords','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamDataFirstTime',twid);
+            srv.CallServer('GET','json','/API/GetSpamRecords','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamDataFirstTime',twid);
         }
         else
         {
-            srv.CallServer('GET','json','/API/GetCachedSpamScore','rf=json&usr='+twid,'Spam_ProcessCachedSpamData',1);
+            srv.CallServer('GET','json','/API/GetCachedSpamScore','rf=json&usr='+encodeURIComponent(twid),'Spam_ProcessCachedSpamData',1);
         }
     }
 
@@ -82,7 +83,7 @@ $(document).ready(function(){
             Build();
             Loader('Getting Faker Scores','#scoresholder');
 
-            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataAdvanced',twid);
+            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataAdvanced',twid);
 
         }
         else
@@ -105,7 +106,7 @@ $(document).ready(function(){
         $('#searchquery').val('');
         $('#searchquery').attr('placeholder','Twitter username...');
 
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',3);
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamData',3);
 
     });
 
@@ -119,7 +120,7 @@ $(document).ready(function(){
         var checks = $('#checks').val();
         var followers = $('#followers').val();
 
-        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+twid+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
+        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
 
         Build();
         Loader('Getting Faker Scores','#scoresholder');
@@ -128,7 +129,7 @@ $(document).ready(function(){
         $('#searchquery').val('');
         $('#searchquery').attr('placeholder','Twitter username...');
 
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+twuser,'Spam_ProcessSpamData',3);
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamData',3);
 
 
     });
@@ -143,7 +144,7 @@ $(document).ready(function(){
         var checks = $('#checks').val();
         var followers = $('#followers').val();
 
-        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+twid+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
+        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
 
         pop.RemovePopup();
 
@@ -160,7 +161,7 @@ $(document).ready(function(){
         
         pop.Loader('Loading...');
        
-        srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+twid+'&srch='+srch,'Spam_BuildUser','');
+        srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_BuildUser','');
     });
     
     $(document).on('click','.block',function(e){
@@ -171,7 +172,7 @@ $(document).ready(function(){
         var inp = li.children('.ti');
         var srch = inp.val();
         
-        srv.CallServer('POST','json','/API/PostBlockSpam','rf=json&usr='+twid+'&twid='+srch,'Spam_BlockUser',twid);
+        srv.CallServer('POST','json','/API/PostBlockSpam','rf=json&usr='+encodeURIComponent(twid)+'&twid='+srch,'Spam_BlockUser',twid);
     });
     
 	$(document).on('click','.unblock',function(e){
@@ -182,7 +183,7 @@ $(document).ready(function(){
         var inp = li.children('.ti');
         var srch = inp.val();
         
-        srv.CallServer('POST','json','/API/PostUnBlockSpam','rf=json&usr='+twid+'&twid='+srch,'Spam_UnBlockUser',twid);
+        srv.CallServer('POST','json','/API/PostUnBlockSpam','rf=json&usr='+encodeURIComponent(twid)+'&twid='+srch,'Spam_UnBlockUser',twid);
     });
 	
     $(document).on('click','.notspam',function(e){
@@ -193,7 +194,7 @@ $(document).ready(function(){
         var inp = li.children('.ti');
         var srch = inp.val();
         
-        srv.CallServer('POST','json','/API/PostNotSpam','rf=json&usr='+twid+'&twid='+srch,'Spam_NotSpam',twid);
+        srv.CallServer('POST','json','/API/PostNotSpam','rf=json&usr='+encodeURIComponent(twid)+'&twid='+srch,'Spam_NotSpam',twid);
     });
     
     $(document).on('click','.tweetfollowers',function(e){
@@ -206,7 +207,7 @@ $(document).ready(function(){
 
         pop.Loader('Loading...');
 
-        srv.CallServer('GET','json','/API/GetFollowerData','rf=json&usr='+twid+'&ct=10&nm='+sn[1],'Tweets_Followers');
+        srv.CallServer('GET','json','/API/GetFollowerData','rf=json&usr='+encodeURIComponent(twid)+'&ct=10&nm='+sn[1],'Tweets_Followers');
         
     });
     
@@ -220,7 +221,7 @@ $(document).ready(function(){
        var url = $(this).attr("href");
        var sn = url.split("/");
        
-       srv.CallServer('GET','json','/API/GetUserTwitterTimeline','rf=json&usr='+twid+'&srch='+sn[3]+'&cnt=10','Tweets_BuildUserTimeline');
+       srv.CallServer('GET','json','/API/GetUserTwitterTimeline','rf=json&usr='+encodeURIComponent(twid)+'&srch='+sn[3]+'&cnt=10','Tweets_BuildUserTimeline');
        
     });
     
@@ -228,7 +229,7 @@ $(document).ready(function(){
        
        $('#charthandle').text(twuser);
         
-        srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+twid,'Charts_BuildChart');
+        srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+encodeURIComponent(twid),'Charts_BuildChart');
         
         sc.To('#charthandle',500,10);
         
@@ -249,7 +250,7 @@ $(document).ready(function(){
        
 		pop.TinyLoader();	
 		
-       srv.CallServer('GET','json','/API/GetUpdateFakersList','rf=json&usr='+twid+'&srch='+twuser,'Spam_UpdateFakersList',twid);
+       srv.CallServer('GET','json','/API/GetUpdateFakersList','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_UpdateFakersList',twid);
        
     });
 
@@ -282,7 +283,7 @@ $(document).ready(function(){
         {
 			pop.TinyLoader();
 
-            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+twid+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataPopup',twid);
+            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataPopup',twid);
 		}
         else
         {
@@ -290,6 +291,91 @@ $(document).ready(function(){
         }
 
     });
+	
+	$('#searchblocked').bind('click',function(){
+		
+		pop.BuildPopup();
+		pop.Content('<p>Search Your Blocked Users<p><form><fieldset><input type="text" id="searchforblocked" /></fieldset></form><div id="blocksearchdata"></div>');
+		
+	});
+	
+	$(document).on('keyup','#searchforblocked',function(){
+		
+		var srch = $(this).val();
+		
+		srv.CallServer('POST','json','/API/PostBlockedSearch','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_ProcessFakerFind');
+		
+	});
+	
+	$(document).on('mouseup','#searchforblocked',function(){
+		
+		var srch = $(this).val();
+		
+		srv.CallServer('POST','json','/API/PostBlockedSearch','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_ProcessFakerFind');
+		
+	});
+	
+	$(document).on('click','#autoon',function(e){
+		
+		e.preventDefault();
+		
+		pop.BuildPopup();
+		
+		var div = $('<div><p>If you turn on auto-blocking it will cause the Fakers App to begin blocking your fake followers as we find '+
+						'them. You can search and unblock any follower at any time if you think we have got it wrong.</p>'+ 
+					'<p>In addition if you have a lot of fake followers &mdash; tens of thousands &mdash; it may take '+
+					'a number of days or even weeks before you notice a significant improvement in your scores. Your scores may also fluctuate '+ 
+					'during this period. <strong>Please confirm you wish to turn on auto-blocking</strong></p>'+
+					'<form><fieldset><input id="confirmautoon" value="Confirm" type="button"/></fieldset></form></div>');
+		
+		pop.Content(div);
+		
+	});
+	
+	$(document).on('click','#autooff',function(e){
+		
+		e.preventDefault();
+		
+		pop.TinyLoader();
+		
+		srv.CallServer('POST','json','/API/PostChangeAutoRemoveStatus','rf=json&usr='+encodeURIComponent(twid),'Spam_AutoBlockUpdate');
+		
+	});
+	
+	$(document).on('click','#confirmautoon',function(e){
+		
+		e.preventDefault();
+		
+		pop.TinyLoader();
+		
+		srv.CallServer('POST','json','/API/PostChangeAutoRemoveStatus','rf=json&usr='+encodeURIComponent(twid),'Spam_AutoBlockUpdate');
+		
+	});
+	
+	$(document).on('click','#gotopremium',function(e){
+		
+		e.preventDefault();
+		
+		window.location = '/Payments/Subscriptions?type=2';
+		
+	});
+	
+	$(document).on('click','#rightinfoclose',function(e){
+		
+		e.preventDefault();
+		
+		pop.RightInfoClose();
+		
+	});
+	
+	if (type==1)
+	{
+		pop.BuildRightInfoBox();
+		
+		var p = $('<p><strong>Auto Block</strong></p><p>To Auto Block your Fake Followers and track up to 15 Friends upgrade to a Premium subscription.</p><form><fieldset><input type="button" id="gotopremium" value="Go Premium" /></fieldset></form>');
+		
+		pop.RightInfoContent(p);
+	}
 	
     Begin();
 

@@ -16,7 +16,7 @@ $(document).ready(function(){
         
 //        ShareScores(twid,tweet);
         
-        srv.CallServer('POST','json','/API/PostTweet','rf=json&usr='+twid+'&txt='+tweet,'Spam_ProcessSpamScoreShare','');
+        srv.CallServer('POST','json','/API/PostTweet','rf=json&usr='+encodeURIComponent(twid)+'&txt='+tweet,'Spam_ProcessSpamScoreShare','');
         
     });
     

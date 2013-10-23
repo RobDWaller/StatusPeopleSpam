@@ -1,77 +1,5 @@
 function Charts()
-{
-    
-/*     this.BuildChart = function(result)
-    {
-        
-        if (result.code == 201)
-        {
-            options = {
-                chart: {
-                    renderTo: 'chart',
-                    defaultSeriesType: 'line'
-                },
-                title: {
-                    text: '',
-                    x: 0, //center
-                    align:'right',
-                    style: {color: '#fe7d1d',fontSize:'12px'}
-                },
-                xAxis: {
-                    categories: [],
-                    labels: {
-                        enabled: true
-                    },
-                    reversed:true
-                },
-                yAxis: {
-                    title: {
-                        text: '',
-                        style: {color: '#36b6d5'}
-                    },
-                    plotLines: [{
-                        value: 0,
-                        width: 1
-                    }],
-                    min:0,
-                    showFirstLabel:true
-                },
-                tooltip: {
-                    formatter: function () {
-                        return this.series.name + ': ' + this.y +'%';
-                    }
-                },
-                legend: {
-                    enabled: false
-                },
-                colors: ['#FE1B2A', '#fe7d1d', '#2AFE1B'],
-                series: []
-            };
-
-            $.each(result.data, function (i, r) {
-
-                var interactions = {
-                    data: []
-                };
-
-                interactions.name = i;
-
-                $.each(r, function (i, grdata) {
-
-                    options.xAxis.categories.push(grdata.date);
-                    interactions.data.push(parseFloat(grdata.count));
-
-                });
-
-                options.series.push(interactions);
-
-            });
-
-            var chart = new Highcharts.Chart(options);
-        }
-        
-    } */
-    
+{   
 	this.Chart = function(graph,data,exportbutton)
     {
         options = {
@@ -417,24 +345,42 @@ function Payments()
         return parseFloat(newnumber); 
     }
     
-    this.RecalculateCart = function(currency,months)
+    this.RecalculateCart = function(currency,months,type)
     {
         
         var cur = '&pound;';
         var base = 3.49;
-        var tax = 0.70;
+		var tax = 0.70;
         
+		if (type==2)
+		{
+			base = 9.99;
+			tax = 1.98;
+		}
+		
         if (currency == 'USD')
         {
             cur = '&#36;';
             base = 5.49;
-            tax = 0.00;
+			tax = 0.00;
+			
+			if (type==2)
+			{
+				base = 14.99;
+				tax = 0.00;
+			}
         }
         else if (currency == 'EUR')
         {
             cur = '&euro;';
             base = 4.49;
             tax = 0.90;
+			
+			if (type==2)
+			{
+				base = 12.99;
+				tax = 2.60;
+			}
         }
         
         var tms = 1;
@@ -924,7 +870,7 @@ function Spam()
             button.val('Display Your Scores');    
                 
             var srv = new Server();
-            srv.CallServer('GET','JSON','/API/GetCompetitorCount','rf=json&usr='+usr,'Spam_AddCompetitorButton');
+            srv.CallServer('GET','JSON','/API/GetCompetitorCount','rf=json&usr='+encodeURIComponent(usr),'Spam_AddCompetitorButton');
             
             button.appendTo(div2);
             
@@ -1007,7 +953,7 @@ function Spam()
             pop.Content(div2);
             
 			var srv = new Server();
-            srv.CallServer('GET','JSON','/API/GetCompetitorCount','rf=json&usr='+usr,'Spam_AddCompetitorButtonPopup');
+            srv.CallServer('GET','JSON','/API/GetCompetitorCount','rf=json&usr='+encodeURIComponent(usr),'Spam_AddCompetitorButtonPopup');
 			
             $('#spam').val(result.data.spam);
             $('#potential').val(result.data.potential);
@@ -1145,7 +1091,7 @@ function Spam()
             
             var srv = new Server();
             
-            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+usr,'Spam_BuildFakersList','');
+            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+encodeURIComponent(usr),'Spam_BuildFakersList','');
             
             var button = $('<input/>');
             button.attr('type','button');
@@ -1298,12 +1244,18 @@ function Spam()
             input.attr('id','addfaker');
             input.attr('value','Add User To Fakers List');
             
-            if (result.data >= 6)
+            if (result.data.competitors >= 6 && result.data.type == 1)
             {
                 input.attr('disabled','disabled');
                 ma[0]='You cannot add any more users to your fakers list.';
                 mes.Build('alert',ma,'.header');
             }
+			else if (result.data.competitors >= 16 && result.data.type == 2)
+			{
+				input.attr('disabled','disabled');
+                ma[0]='You cannot add any more users to your fakers list.';
+                mes.Build('alert',ma,'.header');
+			}
             
             input.appendTo('#shareform');
         }
@@ -1325,13 +1277,19 @@ function Spam()
         {
 			var input = $('<form><fieldset><input type="button" id="addfakerpopup" value="Add User To Friend List"/></fieldset></form>');
             
-			if (result.data >= 6)
+			pop.AddContent(input);
+			
+			if (result.data.competitors >= 6 && result.data.type == 1)
             {
-                input.attr('disabled','disabled');
+                $('#addfakerpopup').attr('disabled','disabled');
                 pop.AddMessage('You cannot add any more users to your fakers list.',true);
             }
-            
-			pop.AddContent(input);        
+			else if (result.data.competitors >= 16 && result.data.type == 2)
+			{
+				$('#addfakerpopup').attr('disabled','disabled');
+                pop.AddMessage('You cannot add any more users to your fakers list.',true);
+			}        
+			
 		}
         else
         {
@@ -1357,7 +1315,7 @@ function Spam()
             mes.Build('failure',ma,'.header');
         }
         
-        srv.CallServer('GET','json','/API/GetCompetitorList','rf=json&usr='+user,'Spam_BuildCompetitorList','');
+        srv.CallServer('GET','json','/API/GetCompetitorList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildCompetitorList','');
         
     }
     
@@ -1378,7 +1336,7 @@ function Spam()
             mes.Build('failure',[result.message],'.header');
         }
         
-        srv.CallServer('GET','json','/API/GetCompetitorList','rf=json&usr='+user,'Spam_BuildCompetitorList','');
+        srv.CallServer('GET','json','/API/GetCompetitorList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildCompetitorList','');
         
     }
     
@@ -1505,7 +1463,7 @@ function Spam()
         
         if (result.code == 201)
         {
-            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
+            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildFakersList','');
         }
         else
         {
@@ -1517,7 +1475,7 @@ function Spam()
 				ms.build('alert',result.message,'.header');
             }
             
-            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
+            srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildFakersList','');
             
         }
         
@@ -1565,8 +1523,8 @@ function Spam()
             mes.Build('failure',ma,'.header');
         }
         
-        srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
-		srv.CallServer('GET','json','/API/GetBlockedList','rf=json&usr='+user,'Spam_BuildBlockedList','');
+        srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildFakersList','');
+		srv.CallServer('GET','json','/API/GetBlockedList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildBlockedList','');
         
     }
 	
@@ -1587,8 +1545,8 @@ function Spam()
             mes.Build('failure',ma,'.header');
         }
         
-        srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
-		srv.CallServer('GET','json','/API/GetBlockedList','rf=json&usr='+user,'Spam_BuildBlockedList','');
+        srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildFakersList','');
+		srv.CallServer('GET','json','/API/GetBlockedList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildBlockedList','');
         
     }
     
@@ -1609,7 +1567,7 @@ function Spam()
             mes.Build('failure',ma,'.header');
         }
         
-        srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+user,'Spam_BuildFakersList','');
+        srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildFakersList','');
         
     }
 	
@@ -1625,7 +1583,10 @@ function Spam()
 								 '<input type="button" id="freesearches" value="Free Searches" />'+
 								 '<p><strong>Get Unlimited Friend Searches</strong></p>'+
 								 '<p>Sign up for a subscription.</p>'+
-								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>');
+								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>'+
+					  			'<p><strong>Auto Block</strong></p>'+
+					 			'<p>To Auto Block your Fake Followers and track up to 15 Friends upgrade to a Premium subscription.</p>'+
+					  			'<form><fieldset><input type="button" id="gotopremium" value="Go Premium" /></fieldset></form>');
 			pop.RightInfoContent(p);
 		}
 		else if (result.code == 201)
@@ -1633,7 +1594,10 @@ function Spam()
 			pop.BuildRightInfoBox();
 			var p = $('<p><strong>Get Unlimited Friend Searches</strong></p>'+
 								 '<p>Sign up for a subscription.</p>'+
-								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>');
+								 '<a href="/Payments/Details"><input type="button" value="Unlimited Searches"/></a>'+
+					  		'<p><strong>Auto Block</strong></p>'+
+					 		'<p>To Auto Block your Fake Followers and track up to 15 Friends upgrade to a Premium subscription.</p>'+
+					  		'<form><fieldset><input type="button" id="gotopremium" value="Go Premium" /></fieldset></form>');
 			pop.RightInfoContent(p);
 		}
 	}
@@ -1666,6 +1630,69 @@ function Spam()
 			pop.AddMessage(result.message,true);
 		}
 		
+		pop.RemoveTinyLoader();
+	}
+	
+	this.ProcessFakerFind = function(result)
+	{
+		if ($('#blocksearchdata .fakeslist').length)
+		{
+			$('#blocksearchdata .fakeslist').remove();
+		}
+		
+		var ul = $('<ul class="fakeslist"/>');
+		
+		if (result.code = 201)
+		{
+			$.each(result.data,function(i,f){
+                
+                var li = $('<li/>');
+                li.html('<input type="hidden" value="'+f.screen_name+'" class="sc" /><input type="hidden" value="'+f.twitterid+'" class="ti"/><img src="'+f.avatar+'" width="48px" height="48px" /> '+f.screen_name+'<small><a href="#details" class="details">Details</a> | <a href="#block" class="unblock">Unblock</a>');
+                li.appendTo(ul);
+                
+            });
+		}
+		else
+		{
+			var li = $('<li>No Blocked Followers found.</li>');
+			li.appendTo(ul);
+		}
+		
+		ul.appendTo('#blocksearchdata');
+	}
+	
+	this.AutoBlockUpdate = function(result)
+	{
+		var ms = new Messages();
+		var pop = new Popup();
+		
+		if (result.code == 201)
+		{
+			var span;
+			
+			if (result.data==1)
+			{
+				ms.Build('success',['Auto blocking has been turned on.'],'.header');
+				
+				span = $(' <span class="green">On <span class="ico">;</span></span> <span id="autooff" class="microbutton pointer">Turn Off</span>');
+			}
+			else
+			{
+				ms.Build('success',['Auto blocking has been turned off.'],'.header');
+				span = $('<span class="red">Off <span class="ico" style="font-size:20px;">9</span></span> <span id="autoon" class="microbutton pointer">Turn On</span>');
+			}
+			
+			var h2 = $('<h2>Auto Block Fakes </h2>');
+			span.appendTo(h2);
+			$('#autoblock .two h2').remove();
+			h2.appendTo('#autoblock .two');
+		}
+		else
+		{
+			ms.Build('failure',['Failed to change your auto blocking status.'],'.header');
+		}
+		
+		pop.RemovePopup();
 		pop.RemoveTinyLoader();
 	}
 }
@@ -1743,44 +1770,6 @@ function Tweets()
         
         return newtxt;
     }
-    
-/*     this.BuildUser = function(result)
-    {
-        var li = $('<li/>');
-        
-        var div = $('<div/>');
-
-        var img = $('<img/>');
-        img.attr('width','48');
-        img.attr('height','48');
-        img.attr('src',result.image);
-        img.appendTo(div);
-
-        var p1 = $('<p/>'); 
-        p1.html(result.screenname+'<br/>'+result.location+'<br/><a href="'+result.url+'" target="_blank">'+result.url+'</a><br/>Tweets: '+result.tweets+'<br/>Followers: '+result.followers+' <a href="http://twitter.com/'+result.screenname+'" class="tweetfollowers">View</a><br/>Friends: '+result.friends+'<br/>Days Active: '+result.daysactive);
-        p1.appendTo(div);
-
-        var p2 = $('<p/>'); 
-        p2.attr('class','kred');
-        p2.appendTo(div);
-
-        var srv = new Server();
-        srv.CallServer('GET','json','/API/GetKredScore','rf=json&usr='+result.screenname,'Tweets_AddKredScore',p2);
-        
-        var p3 = $('<p/>'); 
-        p3.text(result.description);
-        p3.appendTo(div);
-
-//        var following = (result.following==1)?'Following':'<a href="/SocialMedia/FollowTweeter/V/'+result.id+'/'+result.screenname+'">Follow</a>';
-
-        var p4 = $('<p/>');
-        p4.html('<a href="http://twitter.com/'+result.screenname+'" class="usertweettimeline">Timeline</a>');
-        p4.appendTo(div);
-        
-        div.appendTo(li);
-        
-        return li;
-    } */
     
 	this.BuildUser = function(result,gk)
     {
