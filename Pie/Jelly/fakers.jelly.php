@@ -33,9 +33,9 @@ class Fakers extends Jelly
                 if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
 #                    $_SESSION['userid'] = 114873621;
-#                  $_SESSION['userid'] = 31386162;
+                  $_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
-					$_SESSION['userid'] = 198192466;
+#					$_SESSION['userid'] = 198192466;
 #					$_SESSION['userid'] = 1101473544;
 #					$_SESSION['userid'] = 1919216960;
 					
@@ -118,7 +118,7 @@ class Fakers extends Jelly
 
                         $bio = $this->curlbind->GetJSON($url);
 
-						//$this->errorschutney->PrintArray($bio);
+						//$this->errorschutney->DebugArray($bio);
 						
                         $data['twitterhandle'] = $bio->data->screenname;
 
@@ -167,9 +167,9 @@ class Fakers extends Jelly
                 
                 $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
-                $bio = $this->curlbind->GetJSON($url);
+				$bio = $this->curlbind->GetJSON($url);
                 
-				//$this->errorschutney->DebugArray($bio);
+#				$this->errorschutney->DebugArray($bio);
 
                 $data['twitterhandle'] = $bio->data->screenname;
 
