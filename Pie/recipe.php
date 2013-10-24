@@ -32,4 +32,7 @@ define('PAYPAL_ACTION','https://securepayments.paypal.com/cgi-bin/acquiringweb')
 define('KRED_APP_ID','e44e3776');
 define('KRED_KEY','559ff380ecc0d07a4b3705e737b81828');
 
+define('SALT_ONE','uiop9348me');
+define('SALT_TWO','ty541jhHk72');
+
 ?>

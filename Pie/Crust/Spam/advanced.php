@@ -19,6 +19,7 @@
 						<input type="hidden" id="checks" value="0" />
 						<input type="hidden" id="followers" value="0" />
 						<input type="hidden" id="firsttime" value="<?=$firsttime;?>" />
+						<input type="hidden" id="accounttype" value="<?=$type;?>"/>
 						<!--<input type="hidden" id="firsttime" value="1" />-->
 						<div class="row connect one" id="GetScoresForms">
 							<p class="bree sp2"><form action="/Fakers/GetScores" method="post" id="myscoreform"><input type="hidden" name="name" value="<?=$twitterhandle;?>" /><input type="submit" value="Get Faker Scores" /></form></p>
@@ -28,29 +29,13 @@
 							<p class="bree sp2"><form action="/Fakers/GetScores" method="post" id="searchform"><input type="text" name="name" id="searchquery" placeholder="Twitter username..." /><input type="submit" value="Search" id="searchsubmit" /></form></p>
 						</div>
 					</div>
-					<?php if($_SESSION['type']==2){?>
-						<div class="row">
-							<div class="two a">
-								<h2>
-									Auto Remove Spam
-								</h2>
-								<?=$autoremoveform;?>
-							</div>
-							<div class="two">
-								<h2>
-									Your Deep Dive Score
-								</h2>
-								<?=$rundeepdiveform;?>
-							</div>
-						</div>
-					<?php } ?>
 					<div class="row">
 						<div class="two a">
 							<h2>Fake Followers</h2>
 						</div>
 						<div class="two">
 							<h2>
-								Blocked
+								Blocked <span id="searchblocked" class="ico icon blue pointer" data-tip="Search Blocked Followers">s</span>
 							</h2>
 						</div>
 						<div class="two a" id="spammers">
@@ -60,6 +45,15 @@
 							<?=$blocked;?>
 						</div>
 					</div>
+					<?php if($type==2){?>
+						<div class="row" id="autoblock">
+							<div class="two">
+								<h2>
+									Auto Block Fakes <?php echo ($autoon?'<span class="green">On <span class="ico">;</span></span> <span id="autooff" class="microbutton pointer">Turn Off</span>':'<span class="red">Off <span class="ico" style="font-size:20px;">9</span></span> <span id="autoon" class="microbutton pointer">Turn On</span>'); ?>
+								</h2>
+							</div>
+						</div>
+					<?php } ?>
 					<div class="row">
 						<div class="one center">
 							<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="http://tools.statuspeople.com" target="_blank">Sign Up For a StatusPeople Account</a> | <a href="http://eepurl.com/mveWD" target="_blank">Sign Up To Our Email Newsletter</a> | <a href="/Payments/Details">Extend Your Subscription</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>

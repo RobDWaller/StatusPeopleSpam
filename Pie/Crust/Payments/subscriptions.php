@@ -9,6 +9,7 @@
 		<div class="column row bgwhite">
 			<div class="content row">
 				<div class="two a">
+					<input type="hidden" id="subtype" value="<?=$type;?>"/>
 					<h2>Cart</h2>
 					<table id="cart">
 						<tr>
