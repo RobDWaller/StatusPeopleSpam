@@ -374,14 +374,16 @@ class TwitterRequests
             
         }
         
-        public function GetFollowerIDs($token,$secret,$userid)
+        public function GetFollowerIDs($token,$secret,$userid,$cursor = '-1')
         {
             
             $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token,$secret);
 		
-            $ids = $this->twitter->get('followers/ids', array('user_id' => $userid,'cursor'=>'-1'));
+            $ids = $this->twitter->get('followers/ids', array('user_id' => $userid,'cursor'=>$cursor));
             
-            return $ids;
+            $code = $this->twitter->http_code;
+            
+            return array('code'=>$code,'data'=>$ids);
             
         }
         

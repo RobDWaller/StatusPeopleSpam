@@ -380,7 +380,8 @@ class API extends Jelly
                     $results['spam']=$sc;
                     
 //                    $this->errorschutney->DebugArray($results);
-                    
+                    $langs = $this->_ReorderLanguages($langs);
+					
 					$this->_UpdateCache($uid,$langs,$avg,array($spam[0],$spam[1]));
 					
                     $this->dbbind->UpdateSpamDetails($uid,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
@@ -491,7 +492,9 @@ class API extends Jelly
                 $results['checks']=$c;
                 $results['potential']=$p;
                 $results['spam']=$sc;
-
+				
+				$langs = $this->_ReorderLanguages($langs);
+				
 				$this->_UpdateCache($uid,$langs,$avg,array($spam[0],$spam[1]));
 //                        $this->errorschutney->PrintArray($results);
 //                        $this->errorschutney->DebugArray($spam);
@@ -652,14 +655,17 @@ class API extends Jelly
 		return $langs;
 	}
 	
-	protected function _ReorderLanguages($langs)
+	public function _ReorderLanguages($langs)
 	{
-		function reorder($a,$b)
+		if (!function_exists('reorder'))
 		{
-			if ($a['count'] == $b['count']) {
-				return 0;
+			function reorder($a,$b)
+			{
+				if ($a['count'] == $b['count']) {
+					return 0;
+				}
+				return ($a['count'] < $b['count']) ? 1 : -1;
 			}
-			return ($a['count'] < $b['count']) ? 1 : -1;
 		}
 		
 		if (!empty($langs))
@@ -1677,8 +1683,6 @@ class API extends Jelly
 
                 $this->dbbind->AddFakes($is);
 
-                
-
             }
 
             if (empty($spam))
@@ -1972,6 +1976,21 @@ class API extends Jelly
     }
     
     # End Twitter #
+	
+	public function PostAddDive()
+	{
+		$userid = 198192466;
+		$user = 'adambain';
+		
+		$details = $this->dbbind->GetTwitterDetails($userid);
+		
+		$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$user);
+		
+		$this->errorschutney->PrintArray($bio['user']->id_str);
+		$this->errorschutney->PrintArray($bio['user']->followers_count);
+		
+		$this->deepdivebind->AddDive($userid,$bio['user']->id_str,$bio['user']->followers_count,time());
+	}
     
 	public function PostChangeAutoRemoveStatus()
 	{
@@ -2266,9 +2285,10 @@ class API extends Jelly
 		$avg = json_decode($data[2]);
 		$spam = json_decode($data[3]);
 		
-		//$this->errorschutney->DebugArray(json_decode($data[3]));
+		//$this->errorschutney->DebugArray($lang);
 		
 		$cache['lang'] = $lang[0];
+		//$cache['lang'] = $lang->en;
 		$cache['hundred'] = $avg->hundred;
 		$cache['fr250'] = $avg->fr250;
 		$cache['spam1'] = $spam[0];

@@ -4,6 +4,12 @@ class Cron extends Jelly
 {
     
     private $cronhash = '42c3fe3bb11e9014479a36f8faeff2469c8433178c99829f62f7f83d9d7d11eb';
+	
+	function __construct() {
+        parent::__construct();
+        
+        ini_set('max_execution_time', 1800);
+    }
     
     public function UpdateFakers()
     {
@@ -20,11 +26,12 @@ class Cron extends Jelly
     
     public function UpdateFakersCheck()
     {
-/*         if ($_POST['ch'] == $this->cronhash)
-        { */
+		//if (true)
+		if ($_POST['ch'] == $this->cronhash)
+        { 
             $users = $this->dbbind->GetCheckers();
 			
-		//$this->errorschutney->PrintArray($users);
+			//$this->errorschutney->PrintArray($users);
 		
 			foreach ($users as $u)
 			{
@@ -32,7 +39,7 @@ class Cron extends Jelly
 				
 	            if (!empty($records))
 				{
-					//$this->errorschutney->PrintArray($records);
+					//$this->errorschutney->DebugArray($records);
 					
 					foreach ($records as $r)
 					{
@@ -141,7 +148,7 @@ class Cron extends Jelly
 								$results['spam']=$sc;
 	
 								//$this->errorschutney->DebugArray($results);
-	
+								$langs = API::_ReorderLanguages($langs);
 		//                        $rb = ($checks*100)-100;
 		//                        $rt = $checks*100;
 	
@@ -213,10 +220,12 @@ class Cron extends Jelly
 						unset($hndrds);
 						unset($fids);
 						unset($results);
+						unset($langs);
+						unset($avg);
 					}
 				}
 			}
-		//}
+		}
 //        else
 //        {
 //            echo 'No Match';
@@ -225,8 +234,8 @@ class Cron extends Jelly
     
     public function AutoRemoveSpam()
     {
-        if (true)
-		//if ($_POST['ch'] == $this->cronhash)
+		//if (true)
+		if ($_POST['ch'] == $this->cronhash)
 		{
             
             $users = $this->dbbind->GetAutoSpamUsers();
@@ -362,19 +371,19 @@ class Cron extends Jelly
  		}
 	}
 	
-	public function GetStatusPeopleSubscriberDetails()
+/* 	public function GetStatusPeopleSubscriberDetails()
 	{
 		$details = $this->paymentbind->GetSubscriberDetails();
 		
 		$this->errorschutney->PrintArray($details);
-	}
+	} */
 
-	public function TestEmailSend()
+/* 	public function TestEmailSend()
 	{
 		$email = 'test@test.com';
 		
 		$this->dbbind->AddEmailSend($email,'Goodbye from StatusPeople Fakers Dashboard',time());
-	}
+	} */
 	
 	public function GetCheckersFromChecks()
 	{
@@ -394,7 +403,151 @@ class Cron extends Jelly
 		}
 	}
 	
-	public function ObsTest()
+	public function GetDeepDiveFollowerIDs()
+	{
+		$dives = $this->deepdivebind->GetDives();
+		
+		//$this->errorschutney->PrintArray($dives);
+		
+		foreach ($dives as $d)
+		{
+			$details = $this->dbbind->GetTwitterDetails($d['userid']);
+			
+			$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$d['twitterid'],$d['twittercursor']);
+			
+			//$this->errorschutney->PrintArray($idslist);
+			
+			$ids = $idslist['data']->ids;
+			$cursor = $idslist['data']->next_cursor_str;
+			
+			//$this->errorschutney->PrintArray($ids);
+			//$this->errorschutney->PrintArray($cursor);
+			
+			$jsonids = json_encode($ids);
+			
+			$this->deepdivebind->AddFollowerIDs($d['twitterid'],$jsonids,time());
+			$this->deepdivebind->UpdateCursor($d['userid'],$d['twitterid'],$cursor);
+		}
+	}
+	
+	public function GetDeepDiveFollowers()
+	{
+		$dives = $this->deepdivebind->GetDives();
+		
+		$this->errorschutney->PrintArray($dives);
+		
+		foreach ($dives as $d)
+		{
+			$followerids = $this->deepdivebind->GetFollowerIDs($d['twitterid']);
+			
+			$this->errorschutney->PrintArray($followerids);
+			
+			$fidlist = json_decode($followerids[2]);
+			
+			$h = 1;
+			$r = 1;
+			$k = 0;
+			
+			foreach ($fidlist as $f)
+			{
+				if ($r == 5)
+				{
+					$newarrays[$k][]=$f;
+					$r = 1;
+					$h++;
+				}
+				else
+				{
+					$r++;
+				}
+				
+				if ($h>100)
+				{
+					$h=1;
+					$k++;
+				}
+			}
+			
+			$details = $this->dbbind->GetTwitterDetails($d['userid']);
+			
+			foreach ($newarrays as $array)
+			{
+				$count = count($array);
+				
+				//$this->errorschutney->DebugArray($followerids[0]['id']);
+				
+				if ($count == 100)
+				{
+					$followers = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$array,100);
+					
+					$followers = json_encode($followers);
+					
+					$this->errorschutney->PrintArray(strlen($followers));
+					
+					$this->deepdivebind->AddFollowers($d['twitterid'],$followerids[0]['id'],$followers,time());
+				}
+			}
+			
+			$this->deepdivebind->UpdateFollowerIDsStatus($followerids[0]);
+		}
+	}
+	
+	public function GenerateDeepDiveScore()
+	{
+		$dives = $this->deepdivebind->GetDives();
+		
+		//$this->errorschutney->DebugArray($dives);
+		
+		foreach ($dives as $d)
+		{
+			$followers = $this->deepdivebind->GetFollowers($d['twitterid']);
+			
+			$c = 0;
+			$sc = 0;
+			$p = 0;
+			
+			foreach ($followers as $f)
+			{
+				$fols = json_decode($f['followers']);
+				
+				foreach ($fols->data as $fl)
+				{
+					//$this->errorschutney->DebugArray($fl);	
+					
+					$faker = API::_GetFakerStatus((array)$fl);
+										
+					if ($faker['status']==1)
+					{
+						$sc++;
+						$spam[] = $faker['follower'];
+					}
+					elseif ($faker['status']==2)
+					{
+						$p++;
+					}
+					
+					$c++;
+				}
+			}
+			
+			//$results['followers']=$followers;
+			$results['checks']=$c;
+			$results['potential']=$p;
+			$results['spam']=$sc;
+			
+			$spam = round(($sc/$c)*100);
+			
+			$potential = round(($p/$c)*100);
+			
+			$good = (100-$spam)-$potential;
+			
+			$this->errorschutney->PrintArray($results);
+			$this->errorschutney->PrintArray(array('spam'=>$spam,'potential'=>$potential,'good'=>$good));
+			
+		}
+	}
+	
+/* 	public function ObsTest()
 	{
 		$nums = array(1,2,3,12,456,6753,73826,287364,7263718,90876543,543216789,1233213131,12332131319,123321313198,1233213131987,12332131319876);
 		
@@ -422,6 +575,6 @@ class Cron extends Jelly
 		$unobscure = $this->validationchutney->Unobscure($obscure,$salt);
 		
 		$this->errorschutney->DebugArray(array('string'=>$string,'salt'=>$salt,'obscure'=>$obscure,'unobscure'=>$unobscure));
-	}
+	} */
 }
 ?>
