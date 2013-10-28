@@ -8,7 +8,7 @@ class Cron extends Jelly
 	function __construct() {
         parent::__construct();
         
-        ini_set('max_execution_time', 1800);
+        ini_set('max_execution_time', 720);
     }
     
     public function UpdateFakers()
