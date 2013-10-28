@@ -15,9 +15,10 @@ class Jelly
         public $curlbind;
         public $kredbind;
         public $paymentbind;
+		public $deepdivebind;
         //Chutney        
         public $formschutney;
-	public $buildchutney;
+		public $buildchutney;
         public $seesionschutney;
         public $validationchutney;
         public $routechutney;
@@ -48,15 +49,16 @@ class Jelly
                 $this->curlbind = new CurlRequests();
                 $this->kredbind = new KredRequests();
                 $this->paymentbind = new PaymentRequests();
+				$this->deepdivebind = new DeepdiveRequests();
                 //Chutney
                 $this->formschutney = new Forms();
-		$this->buildchutney = new Build();
-		$this->sessionschutney = new Sessions();
-		$this->validationchutney = new Validation();
-		$this->routechutney = new Route();
-		$this->emailchutney = new Email();
-		$this->errorschutney = new Errors();
-		$this->datetimechutney = new DateAndTime();
+				$this->buildchutney = new Build();
+				$this->sessionschutney = new Sessions();
+				$this->validationchutney = new Validation();
+				$this->routechutney = new Route();
+				$this->emailchutney = new Email();
+				$this->errorschutney = new Errors();
+				$this->datetimechutney = new DateAndTime();
                 $this->jsonchutney = new JSON();
                 $this->xmlchutney = new XML();
                 $this->twitterchutney = new TwitterHelper();
