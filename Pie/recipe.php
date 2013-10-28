@@ -10,6 +10,12 @@ define('__DB_USERNAME','spspan');
 define('__DB_PASSWORD','criSU876ky4q');
 define('__DB_NAME','statuspeople_spam');
 
+// StatusPeople DeepDive Database
+define('__DBDV_HOSTNAME','Localhost');
+define('__DBDV_USERNAME','statuspeople_dv');
+define('__DBDV_PASSWORD','DNLuPtufdffq8mrc');
+define('__DBDV_NAME','statuspeople_deepdive');
+
 // Sttsp Database
 define('__DBSTT_HOSTNAME','127.0.0.1');
 define('__DBSTT_USERNAME','sttsppl');
