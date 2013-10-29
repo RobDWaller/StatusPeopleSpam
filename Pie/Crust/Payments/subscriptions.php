@@ -36,6 +36,36 @@
 					<?=$form;?>
 				</div>
 			</div>
+			<div class="row">
+				<div class="one">
+					<table>
+						<tr>
+							<th>Account</th>
+							<th>Unlimited Searches</th>
+							<th>Manual Block Fakes</th>
+							<th>Advanced Follower Metrics</th>
+							<th>Tracked Accounts</th>
+							<th>Auto Block Fakes</th>
+						</tr>
+						<tr>
+							<td><strong class="orange">Basic</strong></td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+							<td class="center"><strong class="orange">5</strong></td>
+							<td class="ico red center">9</td>
+						</tr>
+						<tr>
+							<td><strong class="orange">Premium</strong></td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+							<td class="center"><strong class="orange">15</strong></td>
+							<td class="ico green center">;</td>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
 		<div class="column row bg2">
 			<div class="row one">

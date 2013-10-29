@@ -25,6 +25,8 @@ class API extends Jelly
 		
 		$this->Salt1 = SALT_ONE;
 		$this->Salt2 = SALT_TWO;
+		
+		ini_set('max_execution_time', 300);
     }
     
     # Public Functions #
@@ -78,7 +80,8 @@ class API extends Jelly
 	{
 		
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+		$user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+		//$user = $vars['usr'];
         $search = $vars['srch'];
 		$searches = $vars['srchs'];
         
@@ -113,8 +116,8 @@ class API extends Jelly
             
 			$Days1 = strtotime('-1 Day');
             
-			if ($spamrecords[7]<$Days1)
-			//if ($true)
+			//if ($spamrecords[7]<$Days1)
+			if ($true)
 			{   
 				$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 				$hndrds = $gethundreds[0];
@@ -143,6 +146,8 @@ class API extends Jelly
                                 {	
 									$faker = $this->_GetFakerStatus($follower);
 									
+									//$this->errorschutney->PrintArray($faker);
+									
 									if ($faker['status']==1)
 									{
 										$sc++;
@@ -151,6 +156,7 @@ class API extends Jelly
 									elseif ($faker['status']==2)
 									{
 										$p++;
+										//$this->errorschutney->PrintArray($faker);
 									}
 									
                                     $c++;
@@ -514,7 +520,7 @@ class API extends Jelly
 				{
 					foreach ($spam as $spm)
 					{
-						if ($s < 20)
+						if ($s < 200)
 						{
 							$insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
 						}
@@ -612,6 +618,10 @@ class API extends Jelly
 					$status = 1;
 					//$this->errorschutney->PrintArray($follower);
 				}
+				/*elseif($this->_CheckLanguageQuality($follower))
+				{
+					$status = 1;
+				}*/
 				else 
 				{
 					$status = 2;
@@ -634,6 +644,54 @@ class API extends Jelly
 		
 	}
     
+	public function _CheckLanguageQuality($text)
+	{
+		//$query = '/\s{2,}||(.,)/';
+		$result = false;
+		
+		$count = 0;
+		
+		$query = '/\.,|!,|,!|\*\.|\s,\s|\s;\s|\s:\s|\w,\w|\w\*\w|\w\|\w|\w\.\w|\w\'\w|\s{2,}|\.\||\.\?|\.~|\w#\w|\w~\w|,,|\.\*|\.-|\._|\s\'\w|\s!\w|\s;\w|\.;|;amp;/';
+			
+		if (!empty($text['description']))
+		{
+			preg_match_all($query,$text['description'],$matches1);
+			
+			$count += count($matches1[0]);
+			
+			if ($count<=2)
+			{
+				preg_match_all($query,$text['tweet'],$matches2);
+				
+				$count += count($matches2[0]);
+				
+				if ($count>=4)
+				{
+					$result = true;
+				}
+			}
+			else
+			{
+				$result = true;
+			}
+		}
+		else
+		{
+			preg_match_all($query,$text['tweet'],$matches3);
+				
+			$count += count($matches3[0]);
+			
+			if ($count>=3)
+			{
+				$result = true;
+			}
+		}
+		
+		$this->errorschutney->PrintArray($count);
+		
+		return $result;
+	}
+	
 	public function _GetLanguageDetails($followers,$langs)
 	{
 		$languages = $this->validationchutney->LanguageList();

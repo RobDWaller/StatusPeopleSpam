@@ -652,7 +652,14 @@ function Server()
             complete: function (xhr, textStatus) {
                 console.log(xhr.status);
                 console.log(xhr.responseText);
-            }
+            },
+			error: function(){
+				pop = new Popup();
+				pop.RemoveTinyLoader();
+				ms = new Messages();
+				ms.Build('failure',['An error occurred: Process Failed!'],'.header');
+			}
+			
         });
     }
 
@@ -1472,7 +1479,7 @@ function Spam()
                 //pop.Loader();
                 //var pop = new Popup();
                 var ms = new Messages();
-				ms.build('alert',result.message,'.header');
+				ms.Build('alert',result.message,'.header');
             }
             
             srv.CallServer('GET','json','/API/GetSpamList','rf=json&usr='+encodeURIComponent(user),'Spam_BuildFakersList','');
