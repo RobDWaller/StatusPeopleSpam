@@ -8,7 +8,7 @@ class Cron extends Jelly
 	function __construct() {
         parent::__construct();
         
-        ini_set('max_execution_time', 720);
+        ini_set('max_execution_time', 1800);
     }
     
     public function UpdateFakers()
@@ -191,7 +191,7 @@ class Cron extends Jelly
 								{
 									if (!$r['autoremove'])
 									{
-										if ($s < 20)
+										if ($s < 1000)
 										{
 											$insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
 										}
