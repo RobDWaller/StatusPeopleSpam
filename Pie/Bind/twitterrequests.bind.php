@@ -211,10 +211,11 @@ class TwitterRequests
             
             $destroy = $this->twitter->post('blocks/create',array('user_id'=>$friendid));
            
-			//ERRORS::PrintArray($destroy);
-			
-            if ($this->twitter->http_code == 200);
+			if ($this->twitter->http_code == 200)
             {
+				//ERRORS::PrintArray($destroy);
+				//ERRORS::PrintArray($this->twitter);
+			
 				$result = true;	
             }
 		
@@ -339,6 +340,8 @@ class TwitterRequests
 					
                     foreach ($followers as $user)
                     {
+						//Errors::DebugArray($user);
+						
 						$created = round(((time()/3600)/24)-((strtotime($user->created_at)/3600)/24));
 						$lasttweet = round(((time()/3600)/24)-((strtotime($user->status->created_at)/3600)/24));
 						
@@ -364,7 +367,10 @@ class TwitterRequests
                                     'favourites'=>$user->favourites_count,
 									'listed'=>$user->listed_count,
 									'created'=>$created,
-									'lasttweet'=>$lasttweet);	
+									'lasttweet'=>$lasttweet,
+									'tweet'=>$user->status->text,
+									'tweet_retweet'=>$user->status->retweet_count,
+									'tweet_favorite'=>$user->status->favorite_count);	
                     }
                 }
             

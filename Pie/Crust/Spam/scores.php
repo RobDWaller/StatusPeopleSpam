@@ -39,27 +39,49 @@
 					<div class="row">
 						<div class="two a">
 							<div class="pricingbox">
-								<div class="three center">
-									<h2>UK</h2>
+								<div class="two center">
+									<h2>Basic</h2>
+									<h3>&pound;3.49 &#36;5.49 &euro;4.49</h3>
+									<small>Per Month</small>
+									<p>
+										Unlimited Searches
+									</p>
+									<p>Block Spam</p>
+									<p>Track 5 Accounts</p>
+									<p>
+										Advanced Follower Metrics
+									</p>
+									<!--<h2>UK</h2>
 									<h1>&pound;3.49</h1>
 									<small>Per Month</small>
 									<p>
 										Unlimited Searches
 									</p>
 									<p>Block Spam</p>
-									<p>Track 5 Accounts</p>
+									<p>Track 5 Accounts</p>-->
 								</div>
-								<div class="three center pricingborders">
-									<h2>US</h2>
+								<div class="two center pricingborders">
+									<h2>Premium</h2>
+									<h3>&pound;9.99 &#36;14.99 &euro;12.99</h3>
+									<small>Per Month</small>
+									<p>
+										Unlimited Searches
+									</p>
+									<p>Auto Block Spam</p>
+									<p>Track 15 Accounts</p>
+									<p>
+										Advanced Follower Metrics
+									</p>
+									<!--<h2>US</h2>
 									<h1>&#36;5.49</h1>
 									<small>Per Month</small>
 									<p>
 										Unlimited Searches
 									</p>
 									<p>Block Spam</p>
-									<p>Track 5 Accounts</p>
+									<p>Track 5 Accounts</p>-->
 								</div>
-								<div class="three center">
+								<!--<div class="three center">
 									<h2>EU</h2>
 									<h1>&euro;4.49</h1>
 									<small>Per Month</small>
@@ -68,7 +90,7 @@
 									</p>
 									<p>Block Spam</p>
 									<p>Track 5 Accounts</p>
-								</div>
+								</div>-->
 							</div>
 						</div>
 						<div class="two">
