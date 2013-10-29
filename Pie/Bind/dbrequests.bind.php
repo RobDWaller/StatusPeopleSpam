@@ -222,7 +222,7 @@ class DBRequests extends DB
 		{
 			$query = "SELECT *
 						FROM spsp_checks
-						WHERE accounttype = 1 AND live = 1 AND userid = :userid AND lastcheck < (UNIX_TIMESTAMP()-(3600*24))
+						WHERE accounttype = 1 AND live = 1 AND userid = :userid AND lastcheck < (UNIX_TIMESTAMP()-(3600*12))
 						ORDER BY lastcheck ASC
 						LIMIT 0,1";
 			
