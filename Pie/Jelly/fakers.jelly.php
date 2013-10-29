@@ -36,6 +36,8 @@ class Fakers extends Jelly
 #                  $_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
 #					$_SESSION['userid'] = 198192466;
+#					$_SESSION['userid'] = 545309711;
+#					$_SESSION['userid'] = 96269828;
 #					$_SESSION['userid'] = 1101473544;
 #					$_SESSION['userid'] = 1919216960;
 					
@@ -169,7 +171,7 @@ class Fakers extends Jelly
 
 				$bio = $this->curlbind->GetJSON($url);
                 
-#				$this->errorschutney->DebugArray($bio);
+				//$this->errorschutney->DebugArray($bio);
 
                 $data['twitterhandle'] = $bio->data->screenname;
 
