@@ -116,8 +116,8 @@ class API extends Jelly
             
 			$Days1 = strtotime('-1 Day');
             
-			//if ($spamrecords[7]<$Days1)
-			if ($true)
+			if ($spamrecords[7]<$Days1)
+				//if ($true)
 			{   
 				$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 				$hndrds = $gethundreds[0];
