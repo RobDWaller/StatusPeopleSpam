@@ -210,8 +210,11 @@ class TwitterRequests
             $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
             
             $destroy = $this->twitter->post('blocks/create',array('user_id'=>$friendid));
-           
-			if ($this->twitter->http_code == 200)
+
+			//ERRORS::PrintArray($destroy);
+			//ERRORS::PrintArray($this->twitter);
+
+			if ($this->twitter->http_code == 200||$this->twitter->http_code == 404)
             {
 				//ERRORS::PrintArray($destroy);
 				//ERRORS::PrintArray($this->twitter);
@@ -461,7 +464,10 @@ class TwitterRequests
             
             $verify = $this->twitter->get('account/verify_credentials');
             
-            return $verify;
+			$result['code'] = $this->twitter->http_code;
+			$result['data'] = $verify;
+			
+            return $result;
         }
 }
 

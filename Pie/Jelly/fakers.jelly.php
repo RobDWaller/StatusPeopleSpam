@@ -35,7 +35,7 @@ class Fakers extends Jelly
 #                    $_SESSION['userid'] = 114873621;
 #                  $_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
-#					$_SESSION['userid'] = 198192466;
+					$_SESSION['userid'] = 198192466;
 #					$_SESSION['userid'] = 545309711;
 #					$_SESSION['userid'] = 96269828;
 #					$_SESSION['userid'] = 1101473544;
@@ -163,10 +163,15 @@ class Fakers extends Jelly
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
                 
-//                $verify = $this->twitterbind->Verify($details[2],$details[3]);
+                $verify = $this->twitterbind->Verify($details[2],$details[3]);
+				
+				//$this->errorschutney->DebugArray($verify);
                 
-//                $this->errorschutney->DebugArray($verify);
-                
+				if ($verify['code']!=200)
+				{
+					$data['message'] = $this->buildchutney->PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
+				}
+				
                 $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
 				$bio = $this->curlbind->GetJSON($url);
@@ -199,6 +204,10 @@ class Fakers extends Jelly
 //            $this->errorschutney->DebugArray($fakes);
 
 				//$data['competitors'] = $this->_BuildCompetitors($competitors);
+				$blockcount = $this->dbbind->CountBlocked($_SESSION['userid']);
+				
+				$data['blockcount'] = number_format($blockcount);
+				
                 $data['fakes'] = $this->_BuildFakes($fakes,1);
 				$data['blocked'] = $this->_BuildFakes($blocked,2);
 				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
@@ -701,8 +710,8 @@ class Fakers extends Jelly
                     $good = (100-($fake+$inactive));
                     
                     $output .= '<tr>';
-                    $output .= '<td><img src="'.$c['avatar'].'" width="36px" height="36px" /></td>';
-                    $output .= '<td><span class="blue">'.$c['screen_name'].'</span></td>';
+					$output .= '<td><a href="http://twitter.com/'.$c['screen_name'].'" target="_blank"><img src="'.$c['avatar'].'" width="36px" height="36px" /></a></td>';
+                    $output .= '<td><span class="blue details pointer" data-sc="'.$c['screen_name'].'">'.$c['screen_name'].'</span></td>';
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
                     $output .= '<td><span class="green">Good: '.$good.'%</span></td>';

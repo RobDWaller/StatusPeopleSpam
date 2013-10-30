@@ -117,7 +117,7 @@ class API extends Jelly
 			$Days1 = strtotime('-1 Day');
             
 			if ($spamrecords[7]<$Days1)
-				//if ($true)
+			//if ($true)
 			{   
 				$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 				$hndrds = $gethundreds[0];
@@ -302,6 +302,298 @@ class API extends Jelly
         }
     }
     
+	public function GetUpdateFakersList($vars)
+    {
+        $this->ResponseFormat = $vars['rf'];
+        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $search = $vars['srch'];
+        
+        $this->_CheckForResponseFormat();
+        
+        if ($user&&$search)
+        {
+            $spam = array();
+                    
+            $details = $this->dbbind->GetTwitterDetails($user);
+
+            $search = $this->validationchutney->StripNonAlphanumeric($search);
+
+            $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+
+//                    $this->errorschutney->PrintArray($bio);
+
+//                    $uid = $bio['user']->id;
+
+//                    $spamrecords = $this->dbbind->GetSpamDetails($uid);
+			$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
+			$hndrds = $gethundreds[0];
+			$h = $gethundreds[1];
+			$followers = $gethundreds[2];
+			
+			/*             $followers = $bio['user']->followers_count;
+
+            $requests = round($followers/5000);
+
+            if ($requests > 10)
+            {
+                $requests = 10;
+            }
+            elseif ($requests < 1)
+            {
+                $requests = 1;
+            }
+
+            $a = 0;
+            $c = 1;
+            $cursor = '-1';
+
+            while ($c <= $requests)
+            {
+                $idslist = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
+                    
+                if ($idslist['code']==429)
+                {
+                    $this->_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.');
+                }
+
+                $fids[$a] = $idslist['data'];
+
+                $cursor = $fids[$a]->next_cursor_str;
+
+                $a++;
+                $c++;
+            }
+
+            $h = 0; 
+            $i = 0;
+
+//                $this->errorschutney->PrintArray($fids);
+
+            foreach ($fids as $ids)
+            {
+//                    $this->errorschutney->DebugArray($ids);
+
+                if (!isset($ids->errors)&&!isset($ids->error)&&!empty($ids->ids))
+                {
+
+                    foreach ($ids->ids as $id)
+                    {
+                        $hndrds[$h][] = $id; 
+
+                        if ($i == 99)
+                        {
+                            $h++;
+                            $i = 0;
+                        }
+                        else
+                        {
+                            $i++;
+                        }
+                    }
+
+                }
+            }
+
+            $h++;*/
+
+//                echo $h.'<br/>';
+
+//                $this->errorschutney->PrintArray($hndrds);
+
+            if (!empty($hndrds))
+            {
+		
+				$chcks = $this->_GetChecks($h,$hndrds,$followers);
+    
+				$c = 0;
+                $sc = 0;
+                $p = 0;
+				
+/*                 if ($h < 5)
+                {
+                    $checks = $h;
+                }
+                elseif ($h >= 5 && $h < 100)
+                {
+                    $checks = 5;
+                }
+                elseif ($h >= 100 && $h < 300)
+                {
+                    $checks = 7;
+                }
+                elseif ($h >= 300)
+                {
+                    $checks = 10;
+                }
+
+                $incr = round($h/$checks,0,PHP_ROUND_HALF_DOWN);
+
+                if ($incr < 2)
+                {
+                    $incr = 1;
+                }
+
+                //echo $incr.'<br/>';
+
+                $y = 0;
+                $z = 1;
+
+//                    echo $h;
+//                    echo $checks;
+
+                while ($z <= $checks)
+                {
+                    $chcks[$y] = round($y*$incr);  
+
+                    $y++;
+                    $z++;
+                }
+
+//                    $this->errorschutney->PrintArray($chcks);
+
+                $c = 0;
+                $sc = 0;
+                $p = 0; */
+
+                foreach ($chcks as $ch)
+                {
+                    if (!empty($hndrds[$ch]))
+                    {
+                        $fllwrs = false;
+                        $fcnt = 0;
+
+                        while(!$fllwrs)
+                        {
+                            if ($fcnt < 3)
+                            {
+                                $followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
+
+                                if ($followerdetails['code'] == 200)
+                                {
+                                    $fllwrs = true;
+                                }
+
+//                                    echo $fcnt;
+
+                                $fcnt++;
+                            }
+                            else
+                            {
+                                $fllwrs = true;
+                            }
+
+                        }
+
+                        if ($followerdetails['code'] == 200)
+                        {
+
+//                                $this->errorschutney->PrintArray($followerdetails);
+                                
+                            foreach ($followerdetails['data'] as $follower)
+                            {
+
+//                                    $this->errorschutney->PrintArray($follower);
+
+                                $ffratio = 0;
+
+                                if ($follower['friends']>0)
+                                {
+                                    $ffratio = round(($follower['followers']/$follower['friends'])*100); 
+                                }
+
+                                if ($ffratio < 20)
+                                {
+                                    if ($follower['tweets']==0||$follower['followers']==0)
+                                    {
+                                        $sc++;
+//                                        $this->errorschutney->PrintArray($follower);
+                                        $spam[] = $follower;
+                                    }
+                                    elseif($ffratio<=2)
+                                    {
+                                        $sc++;
+//                                        $this->errorschutney->PrintArray($follower);
+                                        $spam[] = $follower;
+                                    }
+                                    else 
+                                    {
+                                        $p++;
+                                    }
+
+                                }
+                                elseif($follower['followers'] < 20&&$follower['friends']<20&&$follower['tweets']<20)
+                                {
+                                    $p++;
+                                }
+                                $c++;
+                            }
+                        }
+                    }
+                }
+
+                $results['followers']=$followers;
+                $results['checks']=$c;
+                $results['potential']=$p;
+                $results['spam']=$sc;
+
+//                        $this->errorschutney->PrintArray($results);
+
+                if ($results['followers']>500)
+                {
+                    $cks = $checks*100;
+                }
+                else
+                {
+                    $cks = $results['followers'];
+                }
+
+/*                 if ($results['checks']==$cks)
+                {
+                    $this->dbbind->AddCheckScore($bio['user']->id,$bio['user']->screen_name,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
+                    $update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
+                } */
+
+                $s = 0;
+
+				//$this->errorschutney->PrintArray($spam);
+
+                $insertstring = '';
+
+                foreach ($spam as $spm)
+                {
+                    if ($s < 200)
+                    {
+                        $insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
+                    }
+
+                    $s++;
+                }
+
+                $is = substr($insertstring,0,-1);
+
+				//$this->errorschutney->DebugArray($is);
+
+                $this->dbbind->AddFakes($is);
+
+            }
+
+            if (empty($spam))
+            {
+                $this->_APIFail(500,'No Spam data found at this time.');
+            }
+            else
+            {
+                $this->_APISuccess(201,'List updated successfully.','');
+            }
+
+        }
+        else
+        {
+            $this->_APIFail(400,'No user data submitted.');
+        }
+        
+    }
+	
     public function GetFakersScoreUpdate($vars)
     {
         $this->ResponseFormat = $vars['rf'];
@@ -618,10 +910,10 @@ class API extends Jelly
 					$status = 1;
 					//$this->errorschutney->PrintArray($follower);
 				}
-				/*elseif($this->_CheckLanguageQuality($follower))
+/* 				elseif($this->_CheckLanguageQuality($follower))
 				{
 					$status = 1;
-				}*/
+				} */
 				else 
 				{
 					$status = 2;
@@ -639,6 +931,11 @@ class API extends Jelly
 		
 			$result['status'] = $status;
 			$result['follower'] = $follower;
+		
+/* 			if (!$status)
+			{
+				$this->errorschutney->PrintArray($follower);
+			} */
 			
 			return $result;
 		
@@ -651,43 +948,69 @@ class API extends Jelly
 		
 		$count = 0;
 		
-		$query = '/\.,|!,|,!|\*\.|\s,\s|\s;\s|\s:\s|\w,\w|\w\*\w|\w\|\w|\w\.\w|\w\'\w|\s{2,}|\.\||\.\?|\.~|\w#\w|\w~\w|,,|\.\*|\.-|\._|\s\'\w|\s!\w|\s;\w|\.;|;amp;/';
+		$query = '/\.,|!,|,!|\.!|!-|\s_\w|\s\/\w|\*\.|\s,\s|\s;\s|\s:\s|\w,\w|\w\*\w|\w\|\w|\w!\w|\s{2,}|\.\||\.\?|\s\?\w|\w\?\w|\s@\s|\.@|\.~|\w#\w|\w~\w|,,|\.\*|\.-|\._|\s\'\w|\s!\w|\.;|;amp;|\sd\s|\se\s|\sf\s|\sg\s|\sh\s|\sj\sl\sm\s|\sn\s|\ss\s|\sv\s|\sw\s|\sz\s|\sporn\s|\sanal\s|\ssex\s|\sxxx\s/';
 			
-		if (!empty($text['description']))
+		if ($text['language']=='en')
 		{
-			preg_match_all($query,$text['description'],$matches1);
-			
-			$count += count($matches1[0]);
-			
-			if ($count<=2)
+			if (!empty($text['description']))
 			{
-				preg_match_all($query,$text['tweet'],$matches2);
+				preg_match_all($query,$text['description'],$matches1);
 				
-				$count += count($matches2[0]);
+				$count += count($matches1[0]);
 				
-				if ($count>=4)
+				if ($count<=2)
+				{
+					preg_match_all($query,$text['tweet'],$matches2);
+					
+					$count += count($matches2[0]);
+					
+					if ($count>=2&&$count<4)
+					{
+						if ($text['lasttweet']>=10)
+						{
+							$result = true;
+						}
+					}
+					elseif ($count>=4)
+					{
+						$result = true;
+					}
+				}
+				else
 				{
 					$result = true;
 				}
 			}
 			else
 			{
-				$result = true;
-			}
-		}
-		else
-		{
-			preg_match_all($query,$text['tweet'],$matches3);
+				preg_match_all($query,$text['tweet'],$matches3);
+					
+				$count += count($matches3[0]);
 				
-			$count += count($matches3[0]);
-			
-			if ($count>=3)
-			{
-				$result = true;
+				if ($count>=2&&$count<4)
+				{
+					if ($text['lasttweet']>=10)
+					{
+						$result = true;
+					}
+				}
+				elseif($count>=4)
+				{
+					$result = true;
+				}
 			}
 		}
 		
-		$this->errorschutney->PrintArray($count);
+		//$this->errorschutney->PrintArray($count);
+		
+/* 		if($result)
+		{
+			$this->errorschutney->PrintArray($matches1);
+			$this->errorschutney->PrintArray($matches2);
+			$this->errorschutney->PrintArray($matches3);
+			
+			$this->errorschutney->PrintArray($text);
+		} */
 		
 		return $result;
 	}
@@ -1478,288 +1801,6 @@ class API extends Jelly
         }
     }
     
-    public function GetUpdateFakersList($vars)
-    {
-        $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
-        $search = $vars['srch'];
-        
-        $this->_CheckForResponseFormat();
-        
-        if ($user&&$search)
-        {
-            $spam = array();
-                    
-            $details = $this->dbbind->GetTwitterDetails($user);
-
-            $search = $this->validationchutney->StripNonAlphanumeric($search);
-
-            $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
-
-//                    $this->errorschutney->PrintArray($bio);
-
-//                    $uid = $bio['user']->id;
-
-//                    $spamrecords = $this->dbbind->GetSpamDetails($uid);
-
-
-            $followers = $bio['user']->followers_count; 
-
-            $requests = round($followers/5000);
-
-            if ($requests > 10)
-            {
-                $requests = 10;
-            }
-            elseif ($requests < 1)
-            {
-                $requests = 1;
-            }
-
-            $a = 0;
-            $c = 1;
-            $cursor = '-1';
-
-            while ($c <= $requests)
-            {
-                $idslist = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
-                    
-                if ($idslist['code']==429)
-                {
-                    $this->_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.');
-                }
-
-                $fids[$a] = $idslist['data'];
-
-                $cursor = $fids[$a]->next_cursor_str;
-
-                $a++;
-                $c++;
-            }
-
-            $h = 0; 
-            $i = 0;
-
-//                $this->errorschutney->PrintArray($fids);
-
-            foreach ($fids as $ids)
-            {
-//                    $this->errorschutney->DebugArray($ids);
-
-                if (!isset($ids->errors)&&!isset($ids->error)&&!empty($ids->ids))
-                {
-
-                    foreach ($ids->ids as $id)
-                    {
-                        $hndrds[$h][] = $id; 
-
-                        if ($i == 99)
-                        {
-                            $h++;
-                            $i = 0;
-                        }
-                        else
-                        {
-                            $i++;
-                        }
-                    }
-
-                }
-            }
-
-            $h++;
-
-//                echo $h.'<br/>';
-
-//                $this->errorschutney->PrintArray($hndrds);
-
-            if (!empty($hndrds))
-            {
-                if ($h < 5)
-                {
-                    $checks = $h;
-                }
-                elseif ($h >= 5 && $h < 100)
-                {
-                    $checks = 5;
-                }
-                elseif ($h >= 100 && $h < 300)
-                {
-                    $checks = 7;
-                }
-                elseif ($h >= 300)
-                {
-                    $checks = 10;
-                }
-
-                $incr = round($h/$checks,0,PHP_ROUND_HALF_DOWN);
-
-                if ($incr < 2)
-                {
-                    $incr = 1;
-                }
-
-                //echo $incr.'<br/>';
-
-                $y = 0;
-                $z = 1;
-
-//                    echo $h;
-//                    echo $checks;
-
-                while ($z <= $checks)
-                {
-                    $chcks[$y] = round($y*$incr);  
-
-                    $y++;
-                    $z++;
-                }
-
-//                    $this->errorschutney->PrintArray($chcks);
-
-                $c = 0;
-                $sc = 0;
-                $p = 0;
-
-                foreach ($chcks as $ch)
-                {
-                    if (!empty($hndrds[$ch]))
-                    {
-                        $fllwrs = false;
-                        $fcnt = 0;
-
-                        while(!$fllwrs)
-                        {
-                            if ($fcnt < 3)
-                            {
-                                $followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
-
-                                if ($followerdetails['code'] == 200)
-                                {
-                                    $fllwrs = true;
-                                }
-
-//                                    echo $fcnt;
-
-                                $fcnt++;
-                            }
-                            else
-                            {
-                                $fllwrs = true;
-                            }
-
-                        }
-
-                        if ($followerdetails['code'] == 200)
-                        {
-
-//                                $this->errorschutney->PrintArray($followerdetails);
-                                
-                            foreach ($followerdetails['data'] as $follower)
-                            {
-
-//                                    $this->errorschutney->PrintArray($follower);
-
-                                $ffratio = 0;
-
-                                if ($follower['friends']>0)
-                                {
-                                    $ffratio = round(($follower['followers']/$follower['friends'])*100); 
-                                }
-
-                                if ($ffratio < 20)
-                                {
-                                    if ($follower['tweets']==0||$follower['followers']==0)
-                                    {
-                                        $sc++;
-//                                        $this->errorschutney->PrintArray($follower);
-                                        $spam[] = $follower;
-                                    }
-                                    elseif($ffratio<=2)
-                                    {
-                                        $sc++;
-//                                        $this->errorschutney->PrintArray($follower);
-                                        $spam[] = $follower;
-                                    }
-                                    else 
-                                    {
-                                        $p++;
-                                    }
-
-                                }
-                                elseif($follower['followers'] < 20&&$follower['friends']<20&&$follower['tweets']<20)
-                                {
-                                    $p++;
-                                }
-                                $c++;
-                            }
-                        }
-                    }
-                }
-
-                $results['followers']=$followers;
-                $results['checks']=$c;
-                $results['potential']=$p;
-                $results['spam']=$sc;
-
-//                        $this->errorschutney->PrintArray($results);
-
-                if ($results['followers']>500)
-                {
-                    $cks = $checks*100;
-                }
-                else
-                {
-                    $cks = $results['followers'];
-                }
-
-                if ($results['checks']==$cks)
-                {
-                    $this->dbbind->AddCheckScore($bio['user']->id,$bio['user']->screen_name,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
-                    $update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
-                }
-
-                $s = 0;
-
-//                        $this->errorschutney->PrintArray($spam);
-
-                $insertstring = '';
-
-                foreach ($spam as $spm)
-                {
-                    if ($s < 20)
-                    {
-                        $insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
-                    }
-
-                    $s++;
-                }
-
-                $is = substr($insertstring,0,-1);
-
-				//$this->errorschutney->DebugArray($is);
-
-                $this->dbbind->AddFakes($is);
-
-            }
-
-            if (empty($spam))
-            {
-                $this->_APIFail(500,'No Spam data found at this time.');
-            }
-            else
-            {
-                $this->_APISuccess(201,'List updated successfully.','');
-            }
-
-        }
-        else
-        {
-            $this->_APIFail(400,'No user data submitted.');
-        }
-        
-    }
-    
     public function PostTweet()
     {
         $this->ResponseFormat = $_POST['rf'];
@@ -1945,15 +1986,16 @@ class API extends Jelly
             
             $destroy = $this->twitterbind->DestroyFriendship($details[2],$details[3],$twid);
             
-//            $this->errorschutney->DebugArray($destroy);
+			//$this->errorschutney->DebugArray($destroy);
             
             if ($destroy)
             {
                 $block = $this->dbbind->BlockSpam($user,$twid);
+				$blocks = $this->dbbind->CountBlocked($user);
                 
                 if ($block)
                 {    
-                    $this->_APISuccess(201, 'User successfully blocked.',$destroy);
+                    $this->_APISuccess(201, 'User successfully blocked.',$blocks);
                 }
                 else 
                 {
