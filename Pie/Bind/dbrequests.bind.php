@@ -309,6 +309,19 @@ class DBRequests extends DB
             return $result;
         }
 	
+		public function CountBlocked($userid)
+		{
+			$query = "SELECT COUNT(*)
+                        FROM spsp_fakes
+                        WHERE userid = :userid AND live = 0 AND notspam = 0";
+            
+            $params = array('userid'=>array($userid,'INT',0));
+            
+            $result = $this->SelectCount($query, $params);
+            
+            return $result;
+		}
+	
 		public function FindFake($userid,$string)
 		{
 			$query = "SELECT * 
