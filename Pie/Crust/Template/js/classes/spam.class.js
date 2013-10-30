@@ -1191,35 +1191,20 @@ function Spam()
 		
 		var frm = new Format();
 	
-		var ul = $('<ul id="averages"/>');
-		var tbd = $("<li>Tweet "+Math.round(data.tweets_pd/data.count)+" time(s) per day</li>");
-		var one = $("<li>"+Math.round((data.one/data.count)*100)+"% have not tweeted in one day</li>");
-		var thirty = $("<li>"+Math.round((data.thirty/data.count)*100)+"% have not tweeted in thrity days</li>");
-		var hundred = $("<li>"+Math.round((data.hundred/data.count)*100)+"% have not tweeted in a hundred days</li>");
-		var fo = $("<li>On average have "+frm.Number(Math.round(data.followers/data.count))+" followers</li>");
-		var fo250 = $("<li>"+Math.round((data.fo250/data.count)*100)+"% have less than 250 followers</li>");
-		var fo500 = $("<li>"+Math.round((data.fo500/data.count)*100)+"% have about 500 followers</li>");
-		var fo1000 = $("<li>"+Math.round((data.fo1000/data.count)*100)+"% have more than 1,000 followers</li>");
-		var fr = $("<li>On average follow "+frm.Number(Math.round(data.friends/data.count))+" friends</li>");
-		var fr250 = $("<li>"+Math.round((data.fr250/data.count)*100)+"% follow less than 250 friends</li>");
-		var fr500 = $("<li>"+Math.round((data.fr500/data.count)*100)+"% follow about 500 friends</li>");
-		var fr1000 = $("<li>"+Math.round((data.fr1000/data.count)*100)+"% follow more than 1,000 friends</li>");
+		var table = $('<table id="averages"/>');
+		var tr1 = $('<tr><th>Activity</th><th>Followers</th><th>Friends</th></tr>');
+		var tr2 = $('<tr><td>'+Math.round(data.tweets_pd/data.count)+' Tweets per day</td><td>'+frm.Number(Math.round(data.followers/data.count))+' on average</td><td>'+frm.Number(Math.round(data.friends/data.count))+' on average</td></tr>');
+		var tr3 = $('<tr><td>'+Math.round((data.one/data.count)*100)+'% no tweets in last day</td><td>'+Math.round((data.fo250/data.count)*100)+'% have less than 250</td><td>'+Math.round((data.fr250/data.count)*100)+'% follow less than 250</td></tr>');
+		var tr4 = $('<tr><td>'+Math.round((data.thirty/data.count)*100)+'% no tweets in 30 days</td><td>'+Math.round((data.fo500/data.count)*100)+'% have about 500</td><td>'+Math.round((data.fr500/data.count)*100)+'% follow about 500</td></tr>');
+		var tr5 = $('<tr><td>'+Math.round((data.hundred/data.count)*100)+'% no tweets in 100 days</td><td>'+Math.round((data.fo1000/data.count)*100)+'% have more than 1,000</td><td>'+Math.round((data.fr1000/data.count)*100)+'% follow more than 1,000</td></tr>');
 		 
+		tr1.appendTo(table);
+		tr2.appendTo(table);
+		tr3.appendTo(table);
+		tr4.appendTo(table);
+		tr5.appendTo(table);
 		
-		tbd.appendTo(ul);
-		one.appendTo(ul);
-		thirty.appendTo(ul);
-		hundred.appendTo(ul);
-		fo.appendTo(ul);
-		fo250.appendTo(ul);
-		fo500.appendTo(ul);
-		fo1000.appendTo(ul);
-		fr.appendTo(ul);
-		fr250.appendTo(ul);
-		fr500.appendTo(ul);
-		fr1000.appendTo(ul);
-		
-		ul.appendTo("#followerdata");
+		table.appendTo("#followerdata");
 		
 	}
 	
@@ -1370,7 +1355,7 @@ function Spam()
                 good = (100-(fake+inactive));
                 
                 var tr = $('<tr/>');
-                tr.html('<td><img src="'+r.avatar+'" width="36px" height="36px" /></td><td><span class="blue">'+r.screen_name+'</span></td><td><span class="red">Fake: '+fake+'%</span></td><td><span class="orange">Inactive: '+inactive+'%</span></td><td><span class="green">Good: '+good+'%</span></td><td><input type="hidden" value="'+r.twitterid+'" class="ti"/><input type="hidden" value="'+r.screen_name+'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td><td><input type="hidden" value="'+r.twitterid+'"/><span class="delete icon" data-tip="Remove">X</span></td>');
+				tr.html('<td><a href="http://twitter.com/'+r.screen_name+'" target="_blank"><img src="'+r.avatar+'" width="36px" height="36px" /></a></td><td><span class="blue pointer details" data-sc="'+r.screen_name+'">'+r.screen_name+'</span></td><td><span class="red">Fake: '+fake+'%</span></td><td><span class="orange">Inactive: '+inactive+'%</span></td><td><span class="green">Good: '+good+'%</span></td><td><input type="hidden" value="'+r.twitterid+'" class="ti"/><input type="hidden" value="'+r.screen_name+'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td><td><input type="hidden" value="'+r.twitterid+'"/><span class="delete icon" data-tip="Remove">X</span></td>');
                 tr.appendTo(tbl);
             });
             
@@ -1518,11 +1503,13 @@ function Spam()
         var mes = new Messages();
         var ma = new Array();
         var srv = new Server();
+		var fn = new Format();
         
         if (result.code == 201)
         {
             ma[0]='User blocked successfully.';
             mes.Build('success',ma,'.header');
+			$('#blockcount').text(fn.Number(result.data));
         }
         else
         {

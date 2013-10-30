@@ -35,7 +35,7 @@
 						</div>
 						<div class="two">
 							<h2>
-								Blocked <span id="searchblocked" class="ico icon blue pointer" data-tip="Search Blocked Followers">s</span>
+								Blocked (<span id="blockcount"><?=$blockcount?></span>)<span id="searchblocked" class="ico icon blue pointer" data-tip="Search Blocked Followers">s</span>
 							</h2>
 						</div>
 						<div class="two a" id="spammers">

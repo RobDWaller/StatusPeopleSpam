@@ -139,6 +139,17 @@ $(document).ready(function(){
 		
 	});
 	
+	$(document).on('click','.details',function(e){
+        
+        e.preventDefault();
+        
+        var srch = $(this).attr('data-sc');
+		
+        pop.Loader('Loading...');
+       
+        srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_BuildUser','');
+    });
+	
 	if (type==1)
 	{
 		pop.BuildRightInfoBox();
