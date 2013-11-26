@@ -724,6 +724,206 @@ class DBRequests extends DB
 			
 			return $result;
 		}
+	
+		public function GetSites()
+		{
+			$query = "SELECT * 
+					FROM spsp_suggested_sites
+					WHERE live = 1 AND added = 0";
+			
+			$result = $this->SelectRecords($query);
+			
+			return $result;
+		}
+	
+		public function GetSite($url)
+		{
+			$query = "SELECT * 
+						FROM spsp_suggested_sites
+						WHERE url = :url AND live = 1";
+			
+			$params = array('url'=>array($url,'STR',255));
+			
+			$result = $this->SelectRecord($query,$params);
+			
+			return $result;
+		}
+		
+		public function CheckForSite($url)
+		{
+			$query = "SELECT COUNT(*)
+						FROM spsp_suggested_sites
+						WHERE live = 1 AND url = :url";
+			
+			$params = array('url'=>array($url,'STR',255));
+			
+			$result = $this->SelectCount($query,$params);
+			
+			return $result;
+		}
+	
+		public function CheckIPCount($ip,$created)
+		{
+			$query = "SELECT COUNT(*)
+						FROM spsp_suggested_sites
+						WHERE ipaddress = :ip AND created > :created";
+			
+			$params = array('ip'=>array($ip,'STR',20),
+						   'created'=>array($created,'INT',0));
+			
+			$result = $this->SelectCount($query,$params);
+			
+			return $result;
+		}
+	
+		public function GetValidatedSites()
+		{
+			$query = "SELECT *
+						FROM spsp_valid_sites
+						WHERE live = 1";
+			
+			$result = $this->SelectRecords($query);
+			
+			return $result;
+		}
+	
+		public function CheckForValidSite($url)
+		{
+			$query = "SELECT COUNT(*)
+						FROM spsp_valid_sites
+						WHERE live = 1 AND url = :url";
+			
+			$params = array('url'=>array($url,'STR',255));
+			
+			$result = $this->SelectCount($query,$params);
+			
+			return $result;
+		}
+	
+		public function AddSite($url,$title,$ipaddress,$created)
+		{
+			$query = "INSERT INTO spsp_suggested_sites (url,title,ipaddress,created)
+						VALUES (:url,:title,:ipaddress,:created)";
+			
+			$params = array('url'=>array($url,'STR',255),
+						   'title'=>array($title,'STR',255),
+							'ipaddress'=>array($ipaddress,'STR',20),
+						   'created'=>array($created,'INT',0));
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function UpdateSiteCount($id,$ipaddress,$suggestions)
+		{
+			$query = "UPDATE spsp_suggested_sites
+						SET ipaddress = :ipaddress,
+						suggestions = :suggestions
+						WHERE id = :id";
+			
+			$params = array('id'=>array($id,'STR',255),
+							'ipaddress'=>array($ipaddress,'STR',20),
+						   	'suggestions'=>array($suggestions,'INT',0));
+			
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+			
+		public function AddValidSite($suggestedid,$url,$title,$image,$description,$created)
+		{
+			$query = "INSERT INTO spsp_valid_sites (suggestedid,url,title,image,description,created)
+						VALUES (:suggestedid,:url,:title,:image,:description,:created)";
+			
+			$params = array('suggestedid'=>array($suggestedid,'INT',0),
+						   'url'=>array($url,'STR',255),
+						   'title'=>array($title,'STR',255),
+						   'image'=>array($image,'STR',255),
+						   'description'=>array($description,'STR',255),
+						   'created'=>array($created,'INT',0));
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function DeleteValidSite($id)
+		{
+			$query = "UPDATE spsp_valid_sites 
+						SET live = 0
+						WHERE id = :id";
+			
+			$params = array('id'=>array($id,'INT',0));
+			
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function AddMarketingEmail($email,$forename,$surname,$created)
+		{
+			$query = "INSERT INTO spsp_marketing (email,forename,surname,created)
+						VALUES (:email,:forename,:surname,:created)";
+			
+			$params = array('email'=>array($email,'STR',255),
+						   	'forename'=>array($forename,'STR',50),
+						   	'surname'=>array($surname,'STR',50),
+						   	'created'=>array($created,'INT',0));
+			
+			//Errors::PrintArray($params);
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function AddMarketingEmails($string)
+		{
+			$query = "INSERT IGNORE INTO spsp_marketing (email,forename,surname,created)
+						VALUES ".$string;
+			
+			$result = $this->InsertRecord($query);
+			
+			return $result;
+		}
+	
+		public function GetMarketingEmails()
+		{
+			$query = "SELECT * 
+						FROM spsp_marketing
+						WHERE live = 1";
+			
+			$result = $this->SelectRecords($query);
+			
+			return $result;
+		}
+	
+		public function CheckMarketingEmail($email)
+		{
+			$query = "SELECT COUNT(*)
+						FROM spsp_marketing
+						WHERE email = :email AND live = 1";
+			
+			$params = array('email'=>array($email,'STR',255));
+			
+			$result = $this->SelectCount($query,$params);
+			
+			return $result;
+		}
+	
+		public function UnsubscribeEmail($email)
+		{
+			$query = "UPDATE spsp_marketing
+						SET live = 0
+						WHERE email = :email";
+			
+			$params = array('email'=>array($email,'STR',255));
+			
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
 }
 
 ?>

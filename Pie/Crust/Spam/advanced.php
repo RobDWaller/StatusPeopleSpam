@@ -56,7 +56,7 @@
 					<?php } ?>
 					<div class="row">
 						<div class="one center">
-							<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="http://tools.statuspeople.com" target="_blank">Sign Up For a StatusPeople Account</a> | <a href="http://eepurl.com/mveWD" target="_blank">Sign Up To Our Email Newsletter</a> | <a href="/Payments/Details">Extend Your Subscription</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>
+							<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="/Payments/Details">Extend Your Subscription</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>
 						</div>
 					</div>
 				</div>

@@ -29,6 +29,16 @@ class PaymentRequests Extends DB
         return $result;
     }
     
+	public function GetAllUserDetails()
+	{
+		$query = "SELECT *
+					FROM spsp_user_details";
+		
+		$result = $this->SelectRecords($query);
+		
+		return $result;
+	}
+	
     public function AddUserDetails($twitterid,$email,$title,$firstname,$surname,$created)
     {
         $query = "INSERT INTO spsp_user_details (twitterid,email,title,forename,surname,created)

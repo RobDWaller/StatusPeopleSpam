@@ -80,8 +80,8 @@ class API extends Jelly
 	{
 		
         $this->ResponseFormat = $vars['rf'];
-		$user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
-		//$user = $vars['usr'];
+		//$user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+		$user = $vars['usr'];
         $search = $vars['srch'];
 		$searches = $vars['srchs'];
         
@@ -910,10 +910,10 @@ class API extends Jelly
 					$status = 1;
 					//$this->errorschutney->PrintArray($follower);
 				}
-/* 				elseif($this->_CheckLanguageQuality($follower))
+				/*elseif($this->_CheckLanguageQuality($follower))
 				{
 					$status = 1;
-				} */
+				}*/ 
 				else 
 				{
 					$status = 2;
@@ -2079,19 +2079,108 @@ class API extends Jelly
 	
 	public function PostAddDive()
 	{
-		$userid = 198192466;
-		$user = 'adambain';
+		$userid = 1919216960;
+		//$userid = 198192466;
+		//$userid = 545309711;
+		//$userid = 31386162;
+		
+		$user = 'RGIII';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
 		$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$user);
 		
 		$this->errorschutney->PrintArray($bio['user']->id_str);
+		$this->errorschutney->PrintArray($bio['user']->screen_name);
 		$this->errorschutney->PrintArray($bio['user']->followers_count);
 		
-		$this->deepdivebind->AddDive($userid,$bio['user']->id_str,$bio['user']->followers_count,time());
+		$this->deepdivebind->AddDive($userid,$bio['user']->id_str,$bio['user']->screen_name,$bio['user']->followers_count,time());
+	}
+	
+	public function PostAddSite()
+	{
+		$url = $_POST['url'];
+		$this->ResponseFormat = $_POST['rf'];
+		$this->_CheckForResponseFormat();
+		
+		$valid = $this->validationchutney->ValidateUrl($url);
+		
+		if ($valid[0])
+		{
+			$title = '';
+			
+			$sitedetails = $this->_GetUrlInfo($url);
+			
+			if (!empty($sitedetails['title']))
+			{
+				$title = $sitedetails['title'];
+			}
+			
+			$ipaddress =  $_SERVER["REMOTE_ADDR"];
+			$oneday = strtotime('-1 Day');
+			
+			$checkip = $this->dbbind->CheckIPCount($ipaddress,$oneday);
+			
+			if ($checkip<=10)
+			{
+				$check = $this->dbbind->CheckForSite($url);
+				
+				if ($check>0)
+				{
+					$site = $this->dbbind->GetSite($url);
+					
+					$count = $site[3] + 1;
+					
+					$update = $this->dbbind->UpdateSiteCount($site[0],$ipaddress,$count);
+					
+					if ($update>0)
+					{
+						$this->_APISuccess(201,'Thanks, your site has been added successfully, we will process it shortly.',$url);
+					}
+					else
+					{
+						$this->_APIFail(500,'We were unable to update this website at this time. Please try again in a bit.');
+					}
+				}
+				else
+				{
+					$add = $this->dbbind->AddSite($url,$title,$ipaddress,time());
+						
+					if ($add>0)
+					{
+						$this->_APISuccess(201,'Thanks, your site has been added successfully.',$url);
+					}
+					else
+					{
+						$this->_APIFail(500,'We were unable to add this website at this time. Please try again later.');
+					}
+				}
+			}
+			else
+			{
+				$this->_APIFail(400,'Thanks for your suggestions, we\'re just processing them now. Why don\'t you come back in a day or so and submit some more.');
+			}
+		}
+		else
+		{
+			$this->_APIFail(400,$valid[1]);
+		}
 	}
     
+	public function GetUrlDetails($vars)
+    {
+        $this->ResponseFormat = $vars['rf'];
+        $url = urldecode($vars['url']);
+		
+		
+        $this->_CheckForResponseFormat();
+        $this->_CheckURL($url);
+        
+        $urldetails = $this->_GetUrlInfo($url);
+            
+        $this->_APISuccess(201,'URL Data returned successfully', $urldetails);
+    }
+	
 	public function PostChangeAutoRemoveStatus()
 	{
 		$this->ResponseFormat = $_POST['rf'];

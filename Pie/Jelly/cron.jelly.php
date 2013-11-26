@@ -405,146 +405,403 @@ class Cron extends Jelly
 	
 	public function GetDeepDiveFollowerIDs()
 	{
-		$dives = $this->deepdivebind->GetDives();
+		$divers = $this->deepdivebind->GetDivers();
 		
-		//$this->errorschutney->PrintArray($dives);
+		$this->errorschutney->PrintArray($divers);
 		
-		foreach ($dives as $d)
+		foreach ($divers as $d)
 		{
-			$details = $this->dbbind->GetTwitterDetails($d['userid']);
+			$dive = $this->deepdivebind->GetTopDive($d['userid']);
 			
-			$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$d['twitterid'],$d['twittercursor']);
+			//$this->errorschutney->DebugArray($dive);
 			
-			//$this->errorschutney->PrintArray($idslist);
+			$countids = $this->deepdivebind->CountFollowerIDs($dive[2]);
 			
-			$ids = $idslist['data']->ids;
-			$cursor = $idslist['data']->next_cursor_str;
-			
-			//$this->errorschutney->PrintArray($ids);
-			//$this->errorschutney->PrintArray($cursor);
-			
-			$jsonids = json_encode($ids);
-			
-			$this->deepdivebind->AddFollowerIDs($d['twitterid'],$jsonids,time());
-			$this->deepdivebind->UpdateCursor($d['userid'],$d['twitterid'],$cursor);
+			if ($dive[5]!=0)
+			{
+				$details = $this->dbbind->GetTwitterDetails($dive[1]);
+				
+				$count = $this->deepdivebind->CountFollowerIDs($dive[2]);
+				
+				$cu = $dive[5];
+				
+				if ($count==0)
+				{
+					$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$dive[5]);	
+					
+					if ($idslist['code']==200)
+					{
+						$success = true;
+						$cu = $idslist['data']->next_cursor_str;
+						$idlist = $idslist['data']->ids;
+					}
+					else
+					{
+						$success = false;
+					}
+				}
+				else
+				{
+					if ($dive[4]<=50000)
+					{
+						$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$dive[5]);	
+						
+						if ($idslist['code']==200)
+						{
+							$success = true;
+							$cu = $idslist['data']->next_cursor_str;
+							$idlist = $idslist['data']->ids;
+						}
+						else
+						{
+							$success = false;
+						}
+					}
+					elseif ($dive[4]>50000&&$dive[4]<=150000)
+					{
+						$c = 0;
+						
+						while($c<2)
+						{
+							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
+							
+							//$this->errorschutney->PrintArray($cu);
+							
+							if ($idslist['code']==200)
+							{
+								$success = true;
+							
+								$cu = $idslist['data']->next_cursor_str;
+								$idlist = $idslist['data']->ids;
+								
+								if ($cu==0)
+								{
+									$c=2;
+								}
+								
+								$c++;
+								
+							}
+							else
+							{
+								$success = false;
+								
+								$c = 2;
+							}
+						}
+					}
+					elseif ($dive[4]>150000&&$dive[4]<=300000)
+					{
+						$c = 0;
+						
+						while($c<3)
+						{
+							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
+							
+							//$this->errorschutney->PrintArray($cu);
+							
+							if ($idslist['code']==200)
+							{
+								$success = true;
+								
+								$cu = $idslist['data']->next_cursor_str;
+								$idlist = $idslist['data']->ids;
+								
+								if ($cu==0)
+								{
+									$c=3;
+								}
+								
+								$c++;
+							}
+							else
+							{
+								$c = 3;
+								
+								$success = false;
+							}
+						}
+					}
+					elseif($dive[4]>300000)
+					{
+						$c = 0;
+						
+						while($c<5)
+						{
+							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
+							
+							//$this->errorschutney->PrintArray($cu);
+							
+							if ($idslist['code']==200)
+							{
+								$success = true;
+								
+								$cu = $idslist['data']->next_cursor_str;
+								$idlist = $idslist['data']->ids;
+								
+								if ($cu==0)
+								{
+									$c=5;
+								}
+								
+								$c++;
+							}
+							else
+							{
+								$success = false;
+								
+								$c = 5;
+							}
+						}
+					}
+				}
+				
+				//$this->errorschutney->PrintArray($idslist);
+				
+				$ids = $idlist;
+				//$cursor = $idslist['data']->next_cursor_str;
+				$cursor = $cu;
+				
+				//$this->errorschutney->PrintArray($ids);
+				$this->errorschutney->PrintArray(array('cursor'=>$cursor));
+				
+				if ($success)
+				{
+				
+					$jsonids = json_encode($ids);
+				
+					$this->deepdivebind->AddFollowerIDs($dive[0],$dive[2],$jsonids,$cursor,time());
+					
+				}
+				
+				$countids = $this->deepdivebind->CountFollowerIDs($dive[2]);
+				
+				if ($countids==50)
+				{
+					$this->deepdivebind->UpdateCursor($dive[1],$dive[2],0);
+				}
+				else
+				{
+					$this->deepdivebind->UpdateCursor($dive[1],$dive[2],$cursor);	
+				}
+				
+			}
 		}
 	}
 	
 	public function GetDeepDiveFollowers()
 	{
-		$dives = $this->deepdivebind->GetDives();
+		$divers = $this->deepdivebind->GetDivers();
 		
-		$this->errorschutney->PrintArray($dives);
+		$this->errorschutney->PrintArray($divers);
 		
-		foreach ($dives as $d)
+		foreach ($divers as $d)
 		{
-			$followerids = $this->deepdivebind->GetFollowerIDs($d['twitterid']);
+			$dive = $this->deepdivebind->GetTopDive($d['userid']);
 			
-			$this->errorschutney->PrintArray($followerids);
+			//$this->errorschutney->DebugArray($dive);
 			
-			$fidlist = json_decode($followerids[2]);
-			
-			$h = 1;
-			$r = 1;
-			$k = 0;
-			
-			foreach ($fidlist as $f)
+			if ($dive[5]==0)
 			{
-				if ($r == 5)
-				{
-					$newarrays[$k][]=$f;
-					$r = 1;
-					$h++;
-				}
-				else
-				{
-					$r++;
-				}
+			
+				$countids = $this->deepdivebind->CountFollowerIDs($dive[2]);
 				
-				if ($h>100)
+				if ($countids>0)
 				{
-					$h=1;
-					$k++;
+					//$this->errorschutney->PrintArray($dive);
+				
+					$followerids = $this->deepdivebind->GetFollowerIDs($dive[2]);
+					
+					if (!empty($followerids[3])&&$followerids[3]!=null&&$followerids[3]!='null')
+					{
+						//$this->errorschutney->DebugArray($followerids);
+						
+						$fidlist = json_decode($followerids[3]);
+						
+						$h = 0;
+						$r = 0;
+						$k = 0;
+						
+						foreach ($fidlist as $f)
+						{
+							if ($r == 5)
+							{
+								$newarrays[$k][]=$f;
+								$r = 0;
+								$h++;
+							}
+							else
+							{
+								$r++;
+							}
+							
+							if ($h==100)
+							{
+								$h=0;
+								$k++;
+							}
+						}
+						
+						$details = $this->dbbind->GetTwitterDetails($dive[1]);
+						
+						$fc = 0;
+						
+						$newcount = count($newarrays);
+						
+						//$this->errorschutney->PrintArray($k);
+						$this->errorschutney->PrintArray($newcount);
+						
+						foreach ($newarrays as $array)
+						{
+							$count = count($array);
+							
+							//$this->errorschutney->DebugArray($followerids[0]['id']);
+							
+							$this->errorschutney->PrintArray($count);
+							
+ 							if ($count > 80 && $count<=100)
+							{
+								$followers = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$array,$count);
+								
+								if ($followers['code']==200)
+								{
+									$followers = json_encode($followers);
+									
+									//$this->errorschutney->PrintArray(strlen($followers));
+									$addfollowers[$fc] = array($dive[2],$followerids[0],$followers,time());
+									//$this->deepdivebind->AddFollowers($dive[2],$followerids[0],$followers,time());
+									
+									$fc++;
+								}
+								else
+								{
+									$this->errorschutney->PrintArray($followers);
+								}
+							}
+						}
+					}
+					
+					$this->errorschutney->PrintArray($fc);
+					
+					$nc = $newcount-2;
+					
+					if (($newcount-2)<1)
+					{
+						$nc = 1;
+					}
+					
+					if ($fc>=$nc)
+					{
+						foreach ($addfollowers as $af)
+						{
+							//$this->errorschutney->DebugArray($af);
+							
+							$this->deepdivebind->AddFollowers($af[0],$af[1],$af[2],$af[3]);
+						}
+						
+						$this->deepdivebind->UpdateFollowerIDsStatus($followerids[0]);
+					}
+						
+					$checkedcount = $this->deepdivebind->CountFollowerIDs($dive[2]);
+					
+					if ($checkedcount == 0)
+					{
+						$this->deepdivebind->UpdateFinishedStatus($dive[0]);
+					}
+					
+					unset($addfollowers);
+					unset($fidlist);
+					unset($newarrays);
 				}
 			}
-			
-			$details = $this->dbbind->GetTwitterDetails($d['userid']);
-			
-			foreach ($newarrays as $array)
-			{
-				$count = count($array);
-				
-				//$this->errorschutney->DebugArray($followerids[0]['id']);
-				
-				if ($count == 100)
-				{
-					$followers = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$array,100);
-					
-					$followers = json_encode($followers);
-					
-					$this->errorschutney->PrintArray(strlen($followers));
-					
-					$this->deepdivebind->AddFollowers($d['twitterid'],$followerids[0]['id'],$followers,time());
-				}
-			}
-			
-			$this->deepdivebind->UpdateFollowerIDsStatus($followerids[0]);
 		}
 	}
 	
 	public function GenerateDeepDiveScore()
 	{
-		$dives = $this->deepdivebind->GetDives();
+		ini_set('memory_limit', '-1');
 		
-		//$this->errorschutney->DebugArray($dives);
+		$dives = $this->deepdivebind->GetFinishedDives();
+		
+		$this->errorschutney->PrintArray($dives);
 		
 		foreach ($dives as $d)
 		{
 			$followers = $this->deepdivebind->GetFollowers($d['twitterid']);
 			
-			$c = 0;
+			//$this->errorschutney->DebugArray($followers[0]);
+			
+ 			$c = 0;
 			$sc = 0;
 			$p = 0;
 			
-			foreach ($followers as $f)
+			$api = new API();
+			
+			foreach ($followers as $fllwrs)
 			{
-				$fols = json_decode($f['followers']);
+				//$this->errorschutney->DebugArray($fllwrs);
 				
-				foreach ($fols->data as $fl)
+ 				$fols = json_decode($fllwrs['followers']);
+				
+				if (!empty($fols->data))
 				{
-					//$this->errorschutney->DebugArray($fl);	
-					
-					$faker = API::_GetFakerStatus((array)$fl);
-										
-					if ($faker['status']==1)
+					foreach ($fols->data as $fl)
 					{
-						$sc++;
-						$spam[] = $faker['follower'];
-					}
-					elseif ($faker['status']==2)
-					{
-						$p++;
-					}
-					
-					$c++;
+						//$this->errorschutney->PrintArray($fl);	
+						
+						foreach ($fl as $k => $f)
+						{
+							$new[$k] = $f;
+						}
+						
+						//$this->errorschutney->DebugArray($new);
+						
+						$faker = $api->_GetFakerStatus($new);
+											
+						if ($faker['status']==1)
+						{
+							$sc++;
+							$spam[] = $faker['follower'];
+						}
+						elseif ($faker['status']==2)
+						{
+							$p++;
+						}
+						
+						$c++;
+					} 
 				}
+				
+				//$this->errorschutney->PrintArray($fllwrs['id']);
+				$this->deepdivebind->TurnOffFollowers($fllwrs['id']);
 			}
 			
 			//$results['followers']=$followers;
 			$results['checks']=$c;
 			$results['potential']=$p;
 			$results['spam']=$sc;
-			
-			$spam = round(($sc/$c)*100);
-			
-			$potential = round(($p/$c)*100);
-			
-			$good = (100-$spam)-$potential;
+			$created = time();
 			
 			$this->errorschutney->PrintArray($results);
-			$this->errorschutney->PrintArray(array('spam'=>$spam,'potential'=>$potential,'good'=>$good));
 			
+			$count = $this->deepdivebind->CountScores($d['twitterid']);
+			
+			if ($count==0)
+			{
+				$this->deepdivebind->AddScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
+			}
+			else
+			{
+				$this->deepdivebind->UpdateScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
+			}
+			
+			//$this->errorschutney->PrintArray(memory_get_usage());
+			//$this->errorschutney->PrintArray(memory_get_peak_usage());
+			
+			$this->deepdivebind->TurnOffDive($d['id']);
 		}
+		
+		//die('hello');
 	}
 	
 /* 	public function ObsTest()
@@ -576,5 +833,90 @@ class Cron extends Jelly
 		
 		$this->errorschutney->DebugArray(array('string'=>$string,'salt'=>$salt,'obscure'=>$obscure,'unobscure'=>$unobscure));
 	} */
+	
+	public function AddEmails()
+	{
+		$emails = $this->paymentbind->GetAllUserDetails();
+		
+		//$this->errorschutney->PrintArray($emails);
+		
+		$time = time();
+		
+		foreach ($emails as $e)
+		{
+			
+			$this->errorschutney->PrintArray($e);
+			
+			$this->dbbind->AddMarketingEmail($e['email'],$e['forename'],$e['surname'],$time);
+			
+			//die();
+		}
+	}
+	
+	public function AddMainEmails()
+	{
+		$emails = $this->mainbind->GetEmailAddresses();
+		
+		$time = time();
+		
+		$this->errorschutney->PrintArray(count($emails));
+		
+		$string = '';
+		
+		$c = 0;
+		
+		foreach ($emails as $e)
+		{
+			$string .= '("'.$e['email'].'","'.$e['forename'].'","'.$e['surname'].'",'.$time.'),';
+			
+/* 			if ($c == 500)
+			{
+				$string = substr($string,0,-1);
+		
+				//$this->errorschutney->DebugArray($string);
+		
+				$this->dbbind->AddMarketingEmails($string);		
+				
+				$string = '';
+				$c = 0;
+			}
+			else
+			{
+				$c++;	
+			} */
+		}
+		
+		$string = substr($string,0,-1);
+		
+				//$this->errorschutney->DebugArray($string);
+		
+		$this->dbbind->AddMarketingEmails($string);
+		
+	}
+	
+	public function SendMarketingEmail()
+	{
+		
+		$emails = $this->dbbind->GetMarketingEmails();
+		
+		$this->errorschutney->PrintArray(count($emails));
+		
+		$headers['from'] = 'StatusPeople <info@statuspeople.com>';
+		$headers['reply'] = 'info@statuspeople.com';
+		$headers['return'] = 'info@statuspeople.com';
+		
+		foreach ($emails as $e)
+		{
+		
+			$message = 'This is a test email';
+			
+			
+			$send = $this->emailchutney->SendEmail('rdwaller1984@googlemail.com','This is a test',$message,$headers,1);
+			
+			$this->errorschutney->DebugArray($e);
+			
+		}
+		
+	}
 }
 ?>

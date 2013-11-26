@@ -145,7 +145,7 @@ class Validation
 		$valid = true;
 		$message = '';
 		
-		if (!preg_match('/^http:\/\/[\w.\/-]+\.[a-zA-Z.]{2,5}$/', $email) || strlen($website) > 500)
+		if (!preg_match('/^https?:\/\/[\w.\/-]+\.[a-zA-Z.]{2,5}$/', $email) || strlen($website) > 500)
 		{
 			
 			$valid = false;

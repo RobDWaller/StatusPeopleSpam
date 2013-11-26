@@ -16,6 +16,7 @@ class Jelly
         public $kredbind;
         public $paymentbind;
 		public $deepdivebind;
+		public $mainbind;
         //Chutney        
         public $formschutney;
 		public $buildchutney;
@@ -50,6 +51,7 @@ class Jelly
                 $this->kredbind = new KredRequests();
                 $this->paymentbind = new PaymentRequests();
 				$this->deepdivebind = new DeepdiveRequests();
+		$this->mainbind = new MainRequests();
                 //Chutney
                 $this->formschutney = new Forms();
 				$this->buildchutney = new Build();
