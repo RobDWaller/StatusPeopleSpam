@@ -24,9 +24,7 @@
 			<div class="row one center">
 				<small>
 					<a href="/Fakers/Terms/" target="_blank">Terms</a> | 
-					<a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | 
-					<a href="http://tools.statuspeople.com" target="_blank">Sign Up For a StatusPeople Account</a> | 
-					<a href="http://eepurl.com/mveWD" target="_blank">Sign Up To Our Email Newsletter</a>
+					<a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a>
 				</small>
 			</div>
 			<div class="row one">

@@ -667,6 +667,33 @@ function Server()
 
 function Spam()
 {
+	
+	this.ProcessUserAddSite = function(result)
+	{
+		var pop = new Popup();
+		var ms = new Messages();
+		
+		if (result.code == 201)
+		{
+			ms.Build('success',['Thanks for suggesting an address to add to our Fakers Site Directory.'],'.header');
+			$('#fakersite').val('');
+		}
+		else
+		{
+			ms.Build('failure',[result.message],'.header');		
+		}
+		
+		pop.RemoveTinyLoader();
+	}
+	
+	this.ProcessSiteData = function(result,id)
+	{
+		if (result.code == 201)
+		{
+			id.children('fieldset').children('.siteimage').val(result.data.image.src);
+			id.children('fieldset').children('.sitedescription').val(result.data.para);
+		}
+	}
     
     this.ProcessSpamData = function(result,source)
     {
@@ -735,6 +762,22 @@ function Spam()
 			{
 				var ms = new Messages();
 				ms.Build('alert',['To run unlimited friend searches please purchase a <a href="/Payments/Subscriptions">subscription</a>.'],'.header');
+			}
+			
+			var buycount = parseInt($.cookie('buycount'));
+			
+			if (spamscore>=10&&buycount!=1)
+			{
+				var pop = new Popup();
+				
+				pop.BuildPopup();
+				
+				var buy = $('<p class="red sp2 sf2 center">You have a lot of Fake Followers.</p>'+
+							'<p class="sp2 sf2 center"><a href="/Payments/Subscriptions?type=2">Purchase a Subscription to Automatically Remove Them.</a></p>');
+				
+				pop.Content(buy);
+				
+				$.cookie('buycount',1,1);
 			}
 			
 			if (!$('#extrainfo').length&&source!=3)

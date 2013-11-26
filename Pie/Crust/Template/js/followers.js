@@ -20,6 +20,75 @@ $(document).ready(function(){
 		srv.CallServer('GET','json','/API/GetCacheData','rf=json&usr='+encodeURIComponent(twid2),'Spam_ProcessCacheData');
 	}
 	
+	function CompList()
+	{
+		var c = $('.competitorlist tr').length;
+		
+		//alert(c);
+		
+		if (c > 3)
+		{
+			var k = 0;
+			
+			$.each($('.competitorlist tr'),function(i,t){
+			
+				if (k>2)
+				{
+					$(this).hide();	
+				}
+				
+				k+=1;	
+				
+			});
+			
+			var tr = $('<tr><td colspan="7" class="center pointer blue" id="compmore" data-state="0">Show More</td></tr>');
+			
+			tr.appendTo('.competitorlist tbody');
+		}
+	}
+	
+	$(document).on('click','#compmore',function(e){
+		
+		e.preventDefault();
+		
+		var st = parseInt($(this).attr('data-state'));
+		
+		if (st==0)
+		{
+			$('.competitorlist tr').show();
+			$(this).attr('data-state','1');
+			$(this).text('Hide');
+		}
+		else
+		{
+			$(this).attr('data-state','0');
+			$(this).text('Show More');
+			var c = $('.competitorlist tr').length;
+		
+			//alert(c);
+			
+			if (c > 3)
+			{
+				var k = 1;
+				
+				$.each($('.competitorlist tr'),function(i,t){
+				
+					if (k>3&&k<c)
+					{
+						$(this).hide();	
+					}
+					
+					k+=1;	
+					
+				});
+			}
+			
+			var sc = new Scroll();
+			sc.To('.competitorlist',0,50);
+		}
+		
+	});
+	
 	$(document).on('click','.delete',function(){
         var pr = $(this).parent();
         var inp = pr.children('input');
@@ -187,6 +256,7 @@ $(document).ready(function(){
 		pop.RightInfoContent(p);
 	}
 	
+	CompList();
 	BuildChart();
 	GetStats();
 	

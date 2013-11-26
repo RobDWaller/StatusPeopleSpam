@@ -22,6 +22,11 @@ define('__DBSTT_USERNAME','sttsppl');
 define('__DBSTT_PASSWORD','6eyaK15lW');
 define('__DBSTT_NAME','sttsp');
 
+define('__DBMAIN_HOSTNAME','127.0.0.1');
+define('__DBMAIN_USERNAME','sptools');
+define('__DBMAIN_PASSWORD','osiy#e873js');
+define('__DBMAIN_NAME','statuspeople');
+
 // Twitter
 define('CONSUMER_KEY', 'A9vtXuvPwNyJxeHpseu1tQ');
 define('CONSUMER_SECRET', 'ukWQ1161TnClejQHhjEO7p4clb5yZkKSBTqG6Nt95YU');
