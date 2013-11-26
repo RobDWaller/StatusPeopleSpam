@@ -17,13 +17,13 @@ Note the this method will send out an HTML email so feel free to add HTML code t
 class Email
 {
 
-	public function SendEmail($to, $subject, $message, $headers)
+	public function SendEmail($to, $subject, $message, $headers, $marketing = 0)
 	{
 		
 		// Turns headers array into header string.
 		$header = self::BuildHeaders($headers);
 		
-		$email = self::MessageTemplate($subject,$message);
+		$email = self::MessageTemplate($subject,$message,$to,$marketing);
 		
 		// Sends email.
 		mail($to, $subject, $email, $header);
@@ -39,7 +39,7 @@ class Email
 		
 	}
 	
-	protected function MessageTemplate($title,$message)
+	protected function MessageTemplate($title,$message,$email,$marketing)
 	{
 		$email = '<html>
 					<head>
@@ -48,9 +48,10 @@ class Email
 					<body style="background-color:#eef8fb;">
 						<div style="width:100%; background-color:#eef8fb;">
 							<table width="600px" cellpadding="0px" cellspacing="0px" align="center">
+								'.($marketing?'<tr><td width="580px" align="center" style="background-color:#fefefe; padding:10px; color:#fefefe; font-size:12px; font-family:tahoma,arial;" colspan="2"><a href="http://spamtest.statuspeople.com/Fakers/Unsubscribe?e='.$email.'" style="color:#fe7d1d;">Unsubscribe From Marketing Messages From StatusPeople.com</a></td></tr>':'').'
 								<tr>
 									<td width="80px" height="40px" style="background-color:#36b6d5; padding:0px 10px;"><img src="http://tools.statuspeople.com/Pie/Crust/Template/img/logo_white_hires_compressed.png" height="30px" width="58px" style="padding:5px;" /></td>
-									<td width="480px" height="40px" style="background-color:#36b6d5; color:#fefefe; padding:0px 10px; text-align:right;"><strong><a href="http://tools.statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Website</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://fakers.statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Fakers</a></strong></td>
+									<td width="480px" height="40px" style="background-color:#36b6d5; color:#fefefe; padding:0px 10px; text-align:right;"><strong><a href="http://statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Website</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://fakers.statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Fakers</a></strong></td>
 								</tr>
 								<tr>
 									<td width="580px" style="background-color:#fefefe; padding:10px;" colspan="2">
@@ -59,9 +60,10 @@ class Email
 								</tr>
 								<tr>
 									<td width="580px" height="40px" style="background-color:#fe7d1d; padding:10px; color:#fefefe; font-size:12px; font-family:tahoma,arial;" colspan="2">
-										&copy; 2013 StatusPeople.com <a href="http://twitter.com/statuspeople" style="color:#fefefe;">@StatusPeople</a> 
+										&copy; 2013 StatusPeople.com <a href="http://twitter.com/statuspeople" style="color:#fefefe;">@StatusPeople</a>
 									</td>
 								</tr>
+								'.($marketing?'<tr><td width="580px" align="center" style="background-color:#fefefe; padding:10px; color:#fefefe; font-size:12px; font-family:tahoma,arial;" colspan="2"><a href="http://spamtest.statuspeople.com/Fakers/Unsubscribe?e='.$email.'" style="color:#fe7d1d;">Unsubscribe From Marketing Messages From StatusPeople.com</a></td></tr>':'').'
 							</table>
 						</div>
 					</body>

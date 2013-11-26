@@ -40,7 +40,8 @@ class Fakers extends Jelly
 #					$_SESSION['userid'] = 96269828;
 #					$_SESSION['userid'] = 1101473544;
 #					$_SESSION['userid'] = 1919216960;
-					
+#					$_SESSION['userid'] = 18746024;
+#					$_SESSION['userid'] = 2147483647;					
                     
                     if (isset($_SESSION['message']))
                     {
@@ -71,13 +72,24 @@ class Fakers extends Jelly
 #                }
         }
         
+/* 		public function IcoTest()
+		{
+			$data['text'] = '<p class="ico">\|zxcvbnm,./<>?asdfghjkl;\'#:@~qwertyuiop[]{}`1234567890-=!"£$%^&*()_+</p>';
+			$data['text'] .= '<p class="ico2">\|zxcvbnm,./<>?asdfghjkl;\'#:@~qwertyuiop[]{}`1234567890-=!"£$%^&*()_+</p>';
+			$data['text'] .= '<p class="ico3">\|zxcvbnm,./<>?asdfghjkl;\'#:@~qwertyuiop[]{}`1234567890-=!"£$%^&*()_+</p>';
+			
+			$this->glaze->view('Spam/test.php',$data);
+		} */
+	
         public function Scores($vars)
         {
             	Generic::_IsLogin();
                
                 $validity = $this->_CheckValidity($_SESSION['userid']);
 				
-			//$this->errorschutney->DebugArray($validity);
+			//$this->errorschutney->PrintArray($validity);
+			
+			//$this->errorschutney->PrintArray($_SESSION);
 			
                 if (!$validity[0])
                 {
@@ -96,7 +108,17 @@ class Fakers extends Jelly
                     {
                         $data['message'] = $_SESSION['message'];
                     }
-
+					
+					$details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
+					$verify = $this->twitterbind->Verify($details[2],$details[3]);
+				
+					//$this->errorschutney->DebugArray($verify);
+                
+					if ($verify['code']!=200)
+					{
+						$data['message'] = $this->buildchutney->PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
+					}
+					
                     $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
                     $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
 					$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
@@ -133,6 +155,7 @@ class Fakers extends Jelly
 					$data['searches'] = $searches[0];
 					//$this->errorschutney->DebugArray($_COOKIE);
 					$data['logout'] = 1;
+					$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);
 
                     $this->sessionschutney->UnsetSessions(array('message'));
 					
@@ -154,7 +177,7 @@ class Fakers extends Jelly
             
             $validity = $this->_CheckValidity($_SESSION['userid']);
 			
-			//$this->errorschutney->DebugArray($_SESSION);
+			//$this->errorschutney->PrintArray($_SESSION);
 
             if ($validity[0])
             {
@@ -210,7 +233,7 @@ class Fakers extends Jelly
 				
                 $data['fakes'] = $this->_BuildFakes($fakes,1);
 				$data['blocked'] = $this->_BuildFakes($blocked,2);
-				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
+				$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);	
 
                 $data['twitterid'] = $userid;
 				$data['type'] = $_SESSION['type'];
@@ -281,7 +304,7 @@ class Fakers extends Jelly
 
                 $data['competitors'] = $this->_BuildCompetitors($competitors);
 				//$data['fakes'] = $this->_BuildFakes($fakes);
-				$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
+				$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);	
 
                 $data['twitterid'] = $userid;
 				$data['twitterid2'] = $userid2;
@@ -298,6 +321,33 @@ class Fakers extends Jelly
             }
 		}
 	
+		public function Sites()
+		{
+			$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
+			$data['title'] = 'The Faker Sites';
+			
+			//$sites = $this->dbbind->GetSites();
+			
+			//$data['sites'] = $this->_BuildSites($sites);
+			
+			$this->glaze->view('Spam/sites.php',$data);
+		}
+		
+		public function SitesAdmin($vars)
+		{
+			if ($vars['p']=='fghe983k1')
+			{
+				$data['homelink'] = $this->routechutney->HREF('/Fakers/SitesAdmin',$this->mod_rewrite);
+				$data['title'] = 'The Faker Sites Admin';
+				
+				$sites = $this->dbbind->GetSites();
+				
+				$data['sites'] = $this->_BuildSitesAdmin($sites);
+				
+				$this->glaze->view('Spam/sitesadmin.php',$data);
+			}
+		}
+	
         public function Reset()
         {
             Generic::_IsLogin();
@@ -310,6 +360,7 @@ class Fakers extends Jelly
 			$this->sessionschutney->UnsetSessions(array('message'));
 
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
+			$data['logout'] = 1;
 			
             $this->glaze->view('Spam/reset.php',$data);
         }
@@ -340,6 +391,7 @@ class Fakers extends Jelly
         {
             $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
             $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
+			$data['logout'] = 1;
             
             $this->glaze->view('Spam/info.php',$data);
         }
@@ -348,6 +400,7 @@ class Fakers extends Jelly
         {
             $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
             $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
+			$data['logout'] = 1;
             
             $this->glaze->view('Spam/terms.php',$data);
         }
@@ -355,8 +408,9 @@ class Fakers extends Jelly
         public function Wall()
         {
             $data['homelink'] = $this->routechutney->HREF('/',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
-            
+            $data['title'] = 'Status People Fake Follower Check';
+            $data['logout'] = 1;
+			
             $spamrecords = $this->dbbind->GetLatestSpamRecords(51);
             
             $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);  
@@ -369,7 +423,7 @@ class Fakers extends Jelly
             if ($vars['q']=='78asoy8_op789')
             {
                 $data['homelink'] = $this->routechutney->HREF('/',$this->mod_rewrite);	
-                $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
+                $data['title'] = 'Status People Fake Follower Check';
 
                 $members = $this->dbbind->Get500kClub();
 
@@ -378,6 +432,48 @@ class Fakers extends Jelly
                 $this->glaze->view('Spam/goodies.php',$data);
             }
         }
+	
+		public function Unsubscribe($vars)
+		{
+			$data['email'] = $vars['e'];
+			
+			$valid = $this->validationchutney->ValidateEmail($data['email']);
+			
+			//$this->errorschutney->DebugArray($valid);
+			
+			if (!$valid[0])
+			{
+				$data['message'] = $this->buildchutney->PageMessage('failure',array("This is not a valid email address. Please check the address and try again."));
+			}
+			else
+			{
+				$count = $this->dbbind->CheckMarketingEmail($data['email']);
+				
+				if ($count)
+				{
+					$unsubscribe = $this->dbbind->UnsubscribeEmail($data['email']);
+					
+					if ($unsubscribe>0)
+					{
+						$data['message'] = $this->buildchutney->PageMessage('success',array("Your email has been successfully unsubscribed. We're sorry to see you go."));
+					}
+					else
+					{
+						$data['message'] = $this->buildchutney->PageMessage('failure',array("There was an error! We failed to unsubscribe your email address, please contact info@statuspeople.com."));
+					}
+				}
+				else
+				{
+					$data['message'] = $this->buildchutney->PageMessage('alert',array("This email address has either already been unsubscribed or does not exist within our systems."));
+				}
+			}
+			
+			$data['homelink'] = $this->routechutney->HREF('/',$this->mod_rewrite);	
+            $data['title'] = 'Status People Fake Follower Check';
+			$data['logout'] = 1;
+			
+			$this->glaze->view('Spam/unsubscribe.php',$data);
+		}
         
         public function Extend()
         {
@@ -574,6 +670,31 @@ class Fakers extends Jelly
                 header('Location:'.$_SESSION['returnurl'].'?rsp=400');
 		
 	}
+		
+		protected function _BuildSitesAdmin($sites)
+		{
+			if (!empty($sites))
+			{
+				$output = '<ul id="fakersuggestions">';
+				
+				foreach ($sites as $s)
+				{
+					$output .= '<li>';
+					$output .= '<p><a href="'.$s['url'].'" target="_blank">'.$s['title'].'</a></p>';
+					$output .= '<fieldset><input type="hidden" class="siteid" value="'.$s['id'].'" /></fieldset>';
+					$output .= '<fieldset><input type="text" class="sitetext" value="'.$s['title'].'" /></fieldset>';
+					$output .= '<fieldset><input type="text" class="siteurl" value="'.$s['url'].'"/></fieldset>';
+					$output .= '<fieldset><input type="text" class="siteimage" value=""/></fieldset>';
+					$output .= '<fieldset><input type="text" class="sitedescription" value=""/></fieldset>';
+					$output .= '<p><a href="" class="siteadd">Add</a> <a href="" class="sitedelete">Delete</a></p>';
+					$output .= '</li>';
+				}
+				
+				$output .= '</ul>';
+				
+				return $output;
+			}
+		}
 	
         protected function _BuildSpamScores($scores)
         {

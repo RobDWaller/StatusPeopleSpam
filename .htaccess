@@ -1,3 +1,8 @@
 Options +FollowSymLinks
 RewriteEngine On
 RewriteRule ^([a-z0-9_/]+)$ index.php/$1 [L,NC]
+
+#AuthType Basic
+#AuthName "Protected"
+#AuthUserFile /var/spamtest/.htpasswd
+#Require valid-user
