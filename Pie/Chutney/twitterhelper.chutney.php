@@ -156,6 +156,35 @@ class TwitterHelper
         
     }
 	
+	public function ProcessSpamUser($user)
+	{
+		if (!empty($user))
+		{
+			$result = array('id'=>$user->id_str,
+							  'screen_name'=>$user->screen_name,
+							  'location'=>$user->location,
+							  'timezone'=>$user->time_zone,
+							  'language'=>$user->lang,
+							  'friends'=>$user->friends_count,
+							  'followers'=>$user->followers_count,
+							  'tweets'=>$user->statuses_count,
+							  'tweetsperday'=>$tpd,
+							  'description'=>$user->description,
+							  'website'=>$user->url,
+							  'image'=>$user->profile_image_url,
+							  'following'=>$user->following,
+							  'favourites'=>$user->favourites_count,
+							  'listed'=>$user->listed_count,
+							  'created'=>$created,
+							  'lasttweet'=>$lasttweet,
+							  'tweet'=>$user->status->text,
+							  'tweet_retweet'=>$user->status->retweet_count,
+							  'tweet_favorite'=>$user->status->favorite_count);
+		}
+		
+		return $result;
+	}
+	
 	protected function _IsUserSpam($user)
     {
         $ffratio = 0;

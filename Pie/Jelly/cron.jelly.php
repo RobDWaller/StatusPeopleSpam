@@ -659,7 +659,7 @@ class Cron extends Jelly
 							
 							$this->errorschutney->PrintArray($count);
 							
- 							if ($count > 80 && $count<=100)
+ 							if ($count > 0 && $count<=100)
 							{
 								$followers = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$array,$count);
 								
@@ -832,7 +832,7 @@ class Cron extends Jelly
 		$unobscure = $this->validationchutney->Unobscure($obscure,$salt);
 		
 		$this->errorschutney->DebugArray(array('string'=>$string,'salt'=>$salt,'obscure'=>$obscure,'unobscure'=>$unobscure));
-	} */
+	} 
 	
 	public function AddEmails()
 	{
@@ -869,7 +869,7 @@ class Cron extends Jelly
 		{
 			$string .= '("'.$e['email'].'","'.$e['forename'].'","'.$e['surname'].'",'.$time.'),';
 			
-/* 			if ($c == 500)
+ 			if ($c == 500)
 			{
 				$string = substr($string,0,-1);
 		
@@ -883,7 +883,7 @@ class Cron extends Jelly
 			else
 			{
 				$c++;	
-			} */
+			} 
 		}
 		
 		$string = substr($string,0,-1);
@@ -898,6 +898,10 @@ class Cron extends Jelly
 	{
 		
 		$emails = $this->dbbind->GetMarketingEmails();
+		$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
+						array('email'=>'ben@statuspeople.com','forename'=>'Ben'),
+						array('email'=>'rdwaller1984@googlemail.com','forename'=>'Rob'),
+						array('email'=>'benj.christensen01@gmail.com','forename'=>'Ben'));
 		
 		$this->errorschutney->PrintArray(count($emails));
 		
@@ -907,15 +911,53 @@ class Cron extends Jelly
 		
 		foreach ($emails as $e)
 		{
-		
-			$message = 'This is a test email';
+			$message = '';
+			$message .= '<p>Hi '.$e['forename'].',</p>';
+			$message .= '<p>This is a quick message just to let you know we are running an amazing <a href="http://www.kweekweek.com/StatusPeople/f662f2cf42" style="color:#36b6d5;">Twitter Follower Training Seminar</a> next week.</p>';
+			$message .= '<p>It\'s in London on Wednesday December 4th and aims to give you the skills to boost your Twitter engagement and ROI and turn you into a social marketing superstar. ';
+			$message .=	'It\'s only £20 &mdash; an amazing price for a 2 hour seminar &mdash; so <a href="http://www.kweekweek.com/StatusPeople/f662f2cf42" style="color:#36b6d5;">come along and check it out</a>.</p>';
+			$message .= '<p>Some of the things you\'ll learn include...</p>';
+			$message .= '<ul>';
+			$message .= '<li>Why follower quality is important and why you should never buy fake followers</li>';
+			$message .= '<li>What data and tools you need to use to better understand your Twitter Followers</li>';
+			$message .= '<li>How you can legitimately grow your Twitter following</li>';
+			$message .= '<li>How to use follower data to improve your content marketing to boost engagement and ROI</li>';
+			$message .= '</ul>';
+			$message .= '<p>It should be a great morning so <a href="http://www.kweekweek.com/StatusPeople/f662f2cf42" style="color:#36b6d5;">book yourself a ticket now</a>.</p>';
+			$message .= '<p>We look forward to seeing you there. And if you need any extra info let us know at info@statuspeople.com</p>';
+			$message .= '<p>Thanks,</p>';
+			$message .= '<p>StatusPeople</p>';
+			$message .= '<p>P.S. We made a little, well quite big, mistake with the last email we sent out. We\'re really very sorry if we caused you any inconvenience.</p>';
 			
+			$send = $this->emailchutney->SendEmail($e['email'],'Boost your Twitter Engagement and ROI at our Training Seminar for just £20',$message,$headers,1);
 			
-			$send = $this->emailchutney->SendEmail('rdwaller1984@googlemail.com','This is a test',$message,$headers,1);
-			
-			$this->errorschutney->DebugArray($e);
+			$this->errorschutney->PrintArray($e);
 			
 		}
+		
+	} */
+	
+	public function RateLimitTest()
+	{
+		
+#                    $_SESSION['userid'] = 114873621;
+#                  $_SESSION['userid'] = 31386162;
+#					$_SESSION["userid"] = 633786383;
+					$userid = 198192466;
+#					$_SESSION['userid'] = 545309711;
+#					$_SESSION['userid'] = 96269828;
+#					$_SESSION['userid'] = 1101473544;
+#					$_SESSION['userid'] = 1919216960;
+#					$_SESSION['userid'] = 18746024;
+#					$_SESSION['userid'] = 2147483647;
+# 					$_SESSION['userid'] = 32816581;
+#					$_SESSION['userid'] = 573776137;
+		
+		$details = $this->dbbind->GetTwitterDetails($userid);
+		
+		$result = $this->twitterbind->RateLimit($details[2],$details[3],'followers,users');
+		
+		$this->errorschutney->DebugArray($result);
 		
 	}
 }

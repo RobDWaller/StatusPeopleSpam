@@ -22,6 +22,15 @@ class TwitterRequests
 //		
 //	}
 	
+	public function RateLimit($token,$secret,$resources)
+	{
+		$this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
+		
+		$limits = $this->twitter->get('application/rate_limit_status',array('resources'=>$resources));
+		
+		return $limits;
+	}
+	
 	public function GetTwitterTimeline($type,$token,$secret,$count,$sinceid = null)
 	{
 		
@@ -184,6 +193,18 @@ class TwitterRequests
             
             return $search;            
         }
+	
+		public function SearchTweets($token,$secret,$query,$count,$resulttype,$lang)
+        {
+            $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);    
+		
+            $search = $this->twitter->get('search/tweets',array('q'=>$query,'count'=>$count,'resulttype'=>$resulttype,'lang'=>$lang));
+            
+			$result['code'] = $this->twitter->http_code;
+			$result['data'] = $search;			
+			
+            return $result;            
+        }
         
         public function CreateFriendship($token,$secret,$friendid)
         {
@@ -328,6 +349,8 @@ class TwitterRequests
             $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
             $followers = $this->twitter->post('users/lookup',array('user_id'=>$followeridlist,'include_entities'=>false));
             
+			//Errors::DebugArray($followers);
+			
             $code = $this->twitter->http_code;
             
             if ($this->twitter->http_code==200)
