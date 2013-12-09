@@ -82,6 +82,8 @@ $(document).ready(function(){
 
             Build();
             Loader('Getting Faker Scores','#scoresholder');
+			
+			$('#handle').text(usersearch);
 
             srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataAdvanced',twid);
 

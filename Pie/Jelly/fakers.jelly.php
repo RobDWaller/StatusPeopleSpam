@@ -32,8 +32,8 @@ class Fakers extends Jelly
         {
                 if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
-#                    $_SESSION['userid'] = 114873621;
-#                  $_SESSION['userid'] = 31386162;
+#                   $_SESSION['userid'] = 114873621;
+#                  	$_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
 					$_SESSION['userid'] = 198192466;
 #					$_SESSION['userid'] = 545309711;
@@ -41,7 +41,13 @@ class Fakers extends Jelly
 #					$_SESSION['userid'] = 1101473544;
 #					$_SESSION['userid'] = 1919216960;
 #					$_SESSION['userid'] = 18746024;
-#					$_SESSION['userid'] = 2147483647;					
+#					$_SESSION['userid'] = 2147483647;
+# 					$_SESSION['userid'] = 32816581;
+#					$_SESSION['userid'] = 573776137;					
+#					$_SESSION['userid'] = 151643053;	
+#					$_SESSION['userid'] = 16816972;
+#					$_SESSION['userid'] = 2147483647;
+#					$_SESSION['userid'] = 17322641;
                     
                     if (isset($_SESSION['message']))
                     {
@@ -156,6 +162,7 @@ class Fakers extends Jelly
 					//$this->errorschutney->DebugArray($_COOKIE);
 					$data['logout'] = 1;
 					$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);
+					$data['menu'] = '&nbsp;';
 
                     $this->sessionschutney->UnsetSessions(array('message'));
 					
@@ -186,9 +193,11 @@ class Fakers extends Jelly
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
                 
+				//$this->errorschutney->PrintArray($details);
+				
                 $verify = $this->twitterbind->Verify($details[2],$details[3]);
 				
-				//$this->errorschutney->DebugArray($verify);
+				//$this->errorschutney->PrintArray($verify);
                 
 				if ($verify['code']!=200)
 				{
@@ -348,6 +357,23 @@ class Fakers extends Jelly
 			}
 		}
 	
+		public function DeepDiveAdminScores($vars)
+		{
+			if ($vars['p']='yhd763jei')
+			{
+				$data['homelink'] = $this->routechutney->HREF('/Fakers/DeepDiveAdminScores',$this->mod_rewrite);
+				$data['title'] = 'Deep Dive Admin Scores';
+				
+				$dives = $this->deepdivebind->GetAllDiveScores();
+				
+				//$this->errorschutney->DebugArray($dives);
+				
+				$data['dives'] = $this->_BuildDiveScores($dives);
+				
+				$this->glaze->view('Spam/diveadmin.php',$data);
+			}
+		}
+	
         public function Reset()
         {
             Generic::_IsLogin();
@@ -387,10 +413,20 @@ class Fakers extends Jelly
             }
         }
         
+		public function Help()
+		{
+			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
+            $data['title'] = 'Status People Fake Follower Check &mdash; Help';
+			$data['logout'] = 1;
+			$data['menu'] = '&nbsp';
+            
+            $this->glaze->view('Spam/help.php',$data);
+		}
+	
         public function FindOutMore()
         {
             $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
+            $data['title'] = 'Status People Fake Follower Check &mdash; Find Out More';
 			$data['logout'] = 1;
             
             $this->glaze->view('Spam/info.php',$data);
@@ -399,7 +435,7 @@ class Fakers extends Jelly
         public function Terms()
         {
             $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
+            $data['title'] = 'Status People Fake Follower Check &mdash; Terms';
 			$data['logout'] = 1;
             
             $this->glaze->view('Spam/terms.php',$data);
@@ -408,7 +444,7 @@ class Fakers extends Jelly
         public function Wall()
         {
             $data['homelink'] = $this->routechutney->HREF('/',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check';
+            $data['title'] = 'Status People Fake Follower Check &mdash; Fakers Wall';
             $data['logout'] = 1;
 			
             $spamrecords = $this->dbbind->GetLatestSpamRecords(51);
@@ -530,46 +566,57 @@ class Fakers extends Jelly
             elseif ($vars['rsp'] == 200)
             {
 
-                $userid = $vars['ui'];
+                $userid = $this->validationchutney->UnobscureNumber($vars['ui'],SALT_ONE);
                 $token = $vars['oat'];
                 $secret = $vars['oas'];
                 $where = $vars['var1'];
                 
-                $_SESSION['userid'] = $vars['ui'];
+                $_SESSION['userid'] = $this->validationchutney->UnobscureNumber($vars['ui'],SALT_ONE);
                 $_SESSION['token'] = $vars['oat'];
                 $_SESSION['secret'] = $vars['oas'];
 
                 //$this->errorschutney->DebugArray($vars);
 
-                $exists = $this->dbbind->CountUsers($userid);
-                
-                $ok = false;
-                
-                if ($exists == 1)
-                {
-                    $ok = true;
-                }
-                else 
-                {
-                    $bio = $this->twitterbind->GetUserByID($token,$secret,$userid);
-                    
-                    //$this->errorschutney->DebugArray($bio);
-                    
-                    $result = $this->dbbind->AddTwitterDetails($userid,$token,$secret,time());
-                    
-                    if ($result > 0)
-                    {
-                        $ok = true;
-                    }
-                    
-                    $countinfo = $this->dbbind->CountUserInfoRecords($userid); 
-                    
-                    if ($countinfo==0)
-                    {
-                        $this->dbbind->AddUserInfo($userid,$bio->screen_name,$bio->profile_image_url,time(),time());
-                    }
-                        
-                }
+				$ok = false;
+				
+				$valid = $this->validationchutney->ValidateInteger($userid,'Twitter ID');
+				
+				if ($valid[0])
+				{
+					$exists = $this->dbbind->CountUsers($userid);
+					
+					//$this->errorschutney->PrintArray($exists);
+					
+					if ($exists > 0)
+					{
+						$ok = true;
+						//die('1');
+					}
+					else 
+					{
+						//die('2');
+						
+						$bio = $this->twitterbind->GetUserByID($token,$secret,$userid);
+						
+						//$this->errorschutney->DebugArray($bio);
+						
+						$result = $this->dbbind->AddTwitterDetails($userid,$token,$secret,time());
+						
+						if ($result > 0)
+						{
+							$ok = true;
+							//die(2);
+						}
+						
+						$countinfo = $this->dbbind->CountUserInfoRecords($userid); 
+						
+						if ($countinfo==0)
+						{
+							$this->dbbind->AddUserInfo($userid,$bio->screen_name,$bio->profile_image_url,time(),time());
+						}
+							
+					}
+				}
                 
                 //$result = 1;
                 
@@ -649,7 +696,7 @@ class Fakers extends Jelly
 		if (200 == $this->twitter->http_code) {
                     /* The user has been verified and the access tokens can be saved for future use */
                     $_SESSION['status'] = 'verified';
-                    $redirect = $_SESSION['returnurl'].'?ui='.$access_token['user_id'].'&oat='.$access_token['oauth_token'].'&oas='.$access_token['oauth_token_secret'].'&rsp=200&var1='.$_SESSION['var1'];
+			$redirect = $_SESSION['returnurl'].'?ui='.$this->validationchutney->ObscureNumber($access_token['user_id'],SALT_ONE).'&oat='.$access_token['oauth_token'].'&oas='.$access_token['oauth_token_secret'].'&rsp=200&var1='.$_SESSION['var1'];
                     header('Location:'.$redirect);
                 } 
                 else 
@@ -671,6 +718,28 @@ class Fakers extends Jelly
 		
 	}
 		
+		protected function _BuildDiveScores($scores)
+		{
+			if (!empty($scores))
+			{
+				$output = '<table>';
+				$output .= '<tr><th>Screen Name</th><th>Fake</th><th>Inactive</th><th>Good</th><th>Checks</th><th>Followers</th></tr>';
+				
+				foreach ($scores as $s)
+				{
+					$fake = round(($s['spam']/$s['checks'])*100);
+					$inactive = round(($s['potential']/$s['checks'])*100);
+					$good = 100-($fake+$inactive);
+					
+					$output .= '<tr><td>'.$s['screen_name'].'</td><td class="red"><strong>'.$fake.'%</strong></td><td class="orange"><strong>'.$inactive.'%</strong></td><td class="green"><strong>'.$good.'%</strong></td><td>'.number_format($s['checks']).'</td><td>'.number_format($s['followers']).'</td></tr>';
+				}
+				
+				$output .= '</table>';
+			}
+			
+			return $output;
+		}
+	
 		protected function _BuildSitesAdmin($sites)
 		{
 			if (!empty($sites))

@@ -48,7 +48,7 @@ class Email
 					<body style="background-color:#eef8fb;">
 						<div style="width:100%; background-color:#eef8fb;">
 							<table width="600px" cellpadding="0px" cellspacing="0px" align="center">
-								'.($marketing?'<tr><td width="580px" align="center" style="background-color:#fefefe; padding:10px; color:#fefefe; font-size:12px; font-family:tahoma,arial;" colspan="2"><a href="http://spamtest.statuspeople.com/Fakers/Unsubscribe?e='.$email.'" style="color:#fe7d1d;">Unsubscribe From Marketing Messages From StatusPeople.com</a></td></tr>':'').'
+								'.($marketing?'<tr><td width="580px" align="center" style="background-color:#eef8fb; padding:10px; color:#fefefe; font-size:12px; font-family:tahoma,arial;" colspan="2"><a href="http://fakers.statuspeople.com/Fakers/Unsubscribe?e='.$email.'" style="color:#fe7d1d;">Unsubscribe From Marketing Messages From StatusPeople.com</a></td></tr>':'').'
 								<tr>
 									<td width="80px" height="40px" style="background-color:#36b6d5; padding:0px 10px;"><img src="http://tools.statuspeople.com/Pie/Crust/Template/img/logo_white_hires_compressed.png" height="30px" width="58px" style="padding:5px;" /></td>
 									<td width="480px" height="40px" style="background-color:#36b6d5; color:#fefefe; padding:0px 10px; text-align:right;"><strong><a href="http://statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Website</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://fakers.statuspeople.com" style="color:#fefefe; text-decoration:none; font-family:Tahoma,Arial;">Fakers</a></strong></td>
@@ -63,7 +63,9 @@ class Email
 										&copy; 2013 StatusPeople.com <a href="http://twitter.com/statuspeople" style="color:#fefefe;">@StatusPeople</a>
 									</td>
 								</tr>
-								'.($marketing?'<tr><td width="580px" align="center" style="background-color:#fefefe; padding:10px; color:#fefefe; font-size:12px; font-family:tahoma,arial;" colspan="2"><a href="http://spamtest.statuspeople.com/Fakers/Unsubscribe?e='.$email.'" style="color:#fe7d1d;">Unsubscribe From Marketing Messages From StatusPeople.com</a></td></tr>':'').'
+								'.($marketing?'<tr><td width="580px" align="center" style="background-color:#eef8fb; padding:10px; font-size:12px; font-family:tahoma,arial;" colspan="2"><a href="http://fakers.statuspeople.com/Fakers/Unsubscribe?e='.$email.'" style="color:#fe7d1d;">Unsubscribe From Marketing Messages From StatusPeople.com</a></td></tr>':'').'
+								<tr><td width="580px" style="background-color:#eef8fb; padding:10px; font-size:12px; font-family:tahoma,arial;" colspan="2">You recieved this message because you either use a Status People Ltd (07561828) service or have interacted with a StatusPeople service. Please contact info@statuspeople.com for more information.</td></tr>
+								<tr><td width="580px" style="background-color:#eef8fb; padding:10px; font-size:12px; font-family:tahoma,arial;" colspan="2"><a href="http://twitter.com/StatusPeople" style="color:#fe7d1d;">Follow us @StatusPeople</a>&nbsp;&nbsp;&nbsp;<a href="http://facebook.com/StatusPeople" style="color:#fe7d1d;">Like Our Facebook Page</a></td></tr>
 							</table>
 						</div>
 					</body>

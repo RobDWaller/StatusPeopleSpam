@@ -47,7 +47,11 @@
 					<?php
 					if ($logout != 1)
 					{
-						echo '<ul><li><a href="/Fakers/Dashboard" class="ico3 icon" data-tip="Fakers Dashboard">"</a></li><li><a href="/Fakers/Followers" class="ico icon" data-tip="Your Followers">t</a></li></ul>';	
+						echo '<ul class="fakericons"><li><a href="/Fakers/Dashboard" class="ico3 icon" data-tip="Fakers Dashboard">"</a></li><li><a href="/Fakers/Followers" class="ico icon" data-tip="Follower Analytics">t</a></li><li><a href="/Fakers/Help" class="ico3 icon" data-tip="Help">!</a></li></ul>';	
+					}
+					else
+					{
+						echo '<ul class="fakericons"><li><a href="/Fakers/Help" class="ico3 icon" data-tip="Help">!</a></li></ul>';
 					}
 					?>
 				</div>

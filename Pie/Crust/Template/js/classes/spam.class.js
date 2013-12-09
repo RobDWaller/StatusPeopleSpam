@@ -1021,7 +1021,7 @@ function Spam()
                 pop.Content(h1);
                 
                 s.html('Please wait 15 minutes and try again. For more information on Twitter API limits please read their <a href="https://dev.twitter.com/docs/rate-limiting/1.1" target="_blank">rate limiting policies</a> or contact info@statuspeople.com.');
-                pop.Content(s);
+                pop.AddContent(s);
             }
             else
             {
@@ -1029,7 +1029,7 @@ function Spam()
                 pop.Content(h1);
             
                 s.html('If you are having any persistant problems accessing data with StatusPeople please <a href="/Fakers/Reset">reset your connection details</a>.');
-                pop.Content(s);
+                pop.AddContent(s);
             }
         }
         
@@ -1277,7 +1277,7 @@ function Spam()
             var input = $('<input/>');
             input.attr('type','button');
             input.attr('id','addfaker');
-            input.attr('value','Add User To Fakers List');
+            input.attr('value','Add User To Friends List');
             
             if (result.data.competitors >= 6 && result.data.type == 1)
             {
@@ -1341,12 +1341,12 @@ function Spam()
         
         if (result.code == 201)
         {
-            ma[0]='User added to <a href="/Fakers/Followers">Friend List</a>.';
+            ma[0]='User added to <a href="/Fakers/Followers">Friends List</a>.';
             mes.Build('success',ma,'.header');
         }
         else
         {
-            ma[0]='Failed to add user to Fakers List, please try again';
+            ma[0]='Failed to add user to Friends List, please try again';
             mes.Build('failure',ma,'.header');
         }
         
