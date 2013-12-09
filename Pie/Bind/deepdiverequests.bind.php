@@ -283,6 +283,16 @@ class DeepdiveRequests Extends Deepdive
 		return $result;
 	}
 	
+	public function GetAllDiveScores()
+	{
+		$query = "SELECT s.twitterid,d.screen_name,s.potential,s.spam,s.checks,d.followers,s.created 
+					FROM spdv_scores AS s
+					JOIN spdv_dives AS d ON s.twitterid = d.twitterid";
+		
+		$result = $this->SelectRecords($query);
+		
+		return $result;
+	}
 }
 
 ?>

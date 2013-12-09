@@ -176,7 +176,8 @@ class PaymentRequests Extends DB
 	{
 		$query = "SELECT sv.userid,sv.valid,sd.email,sd.forename
 					FROM spsp_valid AS sv
-					JOIN spsp_user_details AS sd ON sv.userid = sd.twitterid";
+					JOIN spsp_user_details AS sd ON sv.userid = sd.twitterid
+					WHERE sd.live = 1";
 			
 		$result = $this->SelectRecords($query);
 		

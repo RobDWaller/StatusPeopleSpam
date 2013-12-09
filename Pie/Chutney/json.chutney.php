@@ -15,10 +15,11 @@ class JSON
         
     }
     
-    public function JSONAPIError($code,$message)
+    public function JSONAPIError($code,$message,$data=0)
     {
         $json['code'] = $code;
         $json['message'] = $message;
+		$json['data'] = $data;
         
         $output = json_encode($json);
         

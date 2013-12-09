@@ -3,7 +3,7 @@
 		<div class="banner">
 			<ul>
 				<li class="bannerimage"></li>   
-				<li class="bannertext bree">@<span id="handle"><?=$twitterhandle;?></span> Followers</li>
+				<li class="bannertext bree">@<span id="handle"><?=$twitterhandle;?></span> Follower Analytics</li>
 			</ul>
 		</div>
 		<div class="column">

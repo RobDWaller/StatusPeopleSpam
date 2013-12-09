@@ -5,9 +5,14 @@ $site_path = $_SERVER["DOCUMENT_ROOT"];
 define ('__SITE_PATH', $site_path);
 
 // StatusPeople Database
-define('__DB_HOSTNAME','127.0.0.1');
+/* define('__DB_HOSTNAME','127.0.0.1');
 define('__DB_USERNAME','spspan');
 define('__DB_PASSWORD','criSU876ky4q');
+define('__DB_NAME','statuspeople_spam'); */
+
+define('__DB_HOSTNAME','Localhost');
+define('__DB_USERNAME','spspam2');
+define('__DB_PASSWORD','vPYvt2Kb7#NbLT3MrVF');
 define('__DB_NAME','statuspeople_spam');
 
 // StatusPeople DeepDive Database

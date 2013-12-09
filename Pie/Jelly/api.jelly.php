@@ -80,8 +80,8 @@ class API extends Jelly
 	{
 		
         $this->ResponseFormat = $vars['rf'];
-		//$user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
-		$user = $vars['usr'];
+		$user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+		//$user = $vars['usr'];
         $search = $vars['srch'];
 		$searches = $vars['srchs'];
         
@@ -91,7 +91,7 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
             
-			//$this->errorschutney->DebugArray($details);
+			//$this->errorschutney->PrintArray($details);
             
             $search = $this->validationchutney->StripNonAlphanumeric($search);
             
@@ -1155,6 +1155,8 @@ class API extends Jelly
 	
 	public function _GetHundreds($search,$bio,$details,$reqs)
 	{
+		//$this->errorschutney->PrintArray($details);
+		
 		$followers = $bio['user']->followers_count; 
 
 		$requests = round($followers/5000);
@@ -1181,7 +1183,9 @@ class API extends Jelly
 			
 			if ($idslist['code']==429)
 			{
-				self::_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.');
+				//$this->errorschutney->PrintArray($details);
+				$result = $this->twitterbind->RateLimit($details[2],$details[3],'followers,users');
+				self::_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.',$result->resources);
 			}
 			
 			$fids[$a] = $idslist['data'];
@@ -2075,16 +2079,114 @@ class API extends Jelly
         }
     }
     
+	public function GetTrendCheck()
+	{
+		$userid = 198192466;
+		
+		$details = $this->dbbind->GetTwitterDetails($userid);
+		
+		$q = '@presidenciamx';
+		
+		$search = $this->twitterbind->SearchTweets($details[2],$details[3],$q,100,'mixed','es');
+		
+		//$this->errorschutney->DebugArray($search['data']);
+		
+		$sc = 0;
+		$p = 0;
+		$c = 0;
+		$rt = 0;
+		
+		foreach ($search['data']->statuses as $d)
+		{
+			//$this->errorschutney->PrintArray($d->user);
+			//$this->errorschutney->PrintArray($d);
+			
+/* 			if ($c==5)
+			{
+				die();
+			} */
+			
+/* 			if ($d->retweeted)
+			{
+				$rt++;
+			}
+			
+			$user = $this->twitterchutney->ProcessSpamUser($d->user);
+			$this->errorschutney->PrintArray(array('id'=>$d->id_str,'tweet'=>$d->text,'user'=>$user));
+			
+			$faker = $this->_GetFakerStatus($user);
+									
+			//$this->errorschutney->PrintArray($faker);
+			
+			if ($faker['status']==1)
+			{
+				$sc++;
+				$spam[] = $faker['follower'];
+			}
+			elseif ($faker['status']==2)
+			{
+				$p++;
+				//$this->errorschutney->PrintArray($faker);
+			}
+			
+			$c++; */
+		
+			$ids[$c] = $d->user->id_str;
+			$c++;
+			
+		}
+		
+		//$ids = substr($ids,0,-1);
+		
+		$this->errorschutney->PrintArray($ids);
+		
+		$count = count($ids);
+		
+		$followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$ids,$count);
+		
+		$this->errorschutney->PrintArray($followerdetails);
+		
+		$sc = 0;
+		$p = 0;
+		$c = 0;
+		
+		foreach ($followerdetails['data'] as $u)
+		{
+			$faker = $this->_GetFakerStatus($u);
+									
+			//$this->errorschutney->PrintArray($faker);
+			
+			if ($faker['status']==1)
+			{
+				$sc++;
+				$spam[] = $faker['follower'];
+			}
+			elseif ($faker['status']==2)
+			{
+				$p++;
+				//$this->errorschutney->PrintArray($faker);
+			}
+			
+			$c++;
+		}
+		
+		$this->errorschutney->PrintArray(array('count'=>$c,'spam'=>$sc,'potential'=>$p));
+	}
+	
     # End Twitter #
 	
 	public function PostAddDive()
 	{
-		$userid = 1919216960;
+		//$userid = 1919216960;
 		//$userid = 198192466;
-		//$userid = 545309711;
+		$userid = 545309711;
 		//$userid = 31386162;
+		//$userid = 633786383;
+		//$userid = 96269828;
+		//$userid = 1101473544;
+		//$userid = 18746024;
 		
-		$user = 'RGIII';
+		$user = 'warne888';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
@@ -2244,12 +2346,12 @@ class API extends Jelly
         die();
     }
     
-    protected function _APIFail($code,$message)
+    protected function _APIFail($code,$message,$data=0)
     {
         
         if ($this->ResponseFormat == 'json')
         {
-            $output['json'] = $this->jsonchutney->JSONAPIError($code,$message);
+            $output['json'] = $this->jsonchutney->JSONAPIError($code,$message,$data);
 
             $this->glaze->view('API/json.php',$output);
         }
@@ -2257,7 +2359,7 @@ class API extends Jelly
         {
             header('Content-type: application/rss+xml');
 
-            $output['xml'] = $this->xmlchutney->XMLAPIError($code,$message);
+            $output['xml'] = $this->xmlchutney->XMLAPIError($code,$message,$data);
 
             $this->glaze->view('API/xml.php',$output);
         }
