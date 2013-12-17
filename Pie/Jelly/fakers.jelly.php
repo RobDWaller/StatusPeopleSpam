@@ -48,6 +48,7 @@ class Fakers extends Jelly
 #					$_SESSION['userid'] = 16816972;
 #					$_SESSION['userid'] = 2147483647;
 #					$_SESSION['userid'] = 17322641;
+#					$_SESSION['userid'] = 42609957;
                     
                     if (isset($_SESSION['message']))
                     {
@@ -68,11 +69,13 @@ class Fakers extends Jelly
                     $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);    
 					$data['logout'] = 1;
 					
-                    $this->sessionschutney->UnsetSessions(array('message'));
+					//$this->sessionschutney->UnsetSessions(array('message','userid'));
 
+					//session_destroy();
+			
                     $this->glaze->view('Spam/index.php',$data);
                 }
-                else
+               	else
                 {
                     $this->glaze->view('Spam/maintenance.php',$data);
                 }
@@ -557,23 +560,23 @@ class Fakers extends Jelly
 	public function TwitterSuccess($vars)
 	{
             
-            if ($vars['rsp'] == 400)
+            if ($_SESSION['rsp'] == 400)
             {
                 $_SESSION['Twitter'] = 1;
                 $data['message'] = $this->buildchutney->PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
             }
-            elseif ($vars['rsp'] == 200)
+            elseif ($_SESSION['rsp'] == 200)
             {
 
-                $userid = $this->validationchutney->UnobscureNumber($vars['ui'],SALT_ONE);
-                $token = $vars['oat'];
-                $secret = $vars['oas'];
-                $where = $vars['var1'];
+                $userid = $this->validationchutney->UnobscureNumber($_SESSION['ui'],SALT_ONE);
+                $token = $_SESSION['oat'];
+                $secret = $_SESSION['oas'];
+                $where = $_SESSION['var1'];
                 
-                $_SESSION['userid'] = $this->validationchutney->UnobscureNumber($vars['ui'],SALT_ONE);
-                $_SESSION['token'] = $vars['oat'];
-                $_SESSION['secret'] = $vars['oas'];
+                $_SESSION['userid'] = $this->validationchutney->UnobscureNumber($_SESSION['ui'],SALT_ONE);
+                $_SESSION['token'] = $_SESSION['oat'];
+                $_SESSION['secret'] = $_SESSION['oas'];
 
                 //$this->errorschutney->DebugArray($vars);
 
@@ -620,12 +623,13 @@ class Fakers extends Jelly
                 
                 //$result = 1;
                 
-                $this->sessionschutney->UnsetSessions(array('returnurl','var1','oauth_token_secret'));
+                $this->sessionschutney->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas'));
                 
                 if ($ok)
                 {
+					$ip = $_SERVER["REMOTE_ADDR"];
                     //$_SESSION['message'] = $this->buildchutney->PageMessage('success',array('Twitter successfully authenticated.'));
-                    $this->dbbind->AddLogin($userid,time());
+                    $this->dbbind->AddLogin($userid,$ip,time());
 					Generic::_LastPage();
                     header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
                 }
@@ -694,18 +698,23 @@ class Fakers extends Jelly
 
 		/* If HTTP response is 200 continue otherwise send to connect page to retry */
 		if (200 == $this->twitter->http_code) {
-                    /* The user has been verified and the access tokens can be saved for future use */
-                    $_SESSION['status'] = 'verified';
-			$redirect = $_SESSION['returnurl'].'?ui='.$this->validationchutney->ObscureNumber($access_token['user_id'],SALT_ONE).'&oat='.$access_token['oauth_token'].'&oas='.$access_token['oauth_token_secret'].'&rsp=200&var1='.$_SESSION['var1'];
-                    header('Location:'.$redirect);
-                } 
-                else 
-                {
-                    /* Save HTTP status for error dialog on connnect page.*/
-                    $_SESSION['message'] = $this->buildchutney->PageMessage('failure',array('Failed to connect to Twitter please try again.'));
-                    $redirect = $this->routechutney->BuildUrl('/Fakers/ClearTwitterSessions',$this->mod_rewrite);
-                    header('Location:'.$redirect);
-                }
+			/* The user has been verified and the access tokens can be saved for future use */
+			$_SESSION['status'] = 'verified';
+			$_SESSION['ui'] = $this->validationchutney->ObscureNumber($access_token['user_id'],SALT_ONE);
+			$_SESSION['oat'] = $access_token['oauth_token'];
+			$_SESSION['oas'] = $access_token['oauth_token_secret'];
+			$_SESSION['rsp'] = 200;
+			
+			$redirect = $_SESSION['returnurl'];
+			header('Location:'.$redirect);
+		} 
+		else 
+		{
+			/* Save HTTP status for error dialog on connnect page.*/
+			$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array('Failed to connect to Twitter please try again.'));
+			$redirect = $this->routechutney->BuildUrl('/Fakers/ClearTwitterSessions',$this->mod_rewrite);
+			header('Location:'.$redirect);
+		}
 		
 	}
 	

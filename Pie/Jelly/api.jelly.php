@@ -2085,16 +2085,24 @@ class API extends Jelly
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
-		$q = '@presidenciamx';
+		//$q = '@presidenciamx';
+		//$q = '#SaluteNaurozBaloch';
+		//$q = '#BanGeo';
+		//$q = '#xmasjumperday';
+		//$q = '#ExtinctionDay';
+		$q = '#MeReEnojoCuando';
 		
-		$search = $this->twitterbind->SearchTweets($details[2],$details[3],$q,100,'mixed','es');
+		$search = $this->twitterbind->SearchTweets($details[2],$details[3],$q,100,'mixed','');
 		
-		//$this->errorschutney->DebugArray($search['data']);
+		
+		//$this->errorschutney->DebugArray($search);
 		
 		$sc = 0;
 		$p = 0;
 		$c = 0;
 		$rt = 0;
+		
+		$retweets = array();
 		
 		foreach ($search['data']->statuses as $d)
 		{
@@ -2131,14 +2139,115 @@ class API extends Jelly
 			
 			$c++; */
 		
-			$ids[$c] = $d->user->id_str;
-			$c++;
+# 			$ids[$c] = $d->user->id_str;
+			
+			
+			if ($d->retweet_count>5)
+			{
+				//$this->errorschutney->PrintArray($d->retweeted_status->id_str);
+				
+				if (!in_array($d->retweeted_status->id_str,$retweets))
+				{
+					$retweets[$c] = $d->retweeted_status->id_str;
+					$tweets[$c] = $d->retweeted_status;
+					$c++; 
+				}
+			}
 			
 		}
 		
+		function RetweetSort($a,$b)
+		{
+			$a1 = $a->retweet_count;
+			$b1 = $b->retweet_count;
+			
+			if ($a1==$b1)
+			{
+				return 0;
+			}
+			
+			return ($a1>$b1) ? -1 : 1 ;
+		}
+		
+		usort($tweets,'RetweetSort');
+		
+		//$this->errorschutney->DebugArray($tweets);
+		
+		$c1 = 0;
+		
+		foreach ($tweets as $t)
+		{
+			if ($c1<5)
+			{
+				$result = $this->twitterbind->GetRetweetDataById($details[2],$details[3],$t->id_str);
+				
+				//$this->errorschutney->DebugArray($result);
+				
+				if ($result['code']==200)
+				{
+					$data[$c1]['id'] = $t->id_str;
+					$data[$c1]['tweet'] = $t->text;
+					$data[$c1]['retweets'] = $this->_BuildRetweets($result);
+				}
+				else
+				{
+					$this->errorschutney->PrintArray($t->id_str);
+					$this->errorschutney->PrintArray($t->text);
+					$this->errorschutney->PrintArray($result);
+				}
+			}
+			
+			$c1++;
+		}
+		
+		//$this->errorschutney->DebugArray($data);
+		
+		foreach ($data as $dt)
+		{
+			
+			$this->errorschutney->PrintArray($dt['tweet']);
+			
+			$count = count($dt['retweets']);
+			$start = $dt['retweets'][$count-1]['retweeted_at'];
+			
+			$c2 = 0;
+			$s = 0;
+			$n = 0;	
+			$v = 0;
+			
+			foreach ($dt['retweets'] as $r)
+			{
+				$check = $this->_AssessRetweet($r,$start);
+			
+				if ($check['status'])
+				{
+					$clean[$n] = $check['record'];
+					$n++;
+				}
+				else
+				{
+					$spam[$s] = $check['record'];
+					$s++;
+				}
+				
+				if ($check['velocity'])
+				{
+					$v++;
+				}
+				
+				$c2++;
+			}
+			
+			$this->errorschutney->DebugArray(array('count'=>$c2,'velocity'=>$v,'spam'=>$s,'spam_records'=>$spam,'clean'=>$n,'clean_records'=>$clean));
+			
+		}
+		
+		//$this->errorschutney->PrintArray($retweets);
+		//$this->errorschutney->PrintArray($tweets);
+		
 		//$ids = substr($ids,0,-1);
 		
-		$this->errorschutney->PrintArray($ids);
+/* 		$this->errorschutney->PrintArray($ids);
 		
 		$count = count($ids);
 		
@@ -2170,7 +2279,202 @@ class API extends Jelly
 			$c++;
 		}
 		
-		$this->errorschutney->PrintArray(array('count'=>$c,'spam'=>$sc,'potential'=>$p));
+		$this->errorschutney->PrintArray(array('count'=>$c,'spam'=>$sc,'potential'=>$p)); */
+	}
+	
+	protected function _BuildRetweets($retweets)
+	{
+		$c = 0;
+		
+		$time = time();
+		
+		foreach ($retweets['data'] as $r)
+		{
+			$array[$c]['screen_name'] = $r->user->screen_name;
+			$array[$c]['description'] = $r->user->description;
+			$array[$c]['url'] = $r->user->url;
+			$array[$c]['retweeted_at'] = strtotime($r->created_at);
+			$array[$c]['source'] = $r->source;
+			$array[$c]['user_created'] = strtotime($r->user->created_at);
+			$array[$c]['user_created_date'] = date('Y/m/d',strtotime($r->user->created_at));
+			$array[$c]['lang'] = $r->user->lang;			
+			$array[$c]['friends'] = $r->user->friends_count;
+			$array[$c]['followers'] = $r->user->followers_count;
+			$array[$c]['tweets'] = $r->user->statuses_count;
+			$array[$c]['favourites'] = $r->user->favourites_count;
+			$array[$c]['listed'] = $r->user->listed_count;
+			if ($r->user->friends_count==0)
+			{
+				$array[$c]['follower_friend'] = 0;
+			}
+			else
+			{
+				$array[$c]['follower_friend'] = round($r->user->followers_count/$r->user->friends_count,2);	
+			}
+			$array[$c]['days'] = round((($time-$array[$c]['user_created'])/3600)/24);
+			$array[$c]['tweets_per_day'] = round($r->user->statuses_count/(round((($time-$array[$c]['user_created'])/3600)/24)),2);
+			//$array[$c]['followers_tweets'] = round($r->user->followers_count/$r->user->statuses_count,2);
+			
+			$c++;
+		}
+		
+		return $array;
+	}
+	
+	protected function _AssessRetweet($retweet,$start)
+	{
+		$f = 0;
+		$status = 1;
+		$velocity = 0;
+		
+		if ($retweet['source']=='web')
+		{
+			$f++;	
+			$f++;
+		}
+		if ($retweet['followers']<=50&&$retweet['friends']<=50)
+		{
+			$f++;
+		}
+		if ($retweet['follower_friend']<=0.2)
+		{
+			$f++;
+		}
+		if ($retweet['tweets_per_day']<=0.5&&$retweet['tweets']>50)
+		{
+			$f++;
+		}
+		if (empty($retweet['description'])&&empty($retweet['url']))
+		{
+			$f++;
+		}
+		
+		if ($f>=4)
+		{
+			$status = 0;
+		}
+		
+		if (($retweet['retweeted_at']-$start)<=180)
+		{
+			$velocity = 1;
+		}
+		
+		return array('status'=>$status,'record'=>$retweet,'velocity'=>$velocity);
+		
+	}
+	
+	public function ViewRetweets()
+	{
+		$userid = 1919216960;
+		
+		$details = $this->dbbind->GetTwitterDetails($userid);
+		
+		//$result = $this->twitterbind->GetRetweetData($details[2],$details[3],100);
+		$result = $this->twitterbind->GetRetweetDataById($details[2],$details[3],'410398079129370625');
+		
+		//$this->errorschutney->DebugArray($result);
+		
+		$c = 0;
+		
+		$time = time();
+		
+		$count = count($result['data']);
+		
+		//$this->errorschutney->PrintArray($count);
+		
+		$start = strtotime($result['data'][$count-1]->created_at);
+		$endm1 = $result['data'][1]->created_at;
+		$end = $result['data'][0]->created_at;
+		
+		//$this->errorschutney->DebugArray(array($start,$endm1,$end));
+		
+		foreach ($result['data'] as $r)
+		{
+			$array[$c]['screen_name'] = $r->user->screen_name;
+			$array[$c]['description'] = $r->user->description;
+			$array[$c]['url'] = $r->user->url;
+			$array[$c]['retweeted_at'] = strtotime($r->created_at);
+			$array[$c]['source'] = $r->source;
+			$array[$c]['user_created'] = strtotime($r->user->created_at);
+			$array[$c]['user_created_date'] = date('Y/m/d',strtotime($r->user->created_at));
+			$array[$c]['lang'] = $r->user->lang;			
+			$array[$c]['friends'] = $r->user->friends_count;
+			$array[$c]['followers'] = $r->user->followers_count;
+			$array[$c]['tweets'] = $r->user->statuses_count;
+			$array[$c]['favourites'] = $r->user->favourites_count;
+			$array[$c]['listed'] = $r->user->listed_count;
+			$array[$c]['follower_friend'] = round($r->user->followers_count/$r->user->friends_count,2);
+			//$array[$c]['tweets_per_day'] = round($r->user->statuses_count/($time-$array[$c]['user_created']),2);
+			$array[$c]['tweets_per_day'] = round($r->user->statuses_count/(round((($time-$array[$c]['user_created'])/3600)/24)),2);
+			$array[$c]['followers_tweets'] = round($r->user->followers_count/$r->user->statuses_count,2);
+			
+			
+			
+			$c++;
+		}
+		
+		//$this->errorschutney->PrintArray($array);
+		
+		$s = 0;
+		$n = 0;
+		$c1 = 0;
+		$v = 0;
+		
+		foreach ($array as $a)
+		{
+/* 			if ($a['source']=='web')
+			{
+				if ($a['followers']<=50&&$a['friends']<=50)
+				{
+					$spam[$s] = $a;
+					$s++;
+				}
+				elseif ($a['follower_friend']<=0.2)
+				{
+					$spam[$s] = $a;
+					$s++;
+				}
+				elseif ($a['tweets_per_day']<=0.5)
+				{
+					$spam[$s] = $a;
+					$s++;
+				}
+				else
+				{
+					$clean[$n] = $a;
+					$n++;
+				}
+			}
+			else
+			{
+				$clean[$n] = $a;
+				$n++;
+			}
+			
+			$c1++; */
+			
+			$check = $this->_AssessRetweet($a,$start);
+			
+			if ($check['status'])
+			{
+				$clean[$n] = $check['record'];
+				$n++;
+			}
+			else
+			{
+				$spam[$s] = $check['record'];
+				$s++;
+			}
+			
+			if ($check['velocity'])
+			{
+				$v++;
+			}
+			
+			$c1++;
+		}
+		
+		$this->errorschutney->DebugArray(array('count'=>$c1,'velocity'=>$v,'spam'=>$s,'spam_records'=>$spam,'clean'=>$n,'clean_records'=>$clean));
 	}
 	
     # End Twitter #
@@ -2178,15 +2482,15 @@ class API extends Jelly
 	public function PostAddDive()
 	{
 		//$userid = 1919216960;
-		//$userid = 198192466;
-		$userid = 545309711;
+		$userid = 198192466;
+		//$userid = 545309711;
 		//$userid = 31386162;
 		//$userid = 633786383;
 		//$userid = 96269828;
 		//$userid = 1101473544;
 		//$userid = 18746024;
 		
-		$user = 'warne888';
+		$user = 'number10gov';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
