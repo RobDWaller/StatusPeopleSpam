@@ -832,7 +832,7 @@ class Cron extends Jelly
 		$unobscure = $this->validationchutney->Unobscure($obscure,$salt);
 		
 		$this->errorschutney->DebugArray(array('string'=>$string,'salt'=>$salt,'obscure'=>$obscure,'unobscure'=>$unobscure));
-	} 
+	} */
 	
 	public function AddEmails()
 	{
@@ -853,7 +853,7 @@ class Cron extends Jelly
 		}
 	}
 	
-	public function AddMainEmails()
+	/*public function AddMainEmails()
 	{
 		$emails = $this->mainbind->GetEmailAddresses();
 		
@@ -892,16 +892,16 @@ class Cron extends Jelly
 		
 		$this->dbbind->AddMarketingEmails($string);
 		
-	}
+	} */
 	
 	public function SendMarketingEmail()
 	{
 		
 		$emails = $this->dbbind->GetMarketingEmails();
-		$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
+		/*$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
 						array('email'=>'ben@statuspeople.com','forename'=>'Ben'),
 						array('email'=>'rdwaller1984@googlemail.com','forename'=>'Rob'),
-						array('email'=>'benj.christensen01@gmail.com','forename'=>'Ben'));
+						array('email'=>'benj.christensen01@gmail.com','forename'=>'Ben'));*/
 		
 		$this->errorschutney->PrintArray(count($emails));
 		
@@ -911,31 +911,36 @@ class Cron extends Jelly
 		
 		foreach ($emails as $e)
 		{
-			$message = '';
-			$message .= '<p>Hi '.$e['forename'].',</p>';
-			$message .= '<p>This is a quick message just to let you know we are running an amazing <a href="http://www.kweekweek.com/StatusPeople/f662f2cf42" style="color:#36b6d5;">Twitter Follower Training Seminar</a> next week.</p>';
-			$message .= '<p>It\'s in London on Wednesday December 4th and aims to give you the skills to boost your Twitter engagement and ROI and turn you into a social marketing superstar. ';
-			$message .=	'It\'s only £20 &mdash; an amazing price for a 2 hour seminar &mdash; so <a href="http://www.kweekweek.com/StatusPeople/f662f2cf42" style="color:#36b6d5;">come along and check it out</a>.</p>';
-			$message .= '<p>Some of the things you\'ll learn include...</p>';
-			$message .= '<ul>';
-			$message .= '<li>Why follower quality is important and why you should never buy fake followers</li>';
-			$message .= '<li>What data and tools you need to use to better understand your Twitter Followers</li>';
-			$message .= '<li>How you can legitimately grow your Twitter following</li>';
-			$message .= '<li>How to use follower data to improve your content marketing to boost engagement and ROI</li>';
-			$message .= '</ul>';
-			$message .= '<p>It should be a great morning so <a href="http://www.kweekweek.com/StatusPeople/f662f2cf42" style="color:#36b6d5;">book yourself a ticket now</a>.</p>';
-			$message .= '<p>We look forward to seeing you there. And if you need any extra info let us know at info@statuspeople.com</p>';
-			$message .= '<p>Thanks,</p>';
-			$message .= '<p>StatusPeople</p>';
-			$message .= '<p>P.S. We made a little, well quite big, mistake with the last email we sent out. We\'re really very sorry if we caused you any inconvenience.</p>';
+			$message = $this->_MarketingMessage($e);
 			
-			$send = $this->emailchutney->SendEmail($e['email'],'Boost your Twitter Engagement and ROI at our Training Seminar for just £20',$message,$headers,1);
+			$send = $this->emailchutney->SendEmail($e['email'],'Learn About Twitter Follower Quality to Become a Social Media Expert',$message,$headers,1);
 			
 			$this->errorschutney->PrintArray($e);
 			
 		}
 		
-	} */
+	}
+	
+	protected function _MarketingMessage($e)
+	{
+		$message = '';
+		$message .= '<p>Hi '.$e['forename'].',</p>';
+		$message .= '<p>This Friday we\'re running our first <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">Twitter Follower Training Webinar</a>. It will turn you into a social media marketing expert by teaching you how to better understand and engage your Twitter Following.</p>';
+		$message .= '<p>It starts at 3pm GMT/10am EST and it only costs £30/$45. You can <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">purchase your ticket for the webinar right now</a>.</p>';
+		$message .= '<p>The Webinar will last for 60-90 minutes, there will be plenty of time for questions and it will focus on the following topics...</p>';
+		$message .= '<ul>';
+		$message .= '<li>What is follower quality and why it is important on Twitter</li>';
+		$message .= '<li>How to understand Follower Quality and what does it mean for users and brands</li>';
+		$message .= '<li>What other analytics are important to understand Twitter Followers</li>';
+		$message .= '<li>How to use this data to improve engagement and boost ROI</li>';
+		$message .= '</ul>';
+		$message .= '<p>If you want to become a social media marketing expert join us and <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">purchase your ticket now</a>.</p>';
+		$message .= '<p>Hope to see you there and if you have any questions email us at info@statuspeople.com.</p>';
+		$message .= '<p>Thanks,</p>';
+		$message .= '<p>StatusPeople</p>';
+		
+		return $message;
+	}
 	
 	public function RateLimitTest()
 	{

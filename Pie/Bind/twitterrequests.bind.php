@@ -91,10 +91,21 @@ class TwitterRequests
         public function GetRetweetData($token,$secret,$count)
         {
                 $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
-		$feed = $this->twitter->get('statuses/retweets_of_me',array('count'=>$count));
+				$feed = $this->twitter->get('statuses/retweets_of_me',array('count'=>$count));
 		
-		return $feed;
+				return $feed;
         }
+	
+		public function GetRetweetDataByID($token,$secret,$id)
+		{
+			$this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
+			$feed = $this->twitter->get('statuses/retweets',array('id'=>$id,'count'=>100));
+		
+			$result['code'] = $this->twitter->http_code;
+			$result['data'] = $feed;
+			
+			return $result;
+		}
         
         public function GetDMData($token,$secret,$count)
         {

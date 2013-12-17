@@ -42,6 +42,7 @@ class Payments extends Jelly
             
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
             $data['title'] = 'Status People Fake Follower Check &mdash; Details';
+			$data['menu'] = '&nbsp;';
             
             $this->sessionschutney->UnsetSessions(array('message','email','title','firstname','lastname'));
             
@@ -170,6 +171,7 @@ class Payments extends Jelly
         $data['months'] = '1';
         $data['type'] = $vars['type'];
 		$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);
+		$data['menu'] = '&nbsp;';
 		
         $vc = $this->paymentbind->CountValidRecords($_SESSION['userid']);
         
@@ -261,7 +263,8 @@ class Payments extends Jelly
             $data['saving'] = $_POST['saving'];
             $data['months'] = $_POST['months'];
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);
-            
+            $data['menu'] = '&nbsp;';
+			
             $this->glaze->view('Payments/checkout.php',$data);
         
         }
@@ -354,6 +357,7 @@ class Payments extends Jelly
 			
 			$data["logout"] = $logout;
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);
+			$data['menu'] = '&nbsp;';
 			
             $this->glaze->view('Payments/confirmation.php',$data);
         }

@@ -24,7 +24,7 @@
 						</p>
 					</div>
 					<div class="row one center">
-						<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>
+						<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="http://statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>
 					</div>
 				</div>
 				<div class="row bg2">

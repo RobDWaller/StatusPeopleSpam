@@ -10,7 +10,7 @@ class DBRequests extends DB
                         FROM spsp_users
                         WHERE twitterid = :twitterid AND live = 1";
             
-            $params = array('twitterid'=>array($twitterid));
+            $params = array('twitterid'=>array($twitterid,'INT',0));
             
             $result = $this->SelectCount($query, $params);
             
@@ -25,7 +25,7 @@ class DBRequests extends DB
                         FROM spsp_users
                         WHERE twitterid = :twitterid AND live = 1";
             
-            $params = array('twitterid'=>array($twitterid));
+            $params = array('twitterid'=>array($twitterid,'INT',0));
             
             $result = $this->SelectRecord($query, $params);
             
@@ -600,12 +600,13 @@ class DBRequests extends DB
 			return $update;
 		}
 	
-		public function AddLogin($twitterid,$created)
+		public function AddLogin($twitterid,$ip,$created)
 		{
-			$query = "INSERT INTO spsp_logins (twitterid,created)
-						VALUES (:twitterid,:created)";
+			$query = "INSERT INTO spsp_logins (twitterid,ipaddress,created)
+						VALUES (:twitterid,:ipaddress,:created)";
 			
 			$params = array('twitterid'=>array($twitterid,'INT',0),
+							'ipaddress'=>array($ip,'STR',32),
 						   	'created'=>array($created,'INT',0));
 			
 			$result = $this->InsertRecord($query,$params);
