@@ -10,9 +10,6 @@
 			<div class="content">
 				<div class="row center">
 					<?=$scores;?>
-					<input type="hidden" id="twitterhandle" value="<?=$twitterhandle;?>" />
-					<input type="hidden" id="twitterid" value="<?=$twitterid;?>" />
-					<input type="hidden" id="spamscore" value="0" />
 					<div class="row connect" id="GetScoresForms">
 						<p class="bree sp2"><form action="/Fakers/GetScores" method="post" id="myscoreform"><input type="hidden" name="name" value="<?=$twitterhandle;?>" /><input type="submit" value="Get Faker Scores" /></form></p>
 					</div>

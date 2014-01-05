@@ -16,7 +16,7 @@ class API extends Jelly
         parent::__construct();
         
         $httporigin = $_SERVER['HTTP_ORIGIN'];
-        $allowed = array('http://tools.statuspeople.com','http://test.statuspeople.com');
+        $allowed = array('http://tools.statuspeople.com','http://test.statuspeople.com','http://hometest.statuspeople.com','http://www.statuspeople.com','http://statuspeople.com');
         
         if (in_array($httporigin,$allowed))
         {        
@@ -2479,18 +2479,62 @@ class API extends Jelly
 	
     # End Twitter #
 	
+	public function GetAPIScore($vars)
+	{
+		$apikey = $vars['ky'];
+		$this->ResponseFormat = $vars['rf'];
+		$this->_CheckForResponseFormat();
+		
+		$screen_name = str_replace('@','',$vars['sc']);
+		
+		$this->_CheckText($screen_name,'Screen Name');
+		
+		$check = $this->apibind->CheckForKey($apikey);
+		
+		if ($check)
+		{
+			$exists = $this->apibind->CheckForScreenNameScore($screen_name);
+			
+			if ($exists>0)
+			{
+				$result = $this->apibind->GetScore($screen_name);	
+				//$this->errorschutney->DebugArray($result);
+				
+				$results['screen_name'] = $result[2];
+				$results['avatar'] = $result[3];
+				$results['fake'] = round(($result[4]/$result[7])*100);
+				$results['inactive'] = round(($result[5]/$result[7])*100);
+				$results['good'] = 100-($results['fake']+$results['inactive']);
+				$results['followers'] = $result[8];
+				$results['deepdive'] = ($result[9]==1?'No':'Yes');
+				$results['timestamp'] = $result[11]; 
+				$results['date'] = date('Y/m/d H:i',$result[11]);
+				
+				$this->_APISuccess(201, 'Request Successful, Twitter User Data Found.', $results);
+			}
+			else
+			{
+				$this->_APIFail(400,'User could not be found.');
+			}
+		}
+		else
+		{
+			$this->_APIFail(400,'API Key Not Valid.');
+		}
+	}
+	
 	public function PostAddDive()
 	{
 		//$userid = 1919216960;
-		$userid = 198192466;
+		//$userid = 198192466;
 		//$userid = 545309711;
 		//$userid = 31386162;
 		//$userid = 633786383;
 		//$userid = 96269828;
-		//$userid = 1101473544;
+		$userid = 1101473544;
 		//$userid = 18746024;
 		
-		$user = 'number10gov';
+		$user = 'JLMelenchon';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
@@ -2629,6 +2673,56 @@ class API extends Jelly
 		else
 		{
 			$this->_APIFail(400,'No data submitted.');
+		}
+		
+	}
+	
+	public function GetEventbriteData($vars)
+	{
+		
+		$this->ResponseFormat = $vars['rf'];
+		
+        $this->_CheckForResponseFormat();
+		
+		$rss = $this->curlbind->GetXMLString('http://www.eventbrite.co.uk/rss/user_list_events/78072036317');
+		
+		//$this->errorschutney->DebugArray($rss);
+					
+		$query = '/rss/channel/item';
+					
+		$children = array('title','description','link','pubDate');
+					
+		$items = $this->domchutney->ParseXMLString($rss,$query,$children);
+		
+		if ($items['code']==200)
+		{
+			$c = 0;
+			
+			foreach ($items['data'] as $k => $i)
+			{
+				$items['data'][$c]['id'] = 0;
+				
+				preg_match('/-([0-9]+)\?/',$i['link'],$match);
+				
+				//$this->errorschutney->DebugArray($match);
+				
+				if (!empty($match[1]))
+				{
+					$items['data'][$c]['id'] = $match[1];
+				}
+				
+				$items['data'][$c]['date'] = date('Y/m/d H:i',strtotime($items['data'][$c]['pubDate']));
+				
+				$c++;
+			}
+			
+			//$this->errorschutney->DebugArray($items);
+			
+			$this->_APISuccess(201, 'Eventbrite Feed Data Returned.',$items['data']);
+		}
+		else
+		{
+			$this->_APIFail(500,'Failed to return any Eventbrite data.');
 		}
 		
 	}

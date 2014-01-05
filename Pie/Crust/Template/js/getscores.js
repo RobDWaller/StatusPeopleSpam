@@ -153,13 +153,6 @@ $(document).ready(function(){
 		
 	});
 	
-	$(document).on('click','#rightinfoclose',function(e){
-		
-		e.preventDefault();
-		
-		pop.RightInfoClose();
-		
-	});
 	
 	$(document).on('click','.details',function(e){
         

@@ -804,6 +804,67 @@ class Cron extends Jelly
 		//die('hello');
 	}
 	
+	public function UpdateAPIScores()
+	{
+		$scores = $this->dbbind->GetSpamScoreDetails();
+		
+		$time = time();
+		//$this->errorschutney->DebugArray($scores);
+		
+		foreach ($scores as $s)
+		{
+			$type = 1; 
+			
+			$checkdeepdive = $this->deepdivebind->CountScores($s['twitterid']);
+			
+			if ($checkdeepdive>0)
+			{
+				$deepdivescore = $this->deepdivebind->GetScores($s['twitterid']);
+				
+				$s['checks'] = $deepdivescore[3];
+				$s['spam'] = $deepdivescore[2];
+				$s['potential'] = $deepdivescore[1];
+				$s['updated'] = $deepdivescore[4];
+				$type = 2;
+			}
+			
+			$check = $this->apibind->CheckForScore($s['twitterid']);
+			
+			$good = $s['checks'] - ($s['spam']+$s['potential']);
+			
+			if ($check>0)
+			{
+				$checkdate = $this->apibind->CheckScoreAndDate($s['twitterid'],$s['updated']);
+				
+				if ($checkdate==0)
+				{
+					$this->apibind->UpdateScore($s['twitterid'],$s['screen_name'],$s['avatar'],$good,$s['potential'],$s['spam'],$s['checks'],$s['followers'],$type,$s['updated'],$time);
+				}
+			}
+			else
+			{
+				//$this->errorschutney->PrintArray($s);
+				//die('Ok!!');
+				
+				
+				$this->apibind->AddScore($s['twitterid'],$s['screen_name'],$s['avatar'],$good,$s['potential'],$s['spam'],$s['checks'],$s['followers'],$type,$s['updated'],$time);
+			}
+			
+			$this->dbbind->UpdateAPICheck($s['twitterid'],$time);
+			
+			$this->errorschutney->PrintArray($s);
+		}
+	}
+	
+	public function AddKey()
+	{
+		$twitterid = 198192466;
+		
+		$hash = $this->validationchutney->HashString(time().$twitterid.rand(0,9999));
+		
+		$this->apibind->AddKey($twitterid,$hash,time());
+	}
+	
 /* 	public function ObsTest()
 	{
 		$nums = array(1,2,3,12,456,6753,73826,287364,7263718,90876543,543216789,1233213131,12332131319,123321313198,1233213131987,12332131319876);
@@ -897,11 +958,11 @@ class Cron extends Jelly
 	public function SendMarketingEmail()
 	{
 		
-		$emails = $this->dbbind->GetMarketingEmails();
-		/*$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
+		//$emails = $this->dbbind->GetMarketingEmails();
+		$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
 						array('email'=>'ben@statuspeople.com','forename'=>'Ben'),
 						array('email'=>'rdwaller1984@googlemail.com','forename'=>'Rob'),
-						array('email'=>'benj.christensen01@gmail.com','forename'=>'Ben'));*/
+						array('email'=>'benj.christensen01@gmail.com','forename'=>'Ben'));
 		
 		$this->errorschutney->PrintArray(count($emails));
 		
@@ -913,7 +974,7 @@ class Cron extends Jelly
 		{
 			$message = $this->_MarketingMessage($e);
 			
-			$send = $this->emailchutney->SendEmail($e['email'],'Learn About Twitter Follower Quality to Become a Social Media Expert',$message,$headers,1);
+			$send = $this->emailchutney->SendEmail($e['email'],'Become a Social Media Marketing Expert Learn How to Make More From Your Twitter Followers',$message,$headers,1);
 			
 			$this->errorschutney->PrintArray($e);
 			
@@ -925,7 +986,7 @@ class Cron extends Jelly
 	{
 		$message = '';
 		$message .= '<p>Hi '.$e['forename'].',</p>';
-		$message .= '<p>This Friday we\'re running our first <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">Twitter Follower Training Webinar</a>. It will turn you into a social media marketing expert by teaching you how to better understand and engage your Twitter Following.</p>';
+		$message .= '<p>This is your last chance to sign up to our amazing <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">Twitter Follower Quality and Analytics Training Webinar</a>. It will turn you into a social media marketing expert and help you make even more from your Twitter Following.</p>';
 		$message .= '<p>It starts at 3pm GMT/10am EST and it only costs £30/$45. You can <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">purchase your ticket for the webinar right now</a>.</p>';
 		$message .= '<p>The Webinar will last for 60-90 minutes, there will be plenty of time for questions and it will focus on the following topics...</p>';
 		$message .= '<ul>';
@@ -934,7 +995,7 @@ class Cron extends Jelly
 		$message .= '<li>What other analytics are important to understand Twitter Followers</li>';
 		$message .= '<li>How to use this data to improve engagement and boost ROI</li>';
 		$message .= '</ul>';
-		$message .= '<p>If you want to become a social media marketing expert join us and <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">purchase your ticket now</a>.</p>';
+		$message .= '<p>If you want to become a social media marketing expert <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">purchase your ticket now</a> and join us.</p>';
 		$message .= '<p>Hope to see you there and if you have any questions email us at info@statuspeople.com.</p>';
 		$message .= '<p>Thanks,</p>';
 		$message .= '<p>StatusPeople</p>';
@@ -965,5 +1026,10 @@ class Cron extends Jelly
 		$this->errorschutney->DebugArray($result);
 		
 	}
+	
+/* 	public function SportTest()
+	{
+		$page = $this->curlbind->	
+	} */
 }
 ?>

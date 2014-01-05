@@ -24,7 +24,7 @@
 			<div class="row one center">
 				<small>
 					<a href="/Fakers/Terms/" target="_blank">Terms</a> | 
-					<a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a>
+					<a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="http://statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a>
 				</small>
 			</div>
 			<div class="row one">
@@ -36,4 +36,10 @@
 			</div>
 		</div>
 	</div>
+<script>
+	$(document).ready(function(){
+		var srv = new Server();
+		srv.CallServer('GET','json','/API/GetEventbriteData','rf=json','Spam_EventbriteData');
+	});
+</script>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

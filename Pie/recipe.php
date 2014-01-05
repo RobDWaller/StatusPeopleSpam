@@ -27,6 +27,14 @@ define('__DBSTT_USERNAME','sttsppl');
 define('__DBSTT_PASSWORD','6eyaK15lW');
 define('__DBSTT_NAME','sttsp');
 
+// API Databas
+
+define('__DBAPI_HOSTNAME','Localhost');
+define('__DBAPI_USERNAME','stspapi');
+define('__DBAPI_PASSWORD','W8AL8#CbbD8Z#CtwS2');
+define('__DBAPI_NAME','statuspeople_spam_api');
+
+// Main Database
 define('__DBMAIN_HOSTNAME','127.0.0.1');
 define('__DBMAIN_USERNAME','sptools');
 define('__DBMAIN_PASSWORD','osiy#e873js');

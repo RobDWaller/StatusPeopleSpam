@@ -33,7 +33,7 @@
 				</div>
 				<div class="threeb a">
 					<?php
-					if ($logout == 1)
+					if ($logout == 1 || $logout == 2)
 					{
 						echo $menu;	
 					}
@@ -42,16 +42,29 @@
 						echo '<ul><li><a href="" class="ico icon" data-tip="Search for Friends" id="friendsearch">s</a></li></ul>';
 					}	
 					?>
+					<input type="hidden" id="twitterhandle" value="<?=$twitterhandle;?>" />
+					<input type="hidden" id="twitterid" value="<?=$twitterid;?>" />
+					<input type="hidden" id="spamscore" value="0" />
+					<input type="hidden" id="spam" value="0" />
+					<input type="hidden" id="potential" value="0" />
+					<input type="hidden" id="checks" value="0" />
+					<input type="hidden" id="followers" value="0" />
+					<input type="hidden" id="firsttime" value="<?=$firsttime;?>" />
+					<input type="hidden" id="accounttype" value="<?=$type;?>"/>
 				</div>
 				<div class="threea">
 					<?php
-					if ($logout != 1)
+					if (!$logout)
 					{
-						echo '<ul class="fakericons"><li><a href="/Fakers/Dashboard" class="ico3 icon" data-tip="Fakers Dashboard">"</a></li><li><a href="/Fakers/Followers" class="ico icon" data-tip="Follower Analytics">t</a></li><li><a href="/Fakers/Help" class="ico3 icon" data-tip="Help">!</a></li><li><a href="http://statuspeople.com/Pages/Training" target="_blank" class="ico3 icon" data-tip="Training">)</a></li></ul>';	
+						echo '<ul class="fakericons"><li><a href="/Fakers/Dashboard" class="ico3 icon" data-tip="Fakers Dashboard">"</a></li><li><a href="/Fakers/Followers" class="ico icon" data-tip="Follower Analytics">t</a></li><li><a href="/Fakers/Help" class="ico3 icon" data-tip="Help">!</a></li><li><a href="http://statuspeople.com/Pages/Training" target="_blank" class="ico3 icon" data-tip="Training">)</a></li><li><a href="/Fakers/Settings" class="ico2 icon" data-tip="Settings">9</a></li></ul>';	
 					}
-					else
+					else if ($logout == 1)
 					{
-						echo '<ul class="fakericons"><li><a href="/Fakers/Help" class="ico3 icon" data-tip="Help">!</a></li><li><a href="http://statuspeople.com/Pages/Training" target="_blank" class="ico3 icon" data-tip="Training">)</a></li></ul>';
+						echo '<ul class="fakericons"><li><a href="/Fakers/Scores" class="ico icon" data-tip="Home">p</a></li><li><a href="/Fakers/Help" class="ico3 icon" data-tip="Help">!</a></li><li><a href="http://statuspeople.com/Pages/Training" target="_blank" class="ico3 icon" data-tip="Training">)</a></li><li><a href="/Fakers/Settings" class="ico2 icon" data-tip="Settings">9</a></li></ul>';
+					}
+					else if ($logout == 2)
+					{
+						echo '<ul class="fakericons"><li><a href="/Fakers" class="ico icon" data-tip="Home">p</a></li><li><a href="/Fakers/Help" class="ico3 icon" data-tip="Help">!</a></li><li><a href="http://statuspeople.com/Pages/Training" target="_blank" class="ico3 icon" data-tip="Training">)</a></li></ul>';
 					}
 					?>
 				</div>

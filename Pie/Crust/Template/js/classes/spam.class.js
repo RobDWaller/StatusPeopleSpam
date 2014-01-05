@@ -1639,6 +1639,22 @@ function Spam()
 		}
 	}
 	
+	this.EventbriteData = function(result)
+	{
+		var pop = new Popup();
+		
+		if (result.code == 201)
+		{
+			//alert(result.data[0].id);
+			
+			pop.BuildRightInfoBox();
+			var p = $('<p><strong>Join Our Next Webinar</strong></p>'+
+								 '<p>'+result.data[0].title+'</p>'+
+					  			 '<input type="button" id="webinarbut" data-link="'+result.data[0].link+'" value="Register Now" />');
+			pop.RightInfoContent(p);
+		}
+	}
+	
 	this.ProcessUserAddDetails = function(result)
 	{
 		var pop = new Popup();
