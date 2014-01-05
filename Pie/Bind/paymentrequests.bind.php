@@ -20,7 +20,7 @@ class PaymentRequests Extends DB
     {
         $query = "SELECT *
                     FROM spsp_user_details
-                    WHERE twitterid = :twitterid";
+                    WHERE twitterid = :twitterid AND live = 1";
         
         $params = array('twitterid'=>array($userid,'INT',0));
         
@@ -54,6 +54,28 @@ class PaymentRequests Extends DB
 //        Errors::DebugArray($params);
         
         $result = $this->InsertRecord($query,$params);
+        
+        return $result;
+    }
+	
+	public function UpdateUserDetails($twitterid,$email,$title,$firstname,$surname)
+    {
+        $query = "UPDATE spsp_user_details 
+					SET email = :email,
+					title = :title,
+					forename = :forename,
+					surname = :surname
+					WHERE twitterid = :twitterid AND live = 1";
+        
+        $params = array('twitterid'=>array($twitterid,'INT',0),
+                        'email'=>array($email,'STR',255),
+                        'title'=>array($title,'STR',150),
+                        'forename'=>array($firstname,'STR',150),
+                        'surname'=>array($surname,'STR',150));
+        
+		//Errors::DebugArray($params);
+        
+        $result = $this->UpdateRecord($query,$params);
         
         return $result;
     }

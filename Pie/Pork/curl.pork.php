@@ -67,6 +67,27 @@ class Curl
 	
 	}
 	
+	public function GetXMLString($url)
+	{
+		$ch = curl_init();
+		
+		curl_setopt($ch,CURLOPT_URL,$url);
+		
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+		
+		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,30);
+		
+		curl_setopt($ch,CURLOPT_FRESH_CONNECT,true);
+		
+		libxml_use_internal_errors(true);
+		
+		$xml = curl_exec($ch);
+		
+		curl_close($ch);
+		
+		return $xml;
+	}
+	
 	public function GrabXML($url)
 	{
 		

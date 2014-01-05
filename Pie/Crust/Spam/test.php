@@ -3,7 +3,7 @@
 		<div class="banner">
 			<ul>
 				<li class="bannerimage"></li>   
-				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Terms</a></li>
+				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Test</a></li>
 			</ul>
 		</div>
 		<div class="column bgwhite">

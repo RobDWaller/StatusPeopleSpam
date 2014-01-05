@@ -78,6 +78,19 @@ class DBRequests extends DB
             return $result;
             
         }
+	
+		public function GetSpamScoreDetails()
+		{
+			$query = "SELECT ui.screen_name, ui.avatar, sc.spam, sc.potential, sc.checks, sc.followers, ui.twitterid, sc.updated
+                        FROM spsp_spam_scores AS sc 
+                        JOIN spsp_user_info AS ui ON sc.twitterid = ui.twitterid
+                        ORDER BY sc.apicheck ASC
+                        LIMIT 0,10000";
+            
+            $result = $this->SelectRecords($query,$params);
+            
+            return $result;
+		}
         
         public function CountSpamRecords($twitterid)
         {
@@ -168,6 +181,20 @@ class DBRequests extends DB
             return $result;
         }
         
+		public function UpdateAPICheck($twitterid,$apicheck)
+		{
+			$query = "UPDATE spsp_spam_scores
+						SET apicheck = :apicheck
+						WHERE twitterid = :twitterid";
+			
+			$params = array('twitterid'=>array($twitterid,'INT',0),
+                            'apicheck'=>array($apicheck,'INT',0));
+			
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+	
         public function CountUserInfoRecords($twitterid)
         {
             
