@@ -148,13 +148,18 @@ class TwitterRequests
             
             $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $token, $secret);
             
-            $result = $this->twitter->get('users/show', array('user_id' => $userid));
+            $user = $this->twitter->get('users/show', array('user_id' => $userid));
             
 //            Errors::PrintArray($result);
 //            Errors::PrintArray($this->twitter->http_code);
 //            Errors::PrintArray($this->twitter->http_header);
 //            Errors::DebugArray($this->twitter->http_info);
             
+			$code = $this->twitter->http_code;
+                
+            $result['code'] = $code;
+            $result['user'] = $user;
+			
             return $result;
             
         }

@@ -273,7 +273,7 @@ class Payments extends Jelly
         
         $userid = $_SESSION['userid'];
         
-		$validity = $this->_CheckValidity($_SESSION['userid']);
+		$validity = Fakers::_CheckValidity($_SESSION['userid']);
 		$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
 		
 		if (!$validity[0])
@@ -284,7 +284,7 @@ class Payments extends Jelly
 			if ($_SESSION['userid']<1)
 			{
 				$data['logout'] = 2;
-				$data['menu'] = $this->_BuildMenu();
+				$data['menu'] = Fakers::_BuildMenu();
 			}
 		}
 		
