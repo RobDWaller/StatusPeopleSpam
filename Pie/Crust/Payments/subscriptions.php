@@ -28,7 +28,7 @@
 							<td><strong>Total:</strong></td><td><strong><span class="currency"><?=$currency;?></span><span id="carttotal"><?=$total;?></span></strong></td>
 						</tr>
 					</table>
-					<small>Remember to read our <a href="http://tools.statuspeople.com/User/Terms" target="_blank">terms and conditions</a> before you buy.</small>
+					<small>Remember to read our <a href="/Fakers/Terms" target="_blank">terms and conditions</a> before you buy.</small>
 				</div>
 				<div class="two">
 					<h2>Details</h2>

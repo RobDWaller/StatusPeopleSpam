@@ -32,7 +32,7 @@
 						</tr>
 					</table>
 					<div class="textright">
-						<small id="termstext"><input type="checkbox" id="tc"/> I have read and agree to the StatusPeople.com <a href="http://tools.statuspeople.com/User/Terms" target="_blank">terms and conditions</a>.</small>
+						<small id="termstext"><input type="checkbox" id="tc"/> I have read and agree to the StatusPeople.com <a href="/Fakers/Terms" target="_blank">terms and conditions</a>.</small>
 					</div>
 					<?=$form;?>
 				</div>
