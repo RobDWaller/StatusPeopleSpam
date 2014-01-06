@@ -30,8 +30,8 @@ class Fakers extends Jelly
         
         public function Index($vars)
         {
-                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
-                {
+                /*if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
+                {*/
 #                   $_SESSION['userid'] = 114873621;
 #                  	$_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
@@ -84,14 +84,14 @@ class Fakers extends Jelly
 
         }
         
-		public function IcoTest()
+		/*public function IcoTest()
 		{
 			$data['text'] = '<p class="ico">\|zxcvbnm,./<>?asdfghjkl;\'#:@~qwertyuiop[]{}`1234567890-=!"£$%^&*()_+</p>';
 			$data['text'] .= '<p class="ico2">\|zxcvbnm,./<>?asdfghjkl;\'#:@~qwertyuiop[]{}`1234567890-=!"£$%^&*()_+</p>';
 			$data['text'] .= '<p class="ico3">\|zxcvbnm,./<>?asdfghjkl;\'#:@~qwertyuiop[]{}`1234567890-=!"£$%^&*()_+</p>';
 			
 			$this->glaze->view('Spam/test.php',$data);
-		}
+		}*/
 	
         public function Scores($vars)
         {
