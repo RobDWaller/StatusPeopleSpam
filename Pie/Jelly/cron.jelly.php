@@ -51,7 +51,7 @@ class Cron extends Jelly
 						
 						$search = $this->validationchutney->StripNonAlphanumeric($r['screen_name']);
 				
-						$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+						$bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
 						
 							$gethundreds = API::_GetHundreds($search,$bio,$details,10);
 							$hndrds = $gethundreds[0];
@@ -78,7 +78,7 @@ class Cron extends Jelly
 										{
 											if ($fcnt < 3)
 											{
-												$followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
+												$followerdetails = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$hndrds[$ch],100);
 	
 												if ($followerdetails['code'] == 200)
 												{
@@ -259,7 +259,7 @@ class Cron extends Jelly
                     	
 						foreach ($fakes as $f)
 						{
-							$destroy = $this->twitterbind->DestroyFriendship($details[2],$details[3],$f['twitterid']);
+							$destroy = $this->twitterbind->DestroyFriendship($$details[1],$$details[2],$f['twitterid']);
 							
 							//$this->errorschutney->PrintArray($destroy);
 							
@@ -427,7 +427,7 @@ class Cron extends Jelly
 				
 				if ($count==0)
 				{
-					$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$dive[5]);	
+					$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$dive[5]);	
 					
 					if ($idslist['code']==200)
 					{
@@ -444,7 +444,7 @@ class Cron extends Jelly
 				{
 					if ($dive[4]<=50000)
 					{
-						$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$dive[5]);	
+						$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$dive[5]);	
 						
 						if ($idslist['code']==200)
 						{
@@ -463,7 +463,7 @@ class Cron extends Jelly
 						
 						while($c<2)
 						{
-							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
+							$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$cu);
 							
 							//$this->errorschutney->PrintArray($cu);
 							
@@ -496,7 +496,7 @@ class Cron extends Jelly
 						
 						while($c<3)
 						{
-							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
+							$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$cu);
 							
 							//$this->errorschutney->PrintArray($cu);
 							
@@ -528,7 +528,7 @@ class Cron extends Jelly
 						
 						while($c<5)
 						{
-							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
+							$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$cu);
 							
 							//$this->errorschutney->PrintArray($cu);
 							
@@ -661,7 +661,7 @@ class Cron extends Jelly
 							
  							if ($count > 0 && $count<=100)
 							{
-								$followers = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$array,$count);
+								$followers = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$array,$count);
 								
 								if ($followers['code']==200)
 								{
@@ -1021,10 +1021,38 @@ class Cron extends Jelly
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
-		$result = $this->twitterbind->RateLimit($details[2],$details[3],'followers,users');
+		//$result = $this->twitterbind->RateLimit($$details[1],$$details[2],'followers,users');
 		
 		$this->errorschutney->DebugArray($result);
 		
+	}
+	
+	public function UserSearchTest()
+	{
+		$userid = 198192466;
+		//$userid = 2147483647;
+		//$searchid = 2147483647;
+		//$searchid = 31386162;
+		//$screen_name = 'JDHHealthCare';
+		$screen_name = 'JohnOlsen86';
+		
+		$details = $this->dbbind->GetTwitterDetails($userid);
+		
+		//$result = $this->twitterbind->GetUserByID($$details[1],$$details[2],$searchid);
+		$result = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$screen_name);
+		
+		$this->errorschutney->DebugArray($result);
+	}
+	
+	public function VerifyTest()
+	{
+		$userid = 2147483647;
+		
+		$details = $this->dbbind->GetTwitterDetails($userid);
+		
+		$result = $this->twitterbind->Verify($$details[1],$$details[2]);
+		
+		$this->errorschutney->DebugArray($result);
 	}
 	
 /* 	public function SportTest()

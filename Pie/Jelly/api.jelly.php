@@ -52,22 +52,29 @@ class API extends Jelly
             
 			//$this->errorschutney->DebugArray($details);
             
-            $bio = $this->twitterbind->GetUserByID($details[2],$details[3],$twid);
+            $user = $this->twitterbind->GetUserByID($$details[1],$$details[2],$twid);
             
 			//$this->errorschutney->DebugArray($bio);
             
-            $bio = $this->twitterchutney->ProcessTwitterBio($bio);
-            
-            //$this->_APISuccess(201,'Request Successful',$bio);
-            
-            if (empty($bio))
-            {
-                $this->_APIFail(400,'No Data returned for this Bio');
-            }
-            else 
-            {
-                $this->_APISuccess(201,'Request Successful',$bio);
-            }
+			if ($user['code']==200)
+			{
+				$bio = $this->twitterchutney->ProcessTwitterBio($user['user']);
+				
+				//$this->_APISuccess(201,'Request Successful',$bio);
+				
+				if (empty($bio))
+				{
+					$this->_APIFail(400,'No Data returned for this Bio');
+				}
+				else 
+				{
+					$this->_APISuccess(201,'Request Successful',$bio);
+				}
+			}
+			else
+			{
+				$this->_APIFail(400,'No Data returned for this User');
+			}
         }
         else
         {
@@ -95,7 +102,7 @@ class API extends Jelly
             
             $search = $this->validationchutney->StripNonAlphanumeric($search);
             
-            $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+            $bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
             
 			//$this->errorschutney->DebugArray($bio);
             
@@ -318,7 +325,7 @@ class API extends Jelly
 
             $search = $this->validationchutney->StripNonAlphanumeric($search);
 
-            $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+            $bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
 
 //                    $this->errorschutney->PrintArray($bio);
 
@@ -349,7 +356,7 @@ class API extends Jelly
 
             while ($c <= $requests)
             {
-                $idslist = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
+                $idslist = $this->twitterbind->GetFollowerIDsByName($$details[1],$$details[2],$search,$cursor);
                     
                 if ($idslist['code']==429)
                 {
@@ -466,7 +473,7 @@ class API extends Jelly
                         {
                             if ($fcnt < 3)
                             {
-                                $followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
+                                $followerdetails = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$hndrds[$ch],100);
 
                                 if ($followerdetails['code'] == 200)
                                 {
@@ -610,7 +617,7 @@ class API extends Jelly
             
             $search = $this->validationchutney->StripNonAlphanumeric($search);
             
-            $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+            $bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
             
             //$this->errorschutney->PrintArray($bio);
             
@@ -643,7 +650,7 @@ class API extends Jelly
 
                     foreach ($chcks as $ch)
                     {
-                        $followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
+                        $followerdetails = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$hndrds[$ch],100);
 
                         if ($followerdetails!=false)
                         {
@@ -736,7 +743,7 @@ class API extends Jelly
                     
             $search = $this->validationchutney->StripNonAlphanumeric($search);
 
-            $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+            $bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
 			
 			$gethundreds = $this->_GetHundreds($search,$bio,$details,10);
 			$hndrds = $gethundreds[0];
@@ -755,7 +762,7 @@ class API extends Jelly
                 {
 /*                     if (!empty($hndrds[$ch]))
                     { */
-                        $followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
+                        $followerdetails = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$hndrds[$ch],100);
 
                         if ($followerdetails!=false)
                         {
@@ -1124,7 +1131,7 @@ class API extends Jelly
 		{
 			if ($fcnt < 3)
 			{
-				$followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
+				$followerdetails = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$hndrds[$ch],100);
 				
 				if ($followerdetails['code'] == 200)
 				{
@@ -1176,7 +1183,7 @@ class API extends Jelly
 		
 		while ($c <= $requests)
 		{
-			$idslist = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
+			$idslist = $this->twitterbind->GetFollowerIDsByName($$details[1],$$details[2],$search,$cursor);
 			
 			//                    $this->errorschutney->PrintArray($idslist['code']);
 			//                    $this->errorschutney->PrintArray($idslist['data']);
@@ -1184,7 +1191,7 @@ class API extends Jelly
 			if ($idslist['code']==429)
 			{
 				//$this->errorschutney->PrintArray($details);
-				$result = $this->twitterbind->RateLimit($details[2],$details[3],'followers,users');
+				$result = $this->twitterbind->RateLimit($$details[1],$$details[2],'followers,users');
 				self::_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.',$result->resources);
 			}
 			
@@ -1610,7 +1617,7 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
 		
-            $user = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+            $user = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
             
 //            $this->errorschutney->DebugArray($user);
             
@@ -1652,7 +1659,7 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
             
-            $followers = $this->twitterbind->GetFollowersList($details[2],$details[3],$name,$count);
+            $followers = $this->twitterbind->GetFollowersList($$details[1],$$details[2],$name,$count);
             
 //            $this->errorschutney->PrintArray($followers);
             
@@ -1690,7 +1697,7 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
             
-            $tweets = $this->twitterbind->GetTwitterTimelineByUser($details[2],$details[3],$search,$count);
+            $tweets = $this->twitterbind->GetTwitterTimelineByUser($$details[1],$$details[2],$search,$count);
             
 //            $this->errorschutney->DebugArray($tweets);
             
@@ -1824,7 +1831,7 @@ class API extends Jelly
 
             if (strlen($tweet['text']) <= 140)
             {
-                    $success = $this->twitterbind->SendTweet($details[2],$details[3],$tweet['text'],$replyid);
+                    $success = $this->twitterbind->SendTweet($$details[1],$$details[2],$tweet['text'],$replyid);
 
                     //$this->errorschutney->DebugArray($success);
 
@@ -1890,7 +1897,7 @@ class API extends Jelly
 	
 				$search = $this->validationchutney->StripNonAlphanumeric($search);
 				
-				$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+				$bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
 				
 				if ($bio)
 				{
@@ -1988,7 +1995,7 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
             
-            $destroy = $this->twitterbind->DestroyFriendship($details[2],$details[3],$twid);
+            $destroy = $this->twitterbind->DestroyFriendship($$details[1],$$details[2],$twid);
             
 			//$this->errorschutney->DebugArray($destroy);
             
@@ -2029,7 +2036,7 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
             
-            $unblock = $this->twitterbind->Unblock($details[2],$details[3],$twid);
+            $unblock = $this->twitterbind->Unblock($$details[1],$$details[2],$twid);
             
 //            $this->errorschutney->DebugArray($destroy);
             
@@ -2092,7 +2099,7 @@ class API extends Jelly
 		//$q = '#ExtinctionDay';
 		$q = '#MeReEnojoCuando';
 		
-		$search = $this->twitterbind->SearchTweets($details[2],$details[3],$q,100,'mixed','');
+		$search = $this->twitterbind->SearchTweets($$details[1],$$details[2],$q,100,'mixed','');
 		
 		
 		//$this->errorschutney->DebugArray($search);
@@ -2179,7 +2186,7 @@ class API extends Jelly
 		{
 			if ($c1<5)
 			{
-				$result = $this->twitterbind->GetRetweetDataById($details[2],$details[3],$t->id_str);
+				$result = $this->twitterbind->GetRetweetDataById($$details[1],$$details[2],$t->id_str);
 				
 				//$this->errorschutney->DebugArray($result);
 				
@@ -2251,7 +2258,7 @@ class API extends Jelly
 		
 		$count = count($ids);
 		
-		$followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$ids,$count);
+		$followerdetails = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$ids,$count);
 		
 		$this->errorschutney->PrintArray($followerdetails);
 		
@@ -2369,8 +2376,8 @@ class API extends Jelly
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
-		//$result = $this->twitterbind->GetRetweetData($details[2],$details[3],100);
-		$result = $this->twitterbind->GetRetweetDataById($details[2],$details[3],'410398079129370625');
+		//$result = $this->twitterbind->GetRetweetData($$details[1],$$details[2],100);
+		$result = $this->twitterbind->GetRetweetDataById($$details[1],$$details[2],'410398079129370625');
 		
 		//$this->errorschutney->DebugArray($result);
 		
@@ -2538,7 +2545,7 @@ class API extends Jelly
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
-		$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$user);
+		$bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$user);
 		
 		$this->errorschutney->PrintArray($bio['user']->id_str);
 		$this->errorschutney->PrintArray($bio['user']->screen_name);

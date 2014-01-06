@@ -7,7 +7,7 @@ class DBRequests extends DB
         {
             
             $query = "SELECT COUNT(*)
-                        FROM spsp_users
+                        FROM spsp_users_new
                         WHERE twitterid = :twitterid AND live = 1";
             
             $params = array('twitterid'=>array($twitterid,'INT',0));
@@ -22,7 +22,7 @@ class DBRequests extends DB
         {
             
             $query = "SELECT *
-                        FROM spsp_users
+                        FROM spsp_users_new
                         WHERE twitterid = :twitterid AND live = 1";
             
             $params = array('twitterid'=>array($twitterid,'INT',0));
@@ -35,7 +35,7 @@ class DBRequests extends DB
         
         public function AddTwitterDetails($twitterid,$token,$secret,$created)
         {            
-            $query = "INSERT INTO spsp_users (twitterid,token,secret,created)
+            $query = "INSERT INTO spsp_users_new (twitterid,token,secret,created)
                         VALUES (:twitterid,:token,:secret,:created)";
             
             $params = array('twitterid'=>array($twitterid,'INT',0),
@@ -48,9 +48,26 @@ class DBRequests extends DB
             return $result;   
         }
         
+		public function UpdateTwitterDetails($twitterid,$token,$secret,$created)
+        {            
+            $query = "UPDATE spsp_users_new 
+						SET token = :token,
+						secret = :secret,
+						live = 1
+						WHERE twitterid = :twitterid";
+            
+            $params = array('twitterid'=>array($twitterid,'INT',0),
+                            'token'=>array($token,'STR',64),
+                            'secret'=>array($secret,'STR',64));
+            
+            $result = $this->UpdateRecord($query,$params);
+            
+            return $result;   
+        }
+	
         public function ResetTwitterDetails($twitterid)
         {
-            $query = "UPDATE spsp_users
+            $query = "UPDATE spsp_users_new
                         SET live = 0
                         WHERE twitterid = :twitterid";
             
@@ -108,7 +125,7 @@ class DBRequests extends DB
 		public function GetSearches($twid)
 		{
 			$query = "SELECT searches
-						FROM spsp_users
+						FROM spsp_users_new
 						WHERE twitterid = :twid AND live = 1";
 			
 			$params = array('twid'=>array($twid,'INT',0));
@@ -120,7 +137,7 @@ class DBRequests extends DB
 		
 		public function UpdateSearches($twid,$searches)
 		{
-			$query = "UPDATE spsp_users
+			$query = "UPDATE spsp_users_new
 						SET searches = :searches
 						WHERE twitterid = :twid AND live = 1";
 			
