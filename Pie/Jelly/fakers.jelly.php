@@ -33,9 +33,9 @@ class Fakers extends Jelly
                 if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
 #                   $_SESSION['userid'] = 114873621;
-                  	$_SESSION['userid'] = 31386162;
+#                  	$_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
-#					$_SESSION['userid'] = 198192466;
+					$_SESSION['userid'] = 198192466;
 #					$_SESSION['userid'] = 545309711;
 #					$_SESSION['userid'] = 96269828;
 #					$_SESSION['userid'] = 1101473544;
@@ -73,7 +73,7 @@ class Fakers extends Jelly
 					
 					//$this->sessionschutney->UnsetSessions(array('message'));
 
-					session_destroy();
+					//session_destroy();
 			
                     $this->glaze->view('Spam/index.php',$data);
                 }
@@ -121,7 +121,7 @@ class Fakers extends Jelly
                     }
 					
 					$details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
-					$verify = $this->twitterbind->Verify($details[2],$details[3]);
+					$verify = $this->twitterbind->Verify($details[1],$details[2]);
 				
 					//$this->errorschutney->DebugArray($verify);
                 
@@ -200,7 +200,7 @@ class Fakers extends Jelly
                 
 				//$this->errorschutney->PrintArray($details);
 				
-                $verify = $this->twitterbind->Verify($details[2],$details[3]);
+                $verify = $this->twitterbind->Verify($details[1],$details[2]);
 				
 				//$this->errorschutney->PrintArray($verify);
                 
@@ -281,7 +281,7 @@ class Fakers extends Jelly
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION['userid']);
                 
-//                $verify = $this->twitterbind->Verify($details[2],$details[3]);
+//                $verify = $this->twitterbind->Verify($details[1],$details[2]);
                 
 //                $this->errorschutney->DebugArray($verify);
                 
@@ -937,30 +937,40 @@ class Fakers extends Jelly
 			{
 				$ok = true;
 				//die('1');
+				$this->dbbind->UpdateTwitterDetails($userid,$token,$secret);
 			}
 			else 
 			{
 				//die('2');
 				
-				$bio = $this->twitterbind->GetUserByID($token,$secret,$userid);
+				$user = $this->twitterbind->GetUserByID($token,$secret,$userid);
 				
 				//$this->errorschutney->DebugArray($bio);
 				
-				$result = $this->dbbind->AddTwitterDetails($userid,$token,$secret,time());
-				
-				if ($result > 0)
+				if ($user['code']==200)
 				{
-					$ok = true;
-					//die(2);
+					$bio = $user['user'];
+					
+					$result = $this->dbbind->AddTwitterDetails($userid,$token,$secret,time());
+					
+					if ($result > 0)
+					{
+						$ok = true;
+						//die(2);
+						
+						$countinfo = $this->dbbind->CountUserInfoRecords($userid); 
+					
+						if ($countinfo==0)
+						{
+							$this->dbbind->AddUserInfo($userid,$bio->screen_name,$bio->profile_image_url,time(),time());
+						}
+					}
 				}
-				
-				$countinfo = $this->dbbind->CountUserInfoRecords($userid); 
-				
-				if ($countinfo==0)
+				else
 				{
-					$this->dbbind->AddUserInfo($userid,$bio->screen_name,$bio->profile_image_url,time(),time());
+					$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
+					header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
 				}
-				
 			}
 			
 /* 			$redirect = $_SESSION['returnurl'];
