@@ -30,12 +30,12 @@ class Fakers extends Jelly
         
         public function Index($vars)
         {
-                /*if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
-                {*/
+                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
+                {
 #                   $_SESSION['userid'] = 114873621;
 #                  	$_SESSION['userid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
-					$_SESSION['userid'] = 198192466;
+#					$_SESSION['userid'] = 198192466;
 #					$_SESSION['userid'] = 545309711;
 #					$_SESSION['userid'] = 96269828;
 #					$_SESSION['userid'] = 1101473544;
@@ -76,11 +76,12 @@ class Fakers extends Jelly
 					//session_destroy();
 			
                     $this->glaze->view('Spam/index.php',$data);
-#                }
-#                else
-#                {
-#                    $this->glaze->view('Spam/maintenance.php',$data);
-#                }
+                }
+                else
+                {
+					$data["logout"] = 2;
+                    $this->glaze->view('Spam/maintenance.php',$data);
+                }
 
         }
         
