@@ -215,7 +215,7 @@ class Jelly
 									{
 										$data['title'] = 'Status People &mdash; Page Not Found.';
 										$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
-										$data['message'] = $this->buildchutney->PageMessage('alert',array('The page you were looking for could not be located.'));
+										$data['message'] = $this->buildchutney->PageMessage('alert',array('Sorry, but the page you were looking for could not be located.'));
 										$this->glaze->view('error.php',$data);
 									}
 								}
