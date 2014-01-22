@@ -141,6 +141,12 @@ $(document).ready(function(){
 
     });
 	
+	$('#account').bind('change',function(){
+		
+		$('#changeaccountform').submit();
+		
+	});
+	
 	infobox();
    
 });

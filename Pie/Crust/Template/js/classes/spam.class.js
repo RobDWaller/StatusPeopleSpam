@@ -357,6 +357,11 @@ function Payments()
 			base = 9.99;
 			tax = 1.98;
 		}
+		else if (type==3)
+		{
+			base = 99.99;
+			tax = 19.98;
+		}
 		
         if (currency == 'USD')
         {
@@ -367,6 +372,11 @@ function Payments()
 			if (type==2)
 			{
 				base = 14.99;
+				tax = 0.00;
+			}
+			else if (type==3)
+			{
+				base = 149.99;
 				tax = 0.00;
 			}
         }
@@ -380,6 +390,11 @@ function Payments()
 			{
 				base = 12.99;
 				tax = 2.60;
+			}
+			else if (type==3)
+			{
+				base = 129.99;
+				tax = 26.99;
 			}
         }
         

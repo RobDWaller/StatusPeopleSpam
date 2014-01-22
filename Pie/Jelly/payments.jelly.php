@@ -228,7 +228,7 @@ class Payments extends Jelly
                         'buyer_email'=>array('','Hidden','',$userdetails[2]),
                         'first_name'=>array('','Hidden','',$userdetails[4]),
                         'last_name'=>array('','Hidden','',$userdetails[5]),
-						'account_type'=>array('Type','Dropdown',array(array('Basic','Basic','Basic',1),array('Premium','Premium','Premium',2)),'','','Basic'),
+						'account_type'=>array('Type','Dropdown',array(array('Basic','Basic','Basic',1),array('Premium','Premium','Premium',2),array('Agency','Agency','Agency',3)),'','','Basic'),
                         'currency_code'=>array('Currency','Dropdown',array(array('GBP','GBP','GB Pound Sterling','GBP'),array('USD','USD','US Dollar','USD'),array('EUR','EUR','EU Euro','EUR')),'','','GBP'),
                         'period'=>array('Period','Dropdown',array(array('1','1','1 Month','1'),array('6','6','6 Months','6'),array('12','12','12 Months','12')),'','','GBP'),
                         'tax'=>array('','Hidden','','0.70'),
@@ -262,6 +262,11 @@ class Payments extends Jelly
         }
         
         $this->sessionschutney->UnsetSessions(array('message'));
+		
+		if ($_SESSION['type']>=1)
+		{
+			$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+		}
             
         $this->glaze->view('Payments/subscriptions.php',$data);
 
@@ -343,6 +348,11 @@ class Payments extends Jelly
             $data['months'] = $_POST['months'];
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);
             $data['menu'] = '&nbsp;';
+			
+			if ($_SESSION['type']>=1)
+			{
+				$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+			}
 			
             $this->glaze->view('Payments/checkout.php',$data);
         
@@ -442,6 +452,11 @@ class Payments extends Jelly
 			
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);
 			$data['menu'] = '&nbsp;';
+			
+			if ($_SESSION['type']>=1)
+			{
+				$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+			}
 			
             $this->glaze->view('Payments/confirmation.php',$data);
         }

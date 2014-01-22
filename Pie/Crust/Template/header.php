@@ -39,7 +39,7 @@
 					}
 					else
 					{
-						echo '<ul><li><a href="" class="ico icon" data-tip="Search for Friends" id="friendsearch">s</a></li></ul>';
+						echo '<ul><li><a href="" class="ico icon" data-tip="Search for Friends" id="friendsearch">s</a></li><li class="accountform">'.$accountform.'</li></ul>';
 					}	
 					?>
 					<input type="hidden" id="twitterhandle" value="<?=$twitterhandle;?>" />
