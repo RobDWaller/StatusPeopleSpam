@@ -352,7 +352,7 @@ class Fakers extends Jelly
 		{
 			//die('Hello World!!');
 			
-			$result = $this->curlbind->GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=21d4c066ad66b7d27774b037231b7766bd1c653f4342dd3d6b99a540ae5f328d&sc='.$screen_name,$this->mod_rewrite));
+			$result = $this->curlbind->GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
 		
 			//$this->errorschutney->DebugArray($result);
 			if ($result->code == 201)
@@ -363,6 +363,9 @@ class Fakers extends Jelly
 				$data['good'] = $result->data->good;
 				$data['followers'] = $result->data->followers;
 				$data['date'] = $result->data->date;
+				
+				$data['logout'] = 2;
+				$data['menu'] = self::_BuildMenu();
 				
 				$this->glaze->view('Spam/showuser.php',$data);
 			}
