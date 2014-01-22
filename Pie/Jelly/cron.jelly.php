@@ -49,9 +49,18 @@ class Cron extends Jelly
 						
 						$details = $this->dbbind->GetTwitterDetails($r['userid']);
 						
-						$search = $this->validationchutney->StripNonAlphanumeric($r['screen_name']);
+						//$search = $this->validationchutney->StripNonAlphanumeric($r['screen_name']);
 				
-						$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
+						$bio = $this->twitterbind->GetUserByID($details[2],$details[3],$r['userid']);
+						
+						$countinfo = $this->dbbind->CountUserInfoRecords($r['userid']); 
+                    
+                        if ($countinfo>=1)
+                        {
+							$this->dbbind->UpdateUserInfo($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+						}
+						
+						$this->dbbind->UpdateFakerCheck($u['userid'],$r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
 						
 							$gethundreds = API::_GetHundreds($search,$bio,$details,10);
 							$hndrds = $gethundreds[0];
