@@ -36,7 +36,7 @@
 							<?=$blocked;?>
 						</div>
 					</div>
-					<?php if($type==2){?>
+					<?php if($type>=2){?>
 						<div class="row" id="autoblock">
 							<div class="two">
 								<h2>

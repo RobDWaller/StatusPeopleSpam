@@ -7,7 +7,7 @@ class DBRequests extends DB
         {
             
             $query = "SELECT COUNT(*)
-                        FROM spsp_users_new
+                        FROM spsp_users
                         WHERE twitterid = :twitterid AND live = 1";
             
             $params = array('twitterid'=>array($twitterid,'INT',0));
@@ -22,7 +22,7 @@ class DBRequests extends DB
         {
             
             $query = "SELECT *
-                        FROM spsp_users_new
+                        FROM spsp_users
                         WHERE twitterid = :twitterid AND live = 1";
             
             $params = array('twitterid'=>array($twitterid,'INT',0));
@@ -35,7 +35,7 @@ class DBRequests extends DB
         
         public function AddTwitterDetails($twitterid,$token,$secret,$created)
         {            
-            $query = "INSERT INTO spsp_users_new (twitterid,token,secret,created)
+            $query = "INSERT INTO spsp_users (twitterid,token,secret,created)
                         VALUES (:twitterid,:token,:secret,:created)";
             
             $params = array('twitterid'=>array($twitterid,'INT',0),
@@ -48,26 +48,9 @@ class DBRequests extends DB
             return $result;   
         }
         
-		public function UpdateTwitterDetails($twitterid,$token,$secret,$created)
-        {            
-            $query = "UPDATE spsp_users_new 
-						SET token = :token,
-						secret = :secret,
-						live = 1
-						WHERE twitterid = :twitterid";
-            
-            $params = array('twitterid'=>array($twitterid,'INT',0),
-                            'token'=>array($token,'STR',64),
-                            'secret'=>array($secret,'STR',64));
-            
-            $result = $this->UpdateRecord($query,$params);
-            
-            return $result;   
-        }
-	
         public function ResetTwitterDetails($twitterid)
         {
-            $query = "UPDATE spsp_users_new
+            $query = "UPDATE spsp_users
                         SET live = 0
                         WHERE twitterid = :twitterid";
             
@@ -78,6 +61,18 @@ class DBRequests extends DB
             return $result;
         }
 
+		public function GetUserInfo($twitterid)
+		{
+			$query = "SELECT *
+						FROM spsp_user_info
+						WHERE twitterid = :twitterid AND live = 1";
+
+			$params = array('twitterid'=>array($twitterid,'INT',0));
+
+			$result = $this->SelectRecord($query,$params);
+
+			return $result;			
+		}
 
         public function GetLatestSpamRecords($limit)
         {
@@ -125,7 +120,7 @@ class DBRequests extends DB
 		public function GetSearches($twid)
 		{
 			$query = "SELECT searches
-						FROM spsp_users_new
+						FROM spsp_users
 						WHERE twitterid = :twid AND live = 1";
 			
 			$params = array('twid'=>array($twid,'INT',0));
@@ -137,7 +132,7 @@ class DBRequests extends DB
 		
 		public function UpdateSearches($twid,$searches)
 		{
-			$query = "UPDATE spsp_users_new
+			$query = "UPDATE spsp_users
 						SET searches = :searches
 						WHERE twitterid = :twid AND live = 1";
 			
@@ -245,6 +240,24 @@ class DBRequests extends DB
             
         }
         
+		public function UpdateUserInfo($twitterid,$screenname,$avatar)
+        {
+            
+            $query = "UPDATE spsp_user_info
+						SET screen_name = :screen_name,
+						avatar = :avatar
+						WHERE twitterid = :twitterid AND live = 1";
+            
+            $params = array('twitterid'=>array($twitterid,'INT',0),
+                            'screen_name'=>array($screenname,'STR',140),
+                            'avatar'=>array($avatar,'STR',255));
+            
+            $result = $this->InsertRecord($query, $params);
+            
+            return $result;
+            
+        }
+	
         public function GetUsersToCheck($limit)
         {
             $query = "SELECT *
@@ -486,6 +499,24 @@ class DBRequests extends DB
             return $result;
         }
         
+		public function UpdateFakerCheck($userid,$twitterid,$screen_name,$avatar)
+		{
+			$query = "UPDATE spsp_checks 
+						SET screen_name = :screen_name,
+						avatar = :avatar
+						WHERE userid = :userid AND twitterid = :twitterid AND live = 1";
+			
+			
+			$params = array('userid'=>array($userid,'INT',0),
+                            'twitterid'=>array($twitterid,'INT',0),
+                            'screen_name'=>array($screen_name,'STR',140),
+                            'avatar'=>array($avatar,'INT',0));
+            
+            $result = $this->UpdateRecord($query,$params);
+            
+            return $result;
+		}
+	
         public function AddFakerCheckScore($twitterid,$screen_name,$spam,$potential,$checks,$followers,$created)
         {
             $query = "INSERT INTO spsp_check_scores (twitterid,screen_name,spam,potential,checks,followers,created)
@@ -969,6 +1000,77 @@ class DBRequests extends DB
 			
 			return $result;
 		}
+
+		public function CheckForParent($parentid,$userid)
+		{
+			$query = "SELECT COUNT(*)
+						FROM spsp_parents
+						WHERE parentid = :parentid AND userid = :userid AND live = 1";
+			
+			$params = array('parentid'=>array($parentid,'INT',0),
+						   'userid'=>array($userid,'INT',0));
+			
+			$result = $this->SelectCount($query,$params);
+			
+			return $result;
+		}
+	
+		public function YourParents($userid)
+		{
+			$query = "SELECT ui.*
+						FROM spsp_parents AS p
+						JOIN spsp_user_info AS ui ON p.parentid = ui.twitterid
+						WHERE p.userid = :userid AND p.live = 1 AND ui.live = 1";
+			
+			$params = array('userid'=>array($userid,'INT',0));
+			
+			$result = $this->SelectRecords($query,$params);
+			
+			return $result;
+		}
+	
+		public function YourChildren($parentid)
+		{
+			$query = "SELECT ui.*
+						FROM spsp_parents AS p
+						JOIN spsp_user_info AS ui ON p.userid = ui.twitterid
+						WHERE p.parentid = :parentid AND p.live = 1 AND ui.live = 1";
+			
+			$params = array('parentid'=>array($parentid,'INT',0));
+			
+			$result = $this->SelectRecords($query,$params);
+			
+			return $result;
+		}
+	
+		public function AddParent($parentid,$userid,$created)
+		{
+			$query = "INSERT INTO spsp_parents (parentid,userid,created)
+						VALUES (:parentid,:userid,:created)";
+			
+			$params = array('parentid'=>array($parentid,'INT',0),
+						   'userid'=>array($userid,'INT',0),
+						   'created'=>array($created,'INT',0));
+			
+			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function DeleteParentUserRelationship($parentid,$userid)
+		{
+			$query = "UPDATE spsp_parents
+						SET live = 0
+						WHERE parentid = :parentid AND userid = :userid";
+			
+			$params = array('parentid'=>array($parentid,'INT',0),
+						   'userid'=>array($userid,'INT',0));
+			
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+	
 }
 
 ?>
