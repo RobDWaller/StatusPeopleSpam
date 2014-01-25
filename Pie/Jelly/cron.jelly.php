@@ -37,9 +37,10 @@ class Cron extends Jelly
 			{
 				$records = $this->dbbind->GetUserToCheck($u['userid']);
 				
+				//$this->errorschutney->DebugArray($records);
+				
 	            if (!empty($records))
 				{
-					//$this->errorschutney->DebugArray($records);
 					
 					foreach ($records as $r)
 					{
@@ -49,9 +50,18 @@ class Cron extends Jelly
 						
 						$details = $this->dbbind->GetTwitterDetails($r['userid']);
 						
-						$search = $this->validationchutney->StripNonAlphanumeric($r['screen_name']);
+						//$search = $this->validationchutney->StripNonAlphanumeric($r['screen_name']);
 				
-						$bio = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$search);
+						$bio = $this->twitterbind->GetUserByID($details[2],$details[3],$r['userid']);
+						
+						$countinfo = $this->dbbind->CountUserInfoRecords($r['userid']); 
+                    
+                        if ($countinfo>=1)
+                        {
+							$this->dbbind->UpdateUserInfo($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+						}
+						
+						$this->dbbind->UpdateFakerCheck($u['userid'],$r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
 						
 							$gethundreds = API::_GetHundreds($search,$bio,$details,10);
 							$hndrds = $gethundreds[0];
@@ -78,7 +88,7 @@ class Cron extends Jelly
 										{
 											if ($fcnt < 3)
 											{
-												$followerdetails = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$hndrds[$ch],100);
+												$followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
 	
 												if ($followerdetails['code'] == 200)
 												{
@@ -259,7 +269,7 @@ class Cron extends Jelly
                     	
 						foreach ($fakes as $f)
 						{
-							$destroy = $this->twitterbind->DestroyFriendship($$details[1],$$details[2],$f['twitterid']);
+							$destroy = $this->twitterbind->DestroyFriendship($details[2],$details[3],$f['twitterid']);
 							
 							//$this->errorschutney->PrintArray($destroy);
 							
@@ -427,7 +437,7 @@ class Cron extends Jelly
 				
 				if ($count==0)
 				{
-					$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$dive[5]);	
+					$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$dive[5]);	
 					
 					if ($idslist['code']==200)
 					{
@@ -444,7 +454,7 @@ class Cron extends Jelly
 				{
 					if ($dive[4]<=50000)
 					{
-						$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$dive[5]);	
+						$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$dive[5]);	
 						
 						if ($idslist['code']==200)
 						{
@@ -463,7 +473,7 @@ class Cron extends Jelly
 						
 						while($c<2)
 						{
-							$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$cu);
+							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
 							
 							//$this->errorschutney->PrintArray($cu);
 							
@@ -496,7 +506,7 @@ class Cron extends Jelly
 						
 						while($c<3)
 						{
-							$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$cu);
+							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
 							
 							//$this->errorschutney->PrintArray($cu);
 							
@@ -528,7 +538,7 @@ class Cron extends Jelly
 						
 						while($c<5)
 						{
-							$idslist = $this->twitterbind->GetFollowerIDs($$details[1],$$details[2],$dive[2],$cu);
+							$idslist = $this->twitterbind->GetFollowerIDs($details[2],$details[3],$dive[2],$cu);
 							
 							//$this->errorschutney->PrintArray($cu);
 							
@@ -661,7 +671,7 @@ class Cron extends Jelly
 							
  							if ($count > 0 && $count<=100)
 							{
-								$followers = $this->twitterbind->GetFollowersListByArray($$details[1],$$details[2],$array,$count);
+								$followers = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$array,$count);
 								
 								if ($followers['code']==200)
 								{
@@ -958,11 +968,14 @@ class Cron extends Jelly
 	public function SendMarketingEmail()
 	{
 		
-		//$emails = $this->dbbind->GetMarketingEmails();
-		$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
+		$emails = $this->dbbind->GetMarketingEmails();
+		/*$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
 						array('email'=>'ben@statuspeople.com','forename'=>'Ben'),
 						array('email'=>'rdwaller1984@googlemail.com','forename'=>'Rob'),
-						array('email'=>'benj.christensen01@gmail.com','forename'=>'Ben'));
+						array('email'=>'benj.christensen01@gmail.com','forename'=>'Ben'));*/
+		
+		/*$emails = array(array('email'=>'rob@statuspeople.com','forename'=>'Rob'),
+						array('email'=>'rdwaller1984@googlemail.com','forename'=>'Rob'));*/
 		
 		$this->errorschutney->PrintArray(count($emails));
 		
@@ -974,7 +987,7 @@ class Cron extends Jelly
 		{
 			$message = $this->_MarketingMessage($e);
 			
-			$send = $this->emailchutney->SendEmail($e['email'],'Become a Social Media Marketing Expert Learn How to Make More From Your Twitter Followers',$message,$headers,1);
+			$send = $this->emailchutney->SendEmail($e['email'],'Join our Social Media Training Webinars on Friday and Monday and Learn How to Boost Engagement and ROI From Twitter',$message,$headers,1);
 			
 			$this->errorschutney->PrintArray($e);
 			
@@ -986,19 +999,18 @@ class Cron extends Jelly
 	{
 		$message = '';
 		$message .= '<p>Hi '.$e['forename'].',</p>';
-		$message .= '<p>This is your last chance to sign up to our amazing <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">Twitter Follower Quality and Analytics Training Webinar</a>. It will turn you into a social media marketing expert and help you make even more from your Twitter Following.</p>';
-		$message .= '<p>It starts at 3pm GMT/10am EST and it only costs £30/$45. You can <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">purchase your ticket for the webinar right now</a>.</p>';
-		$message .= '<p>The Webinar will last for 60-90 minutes, there will be plenty of time for questions and it will focus on the following topics...</p>';
+		$message .= '<p>This is just a short message to remind you that we have two Social Media training webinars coming up over the next few days.</p>';
+		$message .=	'<p>Both will help you boost your ROI and Engagement from Twitter. Take a look and <a href="http://www.eventbrite.co.uk/o/statuspeoplecom-and-robdwaller-5712889239?s=20969151" style="color:#36b6d5;">buy some tickets today</a>...</p>';
 		$message .= '<ul>';
-		$message .= '<li>What is follower quality and why it is important on Twitter</li>';
-		$message .= '<li>How to understand Follower Quality and what does it mean for users and brands</li>';
-		$message .= '<li>What other analytics are important to understand Twitter Followers</li>';
-		$message .= '<li>How to use this data to improve engagement and boost ROI</li>';
+		$message .= '<li><a href="http://www.eventbrite.co.uk/e/webinar-understand-twitter-follower-quality-analytics-to-boost-roi-tickets-10042795271" style="color:#36b6d5;">Understand Twitter Follower Quality & Analytics to Boost ROI</a><br/><small>(Fri 17th Jan 2014 15:00 GMT/10:00 EST) &pound;14.99/&#36;24.99</small></li>';
+		$message .= '<li><a href="http://www.eventbrite.co.uk/e/webinar-how-influence-and-influencers-can-boost-engagement-and-roi-on-twitter-tickets-10077591347" style="color:#36b6d5;">How Influence and Influencers can Boost Engagement and ROI on Twitter</a><br/><small>(Mon 20th Jan 2014 19:00 GMT/14:00 EST) &pound;14.99/&#36;24.99</small></li>';
 		$message .= '</ul>';
-		$message .= '<p>If you want to become a social media marketing expert <a href="http://www.eventbrite.co.uk/e/social-media-webinar-twitter-follower-quality-and-analytics-tickets-9279219395" style="color:#36b6d5;">purchase your ticket now</a> and join us.</p>';
-		$message .= '<p>Hope to see you there and if you have any questions email us at info@statuspeople.com.</p>';
+		$message .= '<p>And if you\'re interested in attending any of our other training webinars <a href="http://www.eventbrite.co.uk/o/statuspeoplecom-and-robdwaller-5712889239?s=20969151" style="color:#36b6d5;">take a look here...</a></p>';
+		$message .= '<p>We hope to connect with you over the next few days.</p>';
 		$message .= '<p>Thanks,</p>';
 		$message .= '<p>StatusPeople</p>';
+		
+		//$this->errorschutney->DebugArray($message);
 		
 		return $message;
 	}
@@ -1021,38 +1033,10 @@ class Cron extends Jelly
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
-		//$result = $this->twitterbind->RateLimit($$details[1],$$details[2],'followers,users');
+		$result = $this->twitterbind->RateLimit($details[2],$details[3],'followers,users');
 		
 		$this->errorschutney->DebugArray($result);
 		
-	}
-	
-	public function UserSearchTest()
-	{
-		$userid = 198192466;
-		//$userid = 2147483647;
-		//$searchid = 2147483647;
-		//$searchid = 31386162;
-		//$screen_name = 'JDHHealthCare';
-		$screen_name = 'JohnOlsen86';
-		
-		$details = $this->dbbind->GetTwitterDetails($userid);
-		
-		//$result = $this->twitterbind->GetUserByID($$details[1],$$details[2],$searchid);
-		$result = $this->twitterbind->GetUserByScreenName($$details[1],$$details[2],$screen_name);
-		
-		$this->errorschutney->DebugArray($result);
-	}
-	
-	public function VerifyTest()
-	{
-		$userid = 2147483647;
-		
-		$details = $this->dbbind->GetTwitterDetails($userid);
-		
-		$result = $this->twitterbind->Verify($$details[1],$$details[2]);
-		
-		$this->errorschutney->DebugArray($result);
 	}
 	
 /* 	public function SportTest()

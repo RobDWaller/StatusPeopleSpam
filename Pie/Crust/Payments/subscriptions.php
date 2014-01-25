@@ -38,29 +38,53 @@
 			</div>
 			<div class="row">
 				<div class="one">
-					<table>
+					<table id="subscriptiontypes">
 						<tr>
-							<th>Account</th>
-							<th>Unlimited Searches</th>
-							<th>Manual Block Fakes</th>
-							<th>Advanced Follower Metrics</th>
-							<th>Tracked Accounts</th>
-							<th>Auto Block Fakes</th>
+							<th>&nbsp;</th>
+							<th>Basic</th>
+							<th>Premium</th>
+							<th>Agency</th>
 						</tr>
 						<tr>
-							<td><strong class="orange">Basic</strong></td>
+							<td><strong class="orange">Unlimited Searches</strong></td>
 							<td class="ico green center">;</td>
 							<td class="ico green center">;</td>
 							<td class="ico green center">;</td>
+						</tr>
+						<tr>
+							<td><strong class="orange">Manual Block Fakes</strong></td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+						</tr>
+						<tr>
+							<td><strong class="orange">Follower Analytics</strong></td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+							<td class="ico green center">;</td>
+						</tr>
+						<tr>
+							<td><strong class="orange">Tracked Accounts</strong></td>
 							<td class="center"><strong class="orange">5</strong></td>
-							<td class="ico red center">9</td>
+							<td class="center"><strong class="orange">15</strong></td>
+							<td class="center"><strong class="orange">30</strong></td>
 						</tr>
 						<tr>
-							<td><strong class="orange">Premium</strong></td>
+							<td><strong class="orange">Auto Block Fakes</strong></td>
+							<td class="ico red center">9</td>
 							<td class="ico green center">;</td>
 							<td class="ico green center">;</td>
+						</tr>
+						<tr>
+							<td><strong class="orange">Multi-Account Management</strong></td>
+							<td class="ico red center">9</td>
+							<td class="ico red center">9</td>
 							<td class="ico green center">;</td>
-							<td class="center"><strong class="orange">15</strong></td>
+						</tr>
+						<tr>
+							<td><strong class="orange">API Access</strong></td>
+							<td class="ico red center">9</td>
+							<td class="ico red center">9</td>
 							<td class="ico green center">;</td>
 						</tr>
 					</table>
