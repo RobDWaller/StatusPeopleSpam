@@ -390,7 +390,9 @@ class Fakers extends Jelly
 			{
 				$data['title'] = 'Status People &mdash; Page Not Found.';
 				$data['homelink'] = $this->routechutney->HREF('/User/Signup',$this->mod_rewrite);
-				$data['message'] = Build::PageMessage('alert',array('The page you were looking for could not be located.'));
+				$data['message'] = Build::PageMessage('alert',array('Very sorry, but the page you were looking for could not be located.'));
+				$data['menu'] = self::_BuildMenu();
+				$data['logout'] = 2;
 				$this->glaze->view('error.php',$data);
 			}
 		}

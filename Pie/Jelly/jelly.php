@@ -171,8 +171,10 @@ class Jelly
                                             
                                             $data['title'] = 'Status People &mdash; Page Not Found.';
                                             $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
-                                            $data['message'] = Build::PageMessage('alert',array('The page you were looking for could not be found.'));
-                                            $this->glaze->view('error.php',$data);
+                                            $data['message'] = Build::PageMessage('alert',array('Sadly the page you were looking for could not be found.'));
+                                            $data['menu'] = Fakers::_BuildMenu();
+											$data['logout'] = 2;
+											$this->glaze->view('error.php',$data);
 
                                     }
                                 }
@@ -181,7 +183,9 @@ class Jelly
                                     $data['title'] = 'Status People &mdash; Page Not Found.';
                                     $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
                                     $data['message'] = Build::PageMessage('alert',array('This page does not exist.'));
-                                    $this->glaze->view('error.php',$data);
+                                    $data['menu'] = Fakers::_BuildMenu();
+									$data['logout'] = 2;
+									$this->glaze->view('error.php',$data);
                                 }
 
                         }
@@ -192,20 +196,24 @@ class Jelly
                                
 								$class = str_replace('@','',$class);
 							
-							//$this->errorschutney->DebugArray($class);
+							//$this->errorschutney->PrintArray($class);
 							
-								$valid = $this->validationchutney->ValidateString($class,'Screen Name');
+								$valid = Validation::ValidateString($class,'Screen Name');
 	
+							//$this->errorschutney->DebugArray($valid);
+							
 								if ($valid[0] == false)
 								{
 									$data['title'] = 'Status People &mdash; Page Not Found.';
 									$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
 									$data['message'] = Build::PageMessage('alert',array('The page you were looking for could not be located.'));
+									$data['menu'] = Fakers::_BuildMenu();
+									$data['logout'] = 2;
 									$this->glaze->view('error.php',$data);
 								}
 								else
 								{
-									$check = $this->apibind->CheckForScreenNameScore($class);
+									$check = APIRequests::CheckForScreenNameScore($class);
 									
 									if ($check > 0)
 									{
@@ -216,6 +224,8 @@ class Jelly
 										$data['title'] = 'Status People &mdash; Page Not Found.';
 										$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
 										$data['message'] = Build::PageMessage('alert',array('Sorry, but the page you were looking for could not be located.'));
+										$data['menu'] = Fakers::_BuildMenu();
+										$data['logout'] = 2;
 										$this->glaze->view('error.php',$data);
 									}
 								}
