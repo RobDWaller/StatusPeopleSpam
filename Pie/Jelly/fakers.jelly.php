@@ -369,6 +369,8 @@ class Fakers extends Jelly
 		{
 			//die('Hello World!!');
 			
+			//$this->errorschutney->PrintArray($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
+			
 			$result = CurlRequests::GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
 		
 			//$this->errorschutney->DebugArray($result);

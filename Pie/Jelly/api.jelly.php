@@ -2514,17 +2514,17 @@ class API extends Jelly
 		
 		$this->_CheckText($screen_name,'Screen Name');
 		
-		$check = $this->apibind->CheckForKey($apikey);
+		$check = APIRequests::CheckForKey($apikey);
 		
 		if ($check)
 		{
-			$exists = $this->apibind->CheckForScreenNameScore($screen_name);
+			$exists = APIRequests::CheckForScreenNameScore($screen_name);
 			
 			//$this->errorschutney->DebugArray($exists);
 			
 			if ($exists>0)
 			{
-				$result = $this->apibind->GetScore($screen_name);	
+				$result = APIRequests::GetScore($screen_name);	
 				//$this->errorschutney->DebugArray($result);
 				
 				$results['screen_name'] = $result[2];
