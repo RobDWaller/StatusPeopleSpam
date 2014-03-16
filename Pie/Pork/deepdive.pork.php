@@ -32,13 +32,13 @@ class Deepdive
 	public function SelectRecord($query,$params = null)
 	{
 		
-		$dbh = $this->ConnectionString();
+		$dbh = self::ConnectionString();
 							
 		$prep = $dbh->prepare($query);
 		
 		if (isset($params))
 		{
-			$this->BuildParams($params,$prep);
+			self::BuildParams($params,$prep);
 		}
 		
 		$prep->execute();
@@ -54,13 +54,13 @@ class Deepdive
 	public function SelectRecords($query,$params = null)
 	{
 		
-		$dbh = $this->ConnectionString();
+		$dbh = self::ConnectionString();
 		
 		$prep = $dbh->prepare($query);
 		
 		if (isset($params))
 		{
-			$this->BuildParams($params,$prep);
+			self::BuildParams($params,$prep);
 		}
 		
 		$prep->execute();
@@ -77,13 +77,13 @@ class Deepdive
 	public function SelectCount($query,$params = null)
 	{
 		
-		$dbh = $this->ConnectionString();
+		$dbh = self::ConnectionString();
 					
 		$prep = $dbh->prepare($query);
 		
 		if (isset($params))
 		{
-			$this->BuildParams($params,$prep);
+			self::BuildParams($params,$prep);
 		}
 		
 		$prep->execute();
@@ -101,13 +101,13 @@ class Deepdive
 	public function InsertRecord($query,$params = null)
 	{
 		
-		$dbh = $this->ConnectionString();
+		$dbh = self::ConnectionString();
 		
 		$prep = $dbh->prepare($query);
 		
 		if (isset($params))
 		{
-			$this->BuildParams($params,$prep);
+			self::BuildParams($params,$prep);
 		}
 		
 		$prep->execute();
@@ -123,11 +123,11 @@ class Deepdive
 	public function UpdateRecord($query, $params)
 	{
 		
-		$dbh = $this->ConnectionString();
+		$dbh = self::ConnectionString();
 		
 		$prep = $dbh->prepare($query);
 		
-		$this->BuildParams($params,$prep);
+		self::BuildParams($params,$prep);
 		
 		$result = $prep->execute();
 		
@@ -144,7 +144,7 @@ class Deepdive
 		{
 			
 			$field = ':'.$key;
-			$type = $this->SetParam($obj[1]);
+			$type = self::SetParam($obj[1]);
 			
 			$prep->bindParam($field, $obj[0], $type, $obj[2]);
 				

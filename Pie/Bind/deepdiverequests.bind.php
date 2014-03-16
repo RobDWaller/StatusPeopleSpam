@@ -9,7 +9,7 @@ class DeepdiveRequests Extends Deepdive
 					FROM spdv_dives
 					WHERE live = 1 AND finished = 0";
 		
-		$result = $this->SelectRecords($query);
+		$result = self::SelectRecords($query);
 		
 		return $result;
 	}
@@ -19,7 +19,7 @@ class DeepdiveRequests Extends Deepdive
 		$query = "SELECT DISTINCT(userid)
 					FROM spdv_dives";	
 		
-		$result = $this->SelectRecords($query);
+		$result = self::SelectRecords($query);
 		
 		return $result;
 	}
@@ -34,7 +34,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('userid'=>array($userid,'INT',0));
 		
-		$result = $this->SelectRecord($query,$params);
+		$result = self::SelectRecord($query,$params);
 		
 		return $result;
 	}
@@ -45,7 +45,7 @@ class DeepdiveRequests Extends Deepdive
 					FROM spdv_dives
 					WHERE live = 1 AND finished = 1";
 		
-		$result = $this->SelectRecords($query);
+		$result = self::SelectRecords($query);
 		
 		return $result;
 	}
@@ -61,7 +61,7 @@ class DeepdiveRequests Extends Deepdive
 					   'followers'=>array($followers,'INT',0),
 					   'created'=>array($created,'INT',0));
 		
-		$result = $this->InsertRecord($query,$params);
+		$result = self::InsertRecord($query,$params);
 		
 		return $result;
 	}
@@ -78,7 +78,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		//Errors::PrintArray($params);
 		
-		$result = $this->UpdateRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 		
@@ -92,7 +92,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('id'=>array($id,'INT',0));
 		
-		$result = $this->UpdateRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 	}
@@ -105,7 +105,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('id'=>array($id,'INT',0));
 		
-		$result = $this->UpdateRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 	}
@@ -120,7 +120,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0));
 		
-		$result = $this->SelectRecord($query,$params);
+		$result = self::SelectRecord($query,$params);
 		
 		return $result;
 	}
@@ -133,7 +133,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0));
 		
-		$result = $this->SelectCount($query,$params);
+		$result = self::SelectCount($query,$params);
 		
 		return $result;
 	}
@@ -146,7 +146,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0));
 		
-		$result = $this->SelectCount($query,$params);
+		$result = self::SelectCount($query,$params);
 		
 		return $result;
 	}
@@ -162,7 +162,7 @@ class DeepdiveRequests Extends Deepdive
 						'twittercursor'=>array($cursor,'STR',50),
 					   'created'=>array($created,'INT',0));
 		
-		$result = $this->InsertRecord($query,$params);
+		$result = self::InsertRecord($query,$params);
 		
 		return $result;
 	}
@@ -175,7 +175,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('id'=>array($id,'INT',0));
 		
-		$result = $this->UpdateRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 	}
@@ -188,7 +188,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0));
 		
-		$result = $this->SelectRecords($query,$params);
+		$result = self::SelectRecords($query,$params);
 		
 		return $result;
 	}
@@ -203,7 +203,7 @@ class DeepdiveRequests Extends Deepdive
 					 'followers'=>array($followers,'STR',5000000),
 					 'created'=>array($created,'INT',0));
 		
-		$result = $this->InsertRecord($query,$params);
+		$result = self::InsertRecord($query,$params);
 		
 		return $result;
 	}
@@ -216,7 +216,7 @@ class DeepdiveRequests Extends Deepdive
 		
 		$params = array('id'=>array($id,'INT',0));
 		
-		$result = $this->UpdateRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 	}
@@ -229,7 +229,7 @@ class DeepdiveRequests Extends Deepdive
 			
 		$params = array('twitterid'=>array($twitterid,'INT',0));
 		
-		$result = $this->SelectRecord($query,$params);
+		$result = self::SelectRecord($query,$params);
 		
 		return $result;
 	}
@@ -242,7 +242,7 @@ class DeepdiveRequests Extends Deepdive
 			
 		$params = array('twitterid'=>array($twitterid,'INT',0));
 		
-		$result = $this->SelectCount($query,$params);
+		$result = self::SelectCount($query,$params);
 		
 		return $result;	
 	}
@@ -258,7 +258,7 @@ class DeepdiveRequests Extends Deepdive
 					   	'checks'=>array($checks,'INT',0),
 					   	'created'=>array($created,'INT',0));
 			
-		$result = $this->InsertRecord($query,$params);
+		$result = self::InsertRecord($query,$params);
 		
 		return $result;
 	}
@@ -278,7 +278,7 @@ class DeepdiveRequests Extends Deepdive
 					   	'checks'=>array($checks,'INT',0),
 					   	'created'=>array($created,'INT',0));
 			
-		$result = $this->UpdateRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 	}
@@ -289,7 +289,7 @@ class DeepdiveRequests Extends Deepdive
 					FROM spdv_scores AS s
 					JOIN spdv_dives AS d ON s.twitterid = d.twitterid";
 		
-		$result = $this->SelectRecords($query);
+		$result = self::SelectRecords($query);
 		
 		return $result;
 	}

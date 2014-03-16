@@ -10,7 +10,7 @@ class Validation
 	// SaltNumber helps generate your database salt for your application. It must be edited each time you build an apllication. 
 	
 	//protected $SaltNumber = 541257896335411; 
-	protected $SaltNumber = 5.41257896335E+14;	
+	protected static $SaltNumber = 5.41257896335E+14;	
 		
 	protected $MaxFileSize = 5000000;
 	protected $MaxImageWidth = 2000;
@@ -240,10 +240,10 @@ class Validation
 			$valid = false;
 			$message[] = 'File was not valid, must be gif, jpeg, png or pdf.';	
 		}
-		if ($_FILES[$name]["size"] > $this->MaxFileSize)
+		if ($_FILES[$name]["size"] > self::MaxFileSize)
 		{
 			$valid = false;
-			$message[] =  'Your file can be no larger than '.$this->MaxFileSize.'kb';
+			$message[] =  'Your file can be no larger than '.self::MaxFileSize.'kb';
 		}
 		if ($_FILES[$name]["error"] > 0)
 		{
@@ -260,10 +260,10 @@ class Validation
 			$valid = false;
 			$message[] = 'The file name must not contain any whitespace.';
 		}
-		if ($_FILES[$name]["type"] != "application/pdf" && ($width > $this->MaxImageWidth || $height > $this->MaxImageHeight))
+		if ($_FILES[$name]["type"] != "application/pdf" && ($width > self::MaxImageWidth || $height > self::MaxImageHeight))
 		{
 			$valid = false;
-			$message[] = 'The image must be no bigger than '.$this->MaxImageWidth.'px wide and '.$this->MaxImageHeight.'px high.';				
+			$message[] = 'The image must be no bigger than '.self::MaxImageWidth.'px wide and '.self::MaxImageHeight.'px high.';				
 		}
 		
 		return array($valid,$message);
@@ -402,7 +402,8 @@ class Validation
 	private function GetSalt()
 	{
 	
-		$salt = base_convert($this->SaltNumber,10,36);
+		$salt = base_convert(self::$SaltNumber,10,36);
+		//die(self::$SaltNumber);
 		return $salt;
 		
 	}
@@ -540,7 +541,7 @@ class Validation
 					
 					$newstring = $rand1.$reverse.$base3.$base1.$rand3.$rand2;
 					
-					$base = $this->Obscure($newstring,$salt);
+					$base = self::Obscure($newstring,$salt);
 					
 					return $base;
 				}
@@ -568,7 +569,7 @@ class Validation
 					throw new Exception('Invalid data submitted.');
 				}
 				
-				$unobscure = $this->Unobscure($base,$salt);
+				$unobscure = self::Unobscure($base,$salt);
 				
 				$rand1 = substr($unobscure,0,2);
 				$rand2 = substr($unobscure,-2);
@@ -632,8 +633,8 @@ class Validation
 		public function Obscure($string,$salt)
 		{
 			$strings = str_split($string);
-			$index = $this->HashIndex();
-			$hashindex = $this->GenerateIndex($salt);
+			$index = self::HashIndex();
+			$hashindex = self::GenerateIndex($salt);
 			
 			//Errors::PrintArray($string);
 			//Errors::PrintArray($index);
@@ -661,18 +662,18 @@ class Validation
 				$newstring .= $hashindex[$c];
 			}
 			
-			$newstring = $this->Confuse($salt,$newstring);
+			$newstring = self::Confuse($salt,$newstring);
 		
 			return $newstring;
 		}
 	
 		public function Unobscure($string,$salt)
 		{
-			$string = $this->Confuse($salt,$string);
+			$string = self::Confuse($salt,$string);
 			
 			$strings = str_split($string);
-			$index = $this->HashIndex();
-			$hashindex = $this->GenerateIndex($salt);
+			$index = self::HashIndex();
+			$hashindex = self::GenerateIndex($salt);
 			
 			foreach ($strings as $s)
 			{
@@ -731,7 +732,7 @@ class Validation
 	
 		public function GenerateIndex($salt)
 		{
-			$index = $this->HashIndex();
+			$index = self::HashIndex();
 	
 			//Errors::PrintArray($index);
 			
@@ -760,7 +761,7 @@ class Validation
 			
 			//Errors::PrintArray(array('i1'=>$i1,'c1'=>$c1));
 			
-			$randomindex = $this->CreateIndex($index,$i1,$c1);
+			$randomindex = self::CreateIndex($index,$i1,$c1);
 			
 			return $randomindex;
 		}

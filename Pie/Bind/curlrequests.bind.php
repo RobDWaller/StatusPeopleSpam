@@ -6,7 +6,7 @@ class CurlRequests extends Curl
     public function GetFeed($url)
     {
         
-        $xml = $this->GrabXML($url);
+        $xml = self::GrabXML($url);
         
         return $xml;
         
@@ -15,7 +15,7 @@ class CurlRequests extends Curl
     public function GetJSON($url)
     {
         
-        $json = $this->GrabJson($url);
+        $json = self::GrabJson($url);
         
         return $json;
         
@@ -23,14 +23,14 @@ class CurlRequests extends Curl
     
     public function HttpPostJson($url,$data)
     {
-        $json = $this->PostJson($url,$data);
+        $json = self::PostJson($url,$data);
         
         return $json;
     }
     
     public function HttpPostXML($url,$data)
     {
-        $json = $this->PostXML($url,$data);
+        $json = self::PostXML($url,$data);
         
         return $json;
     }
