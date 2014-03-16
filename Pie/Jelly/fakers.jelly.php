@@ -39,6 +39,7 @@ class Fakers extends Jelly
 #					$_SESSION['userid'] = 198192466;
 #					$_SESSION['primaryid'] = 198192466;
 #					$_SESSION['userid'] = 545309711;
+#					$_SESSION['primaryid'] = 545309711;
 #					$_SESSION['userid'] = 96269828;
 #					$_SESSION['userid'] = 1101473544;
 #					$_SESSION['userid'] = 1919216960;
@@ -51,18 +52,32 @@ class Fakers extends Jelly
 #					$_SESSION['userid'] = 16816972;
 #					$_SESSION['userid'] = 17322641;
 #					$_SESSION['userid'] = 42609957;
+#					$_SESSION['primaryid'] = 42609957;
 #					$_SESSION['userid'] = 12491732;
 #					$_SESSION['userid'] = 2279299242;
 #					$_SESSION['userid'] = 200579165;
 #					$_SESSION['primaryid'] = 200579165;
-                    
+#					$_SESSION['userid'] = 381857747;
+#					$_SESSION['primaryid'] = 381857747;
+#					$_SESSION['userid'] = 1081901;
+#					$_SESSION['primaryid'] = 1081901;
+#					$_SESSION['userid'] = 49900915;
+#					$_SESSION['primaryid'] = 49900915;
+#					$_SESSION['userid'] = 717122384;
+#                   $_SESSION['primaryid'] = 717122384;
+#					$_SESSION['userid'] = 2263173437;
+#					$_SESSION['primaryid'] = 2263173437;
+#					$_SESSION['userid'] = 2332143871;
+#					$_SESSION['primaryid'] = 2332143871;
+					
+						
                     if (isset($_SESSION['message']))
                     {
                         $data['message'] = $_SESSION['message'];
                     }
                     elseif ($vars[0]==1) 
                     {
-                        $data['message'] = $this->buildchutney->PageMessage('alert',array('Please connect to you Twitter account to make use of this service.'));
+                        $data['message'] = Build::PageMessage('alert',array('Please connect to you Twitter account to make use of this service.'));
                     }
 
                     $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);	
@@ -75,7 +90,7 @@ class Fakers extends Jelly
                     $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);    
 					$data['logout'] = 2;
 					
-					//$this->sessionschutney->UnsetSessions(array('message'));
+					//Sessions::UnsetSessions(array('message'));
 
 					//session_destroy();
 			
@@ -135,12 +150,12 @@ class Fakers extends Jelly
                 
 					if ($verify['code']!=200)
 					{
-						$data['message'] = $this->buildchutney->PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
+						$data['message'] = Build::PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
 					}
 					
                     $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
                     $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
-					$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+					$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 
                     $fields = array('email'=>array('Email','Text','',$_SESSION['email']),
                                 'title'=>array('Title','Title','',$_SESSION['title']),
@@ -148,7 +163,7 @@ class Fakers extends Jelly
                                 'lastname'=>array('Last Name','Text','',$_SESSION['lastname']),
                                 'submit'=>array('Proceed','Submit')); 
 
-                    $data['form'] = $this->formschutney->FormBuilder('detailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
+                    $data['form'] = Forms::FormBuilder('detailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
 
                     $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($data["twitterid"]),$this->mod_rewrite);
 					
@@ -159,7 +174,7 @@ class Fakers extends Jelly
                     else 
                     {
 
-                        $bio = $this->curlbind->GetJSON($url);
+                        $bio = CurlRequests::GetJSON($url);
 
 						//$this->errorschutney->DebugArray($bio);
 						
@@ -177,7 +192,7 @@ class Fakers extends Jelly
 					$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);
 					$data['menu'] = '&nbsp;';
 
-                    $this->sessionschutney->UnsetSessions(array('message'));
+                    Sessions::UnsetSessions(array('message'));
 					
 					//$this->errorschutney->DebugArray($data);
 					
@@ -202,7 +217,7 @@ class Fakers extends Jelly
             if ($validity[0])
             {
 
-                $userid = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+                $userid = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
                 
@@ -214,12 +229,14 @@ class Fakers extends Jelly
                 
 				if ($verify['code']!=200)
 				{
-					$data['message'] = $this->buildchutney->PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
+					$data['message'] = Build::PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
 				}
 				
                 $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
-				$bio = $this->curlbind->GetJSON($url);
+				//$this->errorschutney->PrintArray($url);
+				
+				$bio = CurlRequests::GetJSON($url);
                 
 				//$this->errorschutney->DebugArray($bio);
 
@@ -287,8 +304,8 @@ class Fakers extends Jelly
 
             if ($validity[0])
             {
-				$userid = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
-				$userid2 = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_TWO);
+				$userid = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$userid2 = Validation::ObscureNumber($_SESSION['userid'],SALT_TWO);
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION['userid']);
                 
@@ -298,7 +315,7 @@ class Fakers extends Jelly
                 
                 $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
-                $bio = $this->curlbind->GetJSON($url);
+                $bio = CurlRequests::GetJSON($url);
                 
 //                $this->errorschutney->DebugArray($bio);
 
@@ -352,7 +369,7 @@ class Fakers extends Jelly
 		{
 			//die('Hello World!!');
 			
-			$result = $this->curlbind->GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
+			$result = CurlRequests::GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
 		
 			//$this->errorschutney->DebugArray($result);
 			if ($result->code == 201)
@@ -373,13 +390,15 @@ class Fakers extends Jelly
 			{
 				$data['title'] = 'Status People &mdash; Page Not Found.';
 				$data['homelink'] = $this->routechutney->HREF('/User/Signup',$this->mod_rewrite);
-				$data['message'] = $this->buildchutney->PageMessage('alert',array('The page you were looking for could not be located.'));
+				$data['message'] = Build::PageMessage('alert',array('The page you were looking for could not be located.'));
 				$this->glaze->view('error.php',$data);
 			}
 		}
 	
 		public function Settings()
 		{
+			//$this->errorschutney->DebugArray($_SESSION);
+			
 			Generic::_IsLogin();
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
@@ -395,12 +414,12 @@ class Fakers extends Jelly
 				$data['message'] = $_SESSION['message'];
 			}
 			
-			$this->sessionschutney->UnsetSessions(array('message'));
+			Sessions::UnsetSessions(array('message'));
 			
 			$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
 			$data['title'] = 'Settings';
 			
-			$details = $this->paymentbind->GetUserDetails($_SESSION['userid']);
+			$details = PaymentRequests::GetUserDetails($_SESSION['userid']);
 			
 			//$this->errorschutney->DebugArray($details);
 			
@@ -410,7 +429,7 @@ class Fakers extends Jelly
 							'lastname'=>array('Last Name','Text','',$details[5]),
 							'submit'=>array('Update','Submit')); 
 			
-			$data['form'] = $this->formschutney->FormBuilder('yourdetailsform',$this->routechutney->BuildUrl('/Payments/UpdateDetails',$this->mod_rewrite),$fields);
+			$data['form'] = Forms::FormBuilder('yourdetailsform',$this->routechutney->BuildUrl('/Payments/UpdateDetails',$this->mod_rewrite),$fields);
 			
 			$competitors = $this->dbbind->GetCompetitors($_SESSION['userid']);
 			
@@ -418,21 +437,21 @@ class Fakers extends Jelly
 			
 			$data['accounts'] = $this->_BuildSubAccounts($competitors);
 			
-			$check = $this->apibind->CheckForUsersKey($_SESSION['userid']);
+			$check = APIRequests::CheckForUsersKey($_SESSION['userid']);
 			
 			//$this->errorschutney->DebugArray($check);
 			
 			if ($check>0)
 			{
-				$key = $this->apibind->GetUsersKey($_SESSION['userid']);
+				$key = APIRequests::GetUsersKey($_SESSION['userid']);
 				
 				$data['apikey'] = $key[1];
 			}
 			else
 			{
-				$apikey = $hash = $this->validationchutney->HashString(time().$_SESSION['userid'].rand(0,9999));
+				$apikey = $hash = Validation::HashString(time().$_SESSION['userid'].rand(0,9999));
 				
-				$this->apibind->AddKey($_SESSION['userid'],$hash,time());
+				APIRequests::AddKey($_SESSION['userid'],$hash,time());
 				
 				$data['apikey'] = $apikey;
 			}
@@ -443,7 +462,7 @@ class Fakers extends Jelly
 			}
 			
 			$data['type'] = $_SESSION['type'];
-			$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+			$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 			$data['nosettings'] = $_SESSION['nosettings'];
 			
 			$this->glaze->view('Spam/settings.php',$data);	
@@ -457,18 +476,18 @@ class Fakers extends Jelly
 			
 			if ($validity[0])
             {
-				$hash = $this->validationchutney->HashString(time().$_SESSION['userid'].rand(0,9999));
+				$hash = Validation::HashString(time().$_SESSION['userid'].rand(0,9999));
 				
-				$update = $this->apibind->ResetKey($_SESSION['userid'],$hash);
+				$update = APIRequests::ResetKey($_SESSION['userid'],$hash);
 				
 				if ($update > 0)
 				{
-					$_SESSION['message'] = $this->buildchutney->PageMessage('success',array('API Key reset successfully.'));
+					$_SESSION['message'] = Build::PageMessage('success',array('API Key reset successfully.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 				else
 				{
-					$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array('Failed to Reset API key, please contact info@statuspeople.com.'));
+					$_SESSION['message'] = Build::PageMessage('failure',array('Failed to Reset API key, please contact info@statuspeople.com.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
                 	die();	
 				}
@@ -533,7 +552,7 @@ class Fakers extends Jelly
                 $data['message'] = $_SESSION['message'];
             }
             
-			$this->sessionschutney->UnsetSessions(array('message'));
+			Sessions::UnsetSessions(array('message'));
 			
 			if ($_SESSION['type']>=1)
 			{
@@ -569,13 +588,13 @@ class Fakers extends Jelly
             
             if ($reset)
             {
-                $_SESSION['message'] = $this->buildchutney->PageMessage('success',array('Connection Details Reset Successfully. Please now reconnect to the Fakers App.'));
+                $_SESSION['message'] = Build::PageMessage('success',array('Connection Details Reset Successfully. Please now reconnect to the Fakers App.'));
                 
                 header('Location:'.$this->routechutney->BuildUrl('/',$this->dbbind));
             }
             else
             {
-                $_SESSION['message'] = $this->buildchutney->PageMessage('failure',array('Failed to reset connection details. Please contact info@statuspeople.com'));
+                $_SESSION['message'] = Build::PageMessage('failure',array('Failed to reset connection details. Please contact info@statuspeople.com'));
                 
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers/Reset',$this->dbbind));
             }
@@ -588,7 +607,7 @@ class Fakers extends Jelly
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
@@ -622,7 +641,7 @@ class Fakers extends Jelly
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			if (!$validity[0])
@@ -654,7 +673,7 @@ class Fakers extends Jelly
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			if (!$validity[0])
@@ -686,7 +705,7 @@ class Fakers extends Jelly
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = $this->validationchutney->ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			if (!$validity[0])
@@ -732,13 +751,13 @@ class Fakers extends Jelly
 		{
 			$data['email'] = $vars['e'];
 			
-			$valid = $this->validationchutney->ValidateEmail($data['email']);
+			$valid = Validation::ValidateEmail($data['email']);
 			
 			//$this->errorschutney->DebugArray($valid);
 			
 			if (!$valid[0])
 			{
-				$data['message'] = $this->buildchutney->PageMessage('failure',array("This is not a valid email address. Please check the address and try again."));
+				$data['message'] = Build::PageMessage('failure',array("This is not a valid email address. Please check the address and try again."));
 			}
 			else
 			{
@@ -750,16 +769,16 @@ class Fakers extends Jelly
 					
 					if ($unsubscribe>0)
 					{
-						$data['message'] = $this->buildchutney->PageMessage('success',array("Your email has been successfully unsubscribed. We're sorry to see you go."));
+						$data['message'] = Build::PageMessage('success',array("Your email has been successfully unsubscribed. We're sorry to see you go."));
 					}
 					else
 					{
-						$data['message'] = $this->buildchutney->PageMessage('failure',array("There was an error! We failed to unsubscribe your email address, please contact info@statuspeople.com."));
+						$data['message'] = Build::PageMessage('failure',array("There was an error! We failed to unsubscribe your email address, please contact info@statuspeople.com."));
 					}
 				}
 				else
 				{
-					$data['message'] = $this->buildchutney->PageMessage('alert',array("This email address has either already been unsubscribed or does not exist within our systems."));
+					$data['message'] = Build::PageMessage('alert',array("This email address has either already been unsubscribed or does not exist within our systems."));
 				}
 			}
 			
@@ -791,7 +810,7 @@ class Fakers extends Jelly
 
             $url = $this->routechutney->HREF('/API/GetSpamScores?rf=json&usr='.$userid.'&srch='.$search,$this->mod_rewrite);
             
-            $scores = $this->curlbind->GetJSON($url);
+            $scores = CurlRequests::GetJSON($url);
        
             //$this->errorschutney->DebugArray($scores);
             
@@ -822,8 +841,8 @@ class Fakers extends Jelly
 			
 			if ($validity[0])
             {
-				$parentid = $this->validationchutney->UnobscureNumber($_POST['parentid'],SALT_ONE);
-				$childid = $this->validationchutney->UnobscureNumber($_POST['childid'],SALT_ONE);
+				$parentid = Validation::UnobscureNumber($_POST['parentid'],SALT_ONE);
+				$childid = Validation::UnobscureNumber($_POST['childid'],SALT_ONE);
 				
 				$exists = $this->dbbind->CheckForParent($parentid,$childid);
 				
@@ -833,20 +852,20 @@ class Fakers extends Jelly
 					
 					if ($delete > 0)
 					{
-						$_SESSION['message'] = $this->buildchutney->PageMessage('success',array("Accounts disconnected successfully."));
+						$_SESSION['message'] = Build::PageMessage('success',array("Accounts disconnected successfully."));
 						header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 						die();	
 					}
 					else
 					{
-						$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array("Failed to disconnect accounts. Please try again or contact info@statuspeople.com."));
+						$_SESSION['message'] = Build::PageMessage('failure',array("Failed to disconnect accounts. Please try again or contact info@statuspeople.com."));
 						header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 						die();
 					}
 				}
 				else
 				{
-					$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array("These accounts are already disconnected."));
+					$_SESSION['message'] = Build::PageMessage('failure',array("These accounts are already disconnected."));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
                 	die();
 				}
@@ -867,10 +886,10 @@ class Fakers extends Jelly
 			if ($validity[0])
             {
 				
-				$_SESSION['userid'] = $this->validationchutney->UnobscureNumber($_POST['account'],SALT_ONE);
-				$userid = $this->validationchutney->UnobscureNumber($_POST['account'],SALT_ONE);
+				$_SESSION['userid'] = Validation::UnobscureNumber($_POST['account'],SALT_ONE);
+				$userid = Validation::UnobscureNumber($_POST['account'],SALT_ONE);
 				
-				$count = $this->paymentbind->CountValidRecords($_SESSION['userid']);
+				$count = PaymentRequests::CountValidRecords($_SESSION['userid']);
 				
 				$_SESSION['nosettings'] = 1;
 				//$this->errorschutney->PrintArray($count);
@@ -882,7 +901,7 @@ class Fakers extends Jelly
 				
 				if ($count)
 				{
-					$validdate = $this->paymentbind->GetValidDate($userid);
+					$validdate = PaymentRequests::GetValidDate($userid);
 					
 					//$this->errorschutney->DebugArray($validdate);
 					
@@ -932,18 +951,18 @@ class Fakers extends Jelly
             if ($_SESSION['rsp'] == 400)
             {
                 $_SESSION['Twitter'] = 1;
-                $data['message'] = $this->buildchutney->PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
+                $data['message'] = Build::PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
             }
             elseif ($_SESSION['rsp'] == 200)
             {
 
-                $userid = $this->validationchutney->UnobscureNumber($_SESSION['ui'],SALT_ONE);
+                $userid = Validation::UnobscureNumber($_SESSION['ui'],SALT_ONE);
                 $token = $_SESSION['oat'];
                 $secret = $_SESSION['oas'];
                 $where = $_SESSION['var1'];
                 
-                $_SESSION['userid'] = $this->validationchutney->UnobscureNumber($_SESSION['ui'],SALT_ONE);
+                $_SESSION['userid'] = Validation::UnobscureNumber($_SESSION['ui'],SALT_ONE);
                 $_SESSION['token'] = $_SESSION['oat'];
                 $_SESSION['secret'] = $_SESSION['oas'];
 
@@ -952,7 +971,7 @@ class Fakers extends Jelly
 
 				$ok = false;
 				
-				$valid = $this->validationchutney->ValidateInteger($userid,'Twitter ID');
+				$valid = Validation::ValidateInteger($userid,'Twitter ID');
 				
 				if ($valid[0])
 				{
@@ -993,26 +1012,26 @@ class Fakers extends Jelly
                 
                 //$result = 1;
                 
-                $this->sessionschutney->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas'));
+                Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas'));
                 
                 if ($ok)
                 {
 					$ip = $_SERVER["REMOTE_ADDR"];
-                    //$_SESSION['message'] = $this->buildchutney->PageMessage('success',array('Twitter successfully authenticated.'));
+                    //$_SESSION['message'] = Build::PageMessage('success',array('Twitter successfully authenticated.'));
                     $this->dbbind->AddLogin($userid,$ip,time());
 					Generic::_LastPage();
                     header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
                 }
                 else
                 {
-                    $_SESSION['message'] = $this->buildchutney->PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
+                    $_SESSION['message'] = Build::PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
                     header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
                 }
             }
 			else
 			{
 				$_SESSION['Twitter'] = 1;
-                $data['message'] = $this->buildchutney->PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
+                $data['message'] = Build::PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
 			}
 	} */
@@ -1025,8 +1044,8 @@ class Fakers extends Jelly
 		
 			if (isset($_POST['parentid']))
 			{
-				$_SESSION['parentid'] = $this->validationchutney->UnobscureNumber($_POST['parentid'],SALT_ONE);
-				$_SESSION['childid'] = $this->validationchutney->UnobscureNumber($_POST['childid'],SALT_ONE);
+				$_SESSION['parentid'] = Validation::UnobscureNumber($_POST['parentid'],SALT_ONE);
+				$_SESSION['childid'] = Validation::UnobscureNumber($_POST['childid'],SALT_ONE);
 			}
             
             $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
@@ -1049,7 +1068,7 @@ class Fakers extends Jelly
                     break;
                 default:
                     /* Show notification if something went wrong. */
-//                                    $_SESSION['message'] = $this->buildchutney->ErrorMessages(array('Could not connect to Twitter. Refresh the page or try again later.'));
+//                                    $_SESSION['message'] = Build::ErrorMessages(array('Could not connect to Twitter. Refresh the page or try again later.'));
 //                                    $redirect = $this->routechutney->BuildUrl('/User/Account',$this->mod_rewrite);
 //                                    header('Location:'.$redirect);
                       $this->ClearTwitterSessions();
@@ -1077,7 +1096,7 @@ class Fakers extends Jelly
 
 		/* Remove no longer needed request tokens */
 		
-		$this->sessionschutney->UnsetSessions(array('oauth_token','oauth_token_secrect'));
+		Sessions::UnsetSessions(array('oauth_token','oauth_token_secrect'));
 
 		/* If HTTP response is 200 continue otherwise send to connect page to retry */
 		if (200 == $this->twitter->http_code) {
@@ -1094,7 +1113,7 @@ class Fakers extends Jelly
 			} */
 			
 /* 			$_SESSION['status'] = 'verified';
-			$_SESSION['ui'] = $this->validationchutney->ObscureNumber($access_token['user_id'],SALT_ONE);
+			$_SESSION['ui'] = Validation::ObscureNumber($access_token['user_id'],SALT_ONE);
 			$_SESSION['oat'] = $access_token['oauth_token'];
 			$_SESSION['oas'] = $access_token['oauth_token_secret'];
 			$_SESSION['rsp'] = 200; */
@@ -1187,7 +1206,7 @@ class Fakers extends Jelly
 					{
 						$addparent = $this->dbbind->AddParent($_SESSION['parentid'],$_SESSION['childid'],time());
 						
-						$this->sessionschutney->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
+						Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
 						
 						//$this->errorschutney->DebugArray($addparent);
 						
@@ -1199,45 +1218,45 @@ class Fakers extends Jelly
 							}
 							else
 							{
-								$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array("Failed to connect to sub-account. Please try again, if this problem persists contact info@statuspeople.com."));
+								$_SESSION['message'] = Build::PageMessage('failure',array("Failed to connect to sub-account. Please try again, if this problem persists contact info@statuspeople.com."));
 								header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 							}
 						}
 						else
 						{
-							$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array("Process failed. Please contact info@statuspeople.com."));
+							$_SESSION['message'] = Build::PageMessage('failure',array("Process failed. Please contact info@statuspeople.com."));
 							header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 						}
 					}
 					else
 					{
-						$_SESSION['message'] = $this->buildchutney->PageMessage('alert',array("These accounts are already connected."));
+						$_SESSION['message'] = Build::PageMessage('alert',array("These accounts are already connected."));
 						header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 					}
 				}
 				else
 				{
-					$this->sessionschutney->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
+					Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
 					
-					$_SESSION['message'] = $this->buildchutney->PageMessage('alert',array("You connected to the wrong account. Please try again..."));
+					$_SESSION['message'] = Build::PageMessage('alert',array("You connected to the wrong account. Please try again..."));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 			}
 			else
 			{
-				$this->sessionschutney->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
+				Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
             
 				if ($ok)
 				{
 					$ip = $_SERVER["REMOTE_ADDR"];
-					//$_SESSION['message'] = $this->buildchutney->PageMessage('success',array('Twitter successfully authenticated.'));
+					//$_SESSION['message'] = Build::PageMessage('success',array('Twitter successfully authenticated.'));
 					$this->dbbind->AddLogin($userid,$ip,time());
 					Generic::_LastPage();
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
 				}
 				else
 				{
-					$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
+					$_SESSION['message'] = Build::PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
 				}
 			}
@@ -1245,7 +1264,7 @@ class Fakers extends Jelly
 		else 
 		{
 			/* Save HTTP status for error dialog on connnect page.*/
-			$_SESSION['message'] = $this->buildchutney->PageMessage('failure',array('Failed to connect to Twitter please try again.'));
+			$_SESSION['message'] = Build::PageMessage('failure',array('Failed to connect to Twitter please try again.'));
 			$redirect = $this->routechutney->BuildUrl('/Fakers/ClearTwitterSessions',$this->mod_rewrite);
 			header('Location:'.$redirect);
 		}
@@ -1255,7 +1274,7 @@ class Fakers extends Jelly
 	public function ClearTwitterSessions()
 	{
 		
-                $this->sessionschutney->UnsetSessions(array('status','oauth_token','oauth_token_secret','access_token','oauth_status'));
+                Sessions::UnsetSessions(array('status','oauth_token','oauth_token_secret','access_token','oauth_status'));
 
                 header('Location:'.$_SESSION['returnurl'].'?rsp=400');
 		
@@ -1310,7 +1329,7 @@ class Fakers extends Jelly
 							$button = 'Disconnect';
 						}
 						
-						$output .= '<tr><td><img src="'.$s['avatar'].'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.$this->validationchutney->ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.$this->validationchutney->ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
+						$output .= '<tr><td><img src="'.$s['avatar'].'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.Validation::ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.Validation::ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
 					}
 				}
 				
@@ -1338,11 +1357,11 @@ class Fakers extends Jelly
 				
 				$form = '<form id="changeaccountform" action="/Fakers/SwitchAccount" method="post">';
 				$form .= '<select name="account" id="account" class="accountselection icon" data-tip="Change Account">';
-				$form .= '<option value="'.$this->validationchutney->ObscureNumber($parentid,SALT_ONE).'"'.($parentid==$userid?' SELECTED':'').'>'.$parent[2].'</option>';
+				$form .= '<option value="'.Validation::ObscureNumber($parentid,SALT_ONE).'"'.($parentid==$userid?' SELECTED':'').'>'.$parent[2].'</option>';
 					
 				foreach ($children as $ch)
 				{
-					$form .= '<option value="'.$this->validationchutney->ObscureNumber($ch['twitterid'],SALT_ONE).'"'.($ch['twitterid']==$userid?' SELECTED':'').'>'.$ch['screen_name'].'</option>';
+					$form .= '<option value="'.Validation::ObscureNumber($ch['twitterid'],SALT_ONE).'"'.($ch['twitterid']==$userid?' SELECTED':'').'>'.$ch['screen_name'].'</option>';
 					
 					if ($ch['twitterid']==$userid)
 					{
@@ -1532,8 +1551,8 @@ class Fakers extends Jelly
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
                     $output .= '<td><span class="green">Good: '.$good.'%</span></td>';
-                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid'],SALT_TWO).'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
-                    $output .= '<td><input type="hidden" value="'.$this->validationchutney->ObscureNumber($c['twitterid'],SALT_TWO).'"/><span class="delete icon" data-tip="Remove">X</span></td>';
+                    $output .= '<td><input type="hidden" value="'.Validation::ObscureNumber($c['twitterid'],SALT_TWO).'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
+                    $output .= '<td><input type="hidden" value="'.Validation::ObscureNumber($c['twitterid'],SALT_TWO).'"/><span class="delete icon" data-tip="Remove">X</span></td>';
                     $output .= '</tr>';
                 }
                 
@@ -1554,13 +1573,13 @@ class Fakers extends Jelly
 				$valid = false;
 				$message = '';
 				
-				$count = $this->paymentbind->CountValidRecords($userid);
+				$count = PaymentRequests::CountValidRecords($userid);
 				
 				//$this->errorschutney->PrintArray($count);
 				
 				if ($count)
 				{
-					$validdate = $this->paymentbind->GetValidDate($userid);
+					$validdate = PaymentRequests::GetValidDate($userid);
 					
 					//$this->errorschutney->DebugArray($validdate);
 					
@@ -1571,7 +1590,7 @@ class Fakers extends Jelly
 					}
 					else
 					{
-						$message = $this->buildchutney->PageMessage('alert',array('You need to purchase a new <a href="'.$this->routechutney->HREF('/Payments/Details',$this->mod_rewrite).'">subscription</a> to continue using the Fakers Dashboard.'));
+						$message = Build::PageMessage('alert',array('You need to purchase a new <a href="'.$this->routechutney->HREF('/Payments/Details',$this->mod_rewrite).'">subscription</a> to continue using the Fakers Dashboard.'));
 					}
 				}
 			}

@@ -11,7 +11,7 @@ class PaymentRequests Extends DB
         
         $params = array('twitterid'=>array($twitterid,'INT',0));
         
-        $result = $this->SelectCount($query, $params);
+        $result = self::SelectCount($query, $params);
         
         return $result;
     }
@@ -24,7 +24,7 @@ class PaymentRequests Extends DB
         
         $params = array('twitterid'=>array($userid,'INT',0));
         
-        $result = $this->SelectRecord($query, $params);
+        $result = self::SelectRecord($query, $params);
         
         return $result;
     }
@@ -34,7 +34,7 @@ class PaymentRequests Extends DB
 		$query = "SELECT *
 					FROM spsp_user_details";
 		
-		$result = $this->SelectRecords($query);
+		$result = self::SelectRecords($query);
 		
 		return $result;
 	}
@@ -53,7 +53,7 @@ class PaymentRequests Extends DB
         
 //        Errors::DebugArray($params);
         
-        $result = $this->InsertRecord($query,$params);
+        $result = self::InsertRecord($query,$params);
         
         return $result;
     }
@@ -75,7 +75,7 @@ class PaymentRequests Extends DB
         
 		//Errors::DebugArray($params);
         
-        $result = $this->UpdateRecord($query,$params);
+        $result = self::UpdateRecord($query,$params);
         
         return $result;
     }
@@ -93,7 +93,7 @@ class PaymentRequests Extends DB
 						'type'=>array($type,'INT',0),
                         'created'=>array($created,'INT',0));
         
-        $result = $this->InsertRecord($query,$params);
+        $result = self::InsertRecord($query,$params);
 
         return $result;
 
@@ -107,7 +107,7 @@ class PaymentRequests Extends DB
         
         $params = array('transactionid'=>array($transactionid,'INT',0));
         
-        $result = $this->SelectCount($query,$params);
+        $result = self::SelectCount($query,$params);
         
         return $result;
     }
@@ -120,7 +120,7 @@ class PaymentRequests Extends DB
         
         $params = array('transactionid'=>array($transactionid,'INT',0));
         
-        $result = $this->SelectRecord($query,$params);
+        $result = self::SelectRecord($query,$params);
         
         return $result;
     }
@@ -133,7 +133,7 @@ class PaymentRequests Extends DB
 
         $params = array('transactionid'=>array($transactionid,'STR',64));
 
-        $result = $this->InsertRecord($query,$params);
+        $result = self::InsertRecord($query,$params);
 
         return $result;
     }
@@ -146,7 +146,7 @@ class PaymentRequests Extends DB
 
         $params = array('userid'=>array($userid,'INT',0));
 
-        $result = $this->SelectCount($query,$params);
+        $result = self::SelectCount($query,$params);
 
         return $result;
     }
@@ -160,7 +160,7 @@ class PaymentRequests Extends DB
 
         $params = array('userid'=>array($userid,'INT',0));
 
-        $result = $this->SelectRecord($query,$params);
+        $result = self::SelectRecord($query,$params);
 
         return $result;
     }
@@ -174,7 +174,7 @@ class PaymentRequests Extends DB
                         'userid'=>array($userid,'INT',0),
                         'valid'=>array($valid,'INT',0));
 
-        $result = $this->InsertRecord($query,$params);
+        $result = self::InsertRecord($query,$params);
 
         return $result;
     }
@@ -189,7 +189,7 @@ class PaymentRequests Extends DB
                         'userid'=>array($userid,'INT',0),
                         'valid'=>array($valid,'INT',0));
 
-        $result = $this->UpdateRecord($query,$params);
+        $result = self::UpdateRecord($query,$params);
 
         return $result;
     }
@@ -201,7 +201,7 @@ class PaymentRequests Extends DB
 					JOIN spsp_user_details AS sd ON sv.userid = sd.twitterid
 					WHERE sd.live = 1";
 			
-		$result = $this->SelectRecords($query);
+		$result = self::SelectRecords($query);
 		
 		return $result;
 	}
@@ -213,7 +213,7 @@ class PaymentRequests Extends DB
 					JOIN spsp_user_details AS sd ON sv.userid = sd.twitterid
 					JOIN spsp_user_info AS su ON sv.userid = su.twitterid";
 		
-		$result = $this->SelectRecords($query);
+		$result = self::SelectRecords($query);
 		
 		return $result;
 	}
