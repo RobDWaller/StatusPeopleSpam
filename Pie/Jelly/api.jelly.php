@@ -37,7 +37,7 @@ class API extends Jelly
     {
         
         $this->ResponseFormat = $vars['rf'];
-        $twid = $this->validationchutney->UnobscureNumber(urldecode($vars['twid']),$this->Salt1);
+        $twid = Validation::UnobscureNumber(urldecode($vars['twid']),$this->Salt1);
         
 //        $this->ResponseFormat = 'json';
 //        $twid = '31386162';
@@ -58,7 +58,7 @@ class API extends Jelly
             
 			if ($user['code']==200)
 			{
-           		$bio = $this->twitterchutney->ProcessTwitterBio($user['user']);
+           		$bio = TwitterHelper::ProcessTwitterBio($user['user']);
             
             //$this->_APISuccess(201,'Request Successful',$bio);
             
@@ -87,7 +87,7 @@ class API extends Jelly
 	{
 		
         $this->ResponseFormat = $vars['rf'];
-		$user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+		$user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
 		//$user = $vars['usr'];
         $search = $vars['srch'];
 		$searches = $vars['srchs'];
@@ -100,7 +100,7 @@ class API extends Jelly
             
 			//$this->errorschutney->PrintArray($details);
             
-            $search = $this->validationchutney->StripNonAlphanumeric($search);
+            $search = Validation::StripNonAlphanumeric($search);
             
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
             
@@ -320,7 +320,7 @@ class API extends Jelly
 	public function GetUpdateFakersList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -331,7 +331,7 @@ class API extends Jelly
                     
             $details = $this->dbbind->GetTwitterDetails($user);
 
-            $search = $this->validationchutney->StripNonAlphanumeric($search);
+            $search = Validation::StripNonAlphanumeric($search);
 
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
 
@@ -623,7 +623,7 @@ class API extends Jelly
             
             //$this->errorschutney->PrintArray($details);
             
-            $search = $this->validationchutney->StripNonAlphanumeric($search);
+            $search = Validation::StripNonAlphanumeric($search);
             
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
             
@@ -753,7 +753,7 @@ class API extends Jelly
         {
             $details = $this->dbbind->GetTwitterDetails($user);
                     
-            $search = $this->validationchutney->StripNonAlphanumeric($search);
+            $search = Validation::StripNonAlphanumeric($search);
 
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
 			
@@ -872,7 +872,7 @@ class API extends Jelly
 	public function GetCacheData($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
         
 		$this->_CheckForResponseFormat();
         
@@ -1036,7 +1036,7 @@ class API extends Jelly
 	
 	public function _GetLanguageDetails($followers,$langs)
 	{
-		$languages = $this->validationchutney->LanguageList();
+		$languages = Validation::LanguageList();
 		
 		//$this->errorschutney->DebugArray($languages);
 		
@@ -1305,7 +1305,7 @@ class API extends Jelly
     public function GetSpamScoresOverTime($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
         
         $this->_CheckForResponseFormat();
         
@@ -1383,7 +1383,7 @@ class API extends Jelly
     public function GetCachedSpamScore($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1427,7 +1427,7 @@ class API extends Jelly
 	public function PostBlockedSearch()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
         $search = $_POST['srch'];
 		
         $this->_CheckForResponseFormat();
@@ -1454,13 +1454,13 @@ class API extends Jelly
 	public function GetUserDetailsCount($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
         if ($user)
         {
-			$count = $this->paymentbind->CountUserDetails($user);
+			$count = PaymentRequests::CountUserDetails($user);
 			
 			if ($count)
 			{
@@ -1480,7 +1480,7 @@ class API extends Jelly
 	public function PostAddUserDetails()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
 		$email = $_POST['em'];
 		$title = $_POST['tt'];
 		$fname = $_POST['fn'];
@@ -1488,10 +1488,10 @@ class API extends Jelly
         
         $this->_CheckForResponseFormat();
 		
-		$valid[] = $this->validationchutney->ValidateEmail($email);
-		$valid[] = $this->validationchutney->ValidateString($title,'Title'); 
-		$valid[] = $this->validationchutney->ValidateString($fname,'First Name'); 
-		$valid[] = $this->validationchutney->ValidateString($lname,'Last Name'); 
+		$valid[] = Validation::ValidateEmail($email);
+		$valid[] = Validation::ValidateString($title,'Title'); 
+		$valid[] = Validation::ValidateString($fname,'First Name'); 
+		$valid[] = Validation::ValidateString($lname,'Last Name'); 
 		
 		$isvalid = true;
 		$messages = array();
@@ -1507,7 +1507,7 @@ class API extends Jelly
 		
 		if ($isvalid)
 		{
-			$count = $this->paymentbind->CountUserDetails($user);
+			$count = PaymentRequests::CountUserDetails($user);
 			
 			if ($count)
 			{
@@ -1520,7 +1520,7 @@ class API extends Jelly
 			}
 			else
 			{
-				$adddetails = $this->paymentbind->AddUserDetails($user,$email,$title,$fname,$lname,time());
+				$adddetails = PaymentRequests::AddUserDetails($user,$email,$title,$fname,$lname,time());
 				
 				if ($adddetails>0)
                 {
@@ -1559,14 +1559,14 @@ class API extends Jelly
     public function GetCompetitorCount($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
         if ($user)
         {
             $competitors = $this->dbbind->GetCompetitorCount($user);
-			$valid = $this->paymentbind->GetValidDate($user);
+			$valid = PaymentRequests::GetValidDate($user);
             
             if ($competitors>=0)
             {
@@ -1586,7 +1586,7 @@ class API extends Jelly
     public function GetCompetitorList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1602,10 +1602,10 @@ class API extends Jelly
             {
 				foreach ($competitors as $k => $cmp)
 				{
-					$competitors[$k]['userid'] = $this->validationchutney->ObscureNumber($cmp['userid'],$this->Salt2);
-					$competitors[$k][0] = $this->validationchutney->ObscureNumber($cmp['userid'],$this->Salt2);
-					$competitors[$k]['twitterid'] = $this->validationchutney->ObscureNumber($cmp['twitterid'],$this->Salt2);
-					$competitors[$k][1] = $this->validationchutney->ObscureNumber($cmp['twitterid'],$this->Salt2);
+					$competitors[$k]['userid'] = Validation::ObscureNumber($cmp['userid'],$this->Salt2);
+					$competitors[$k][0] = Validation::ObscureNumber($cmp['userid'],$this->Salt2);
+					$competitors[$k]['twitterid'] = Validation::ObscureNumber($cmp['twitterid'],$this->Salt2);
+					$competitors[$k][1] = Validation::ObscureNumber($cmp['twitterid'],$this->Salt2);
 				}
 				
                 $this->_APISuccess(201, 'Data returned successfully.',$competitors);
@@ -1620,7 +1620,7 @@ class API extends Jelly
     public function GetTwitterUserData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -1635,7 +1635,7 @@ class API extends Jelly
             
             if ($user['code'] == 200)
             {
-                $userdata = $this->twitterchutney->ProcessUserDetails($user['user']);
+                $userdata = TwitterHelper::ProcessUserDetails($user['user']);
                 
 //                $this->errorschutney->DebugArray($userdata);
                 
@@ -1661,7 +1661,7 @@ class API extends Jelly
     public function GetFollowerData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $count = $vars['ct'];
         $name = $vars['nm'];
         
@@ -1677,7 +1677,7 @@ class API extends Jelly
             
             if ($followers)
             {
-                $data = $this->twitterchutney->ProcessUsersDetails($followers);
+                $data = TwitterHelper::ProcessUsersDetails($followers);
                 
 //                $this->errorschutney->DebugArray($data);
                 
@@ -1698,7 +1698,7 @@ class API extends Jelly
     public function GetUserTwitterTimeline($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         $count = $vars['cnt'];
         
@@ -1719,7 +1719,7 @@ class API extends Jelly
             }
             else
             {
-//                $timeline = $this->twitterchutney->ProcessTimelineData($tweets,'Europe/London');
+//                $timeline = TwitterHelper::ProcessTimelineData($tweets,'Europe/London');
                 $this->_APISuccess(201,'Request Successful',$tweets);
             }
                 
@@ -1775,7 +1775,7 @@ class API extends Jelly
     public function GetSpamList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1801,7 +1801,7 @@ class API extends Jelly
 	public function GetBlockedList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = $this->validationchutney->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1827,7 +1827,7 @@ class API extends Jelly
     public function PostTweet()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
         $tweet = urldecode($_POST['txt']);
         
         $this->_CheckForResponseFormat();
@@ -1871,7 +1871,7 @@ class API extends Jelly
     public function PostAddFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
         $search = $_POST['srch'];
         $spam = $_POST['sp'];
         $potential = $_POST['pt'];
@@ -1892,7 +1892,7 @@ class API extends Jelly
         
         if ($user&&$search)
         {
-			$valid = $this->paymentbind->GetValidDate($user);
+			$valid = PaymentRequests::GetValidDate($user);
 			
 			$allowed = 6;
 			
@@ -1911,7 +1911,7 @@ class API extends Jelly
 			{
 				$details = $this->dbbind->GetTwitterDetails($user);
 	
-				$search = $this->validationchutney->StripNonAlphanumeric($search);
+				$search = Validation::StripNonAlphanumeric($search);
 				
 				$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
 				
@@ -1968,8 +1968,8 @@ class API extends Jelly
     public function PostDeleteFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
-        $twid = $this->validationchutney->UnobscureNumber($_POST['twid'],$this->Salt2);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $twid = Validation::UnobscureNumber($_POST['twid'],$this->Salt2);
         
         $this->_CheckForResponseFormat();
         
@@ -2002,7 +2002,7 @@ class API extends Jelly
     public function PostBlockSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -2043,7 +2043,7 @@ class API extends Jelly
 	public function PostUnBlockSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -2077,7 +2077,7 @@ class API extends Jelly
     public function PostNotSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -2142,7 +2142,7 @@ class API extends Jelly
 				$rt++;
 			}
 			
-			$user = $this->twitterchutney->ProcessSpamUser($d->user);
+			$user = TwitterHelper::ProcessSpamUser($d->user);
 			$this->errorschutney->PrintArray(array('id'=>$d->id_str,'tweet'=>$d->text,'user'=>$user));
 			
 			$faker = $this->_GetFakerStatus($user);
@@ -2514,17 +2514,17 @@ class API extends Jelly
 		
 		$this->_CheckText($screen_name,'Screen Name');
 		
-		$check = $this->apibind->CheckForKey($apikey);
+		$check = APIRequests::CheckForKey($apikey);
 		
 		if ($check)
 		{
-			$exists = $this->apibind->CheckForScreenNameScore($screen_name);
+			$exists = APIRequests::CheckForScreenNameScore($screen_name);
 			
 			//$this->errorschutney->DebugArray($exists);
 			
 			if ($exists>0)
 			{
-				$result = $this->apibind->GetScore($screen_name);	
+				$result = APIRequests::GetScore($screen_name);	
 				//$this->errorschutney->DebugArray($result);
 				
 				$results['screen_name'] = $result[2];
@@ -2553,15 +2553,15 @@ class API extends Jelly
 	public function PostAddDive()
 	{
 		//$userid = 1919216960;
-		//$userid = 198192466;
-		$userid = 545309711;
+		$userid = 198192466;
+		//$userid = 545309711;
 		//$userid = 31386162;
 		//$userid = 633786383;
 		//$userid = 96269828;
 		//$userid = 1101473544;
 		//$userid = 18746024;
 		
-		$user = 'WellsFargo';
+		$user = 'KylieMinogue';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
@@ -2571,7 +2571,7 @@ class API extends Jelly
 		$this->errorschutney->PrintArray($bio['user']->screen_name);
 		$this->errorschutney->PrintArray($bio['user']->followers_count);
 		
-		$this->deepdivebind->AddDive($userid,$bio['user']->id_str,$bio['user']->screen_name,$bio['user']->followers_count,time());
+		DeepdiveRequests::AddDive($userid,$bio['user']->id_str,$bio['user']->screen_name,$bio['user']->followers_count,time());
 	}
 	
 	public function PostAddSite()
@@ -2580,7 +2580,7 @@ class API extends Jelly
 		$this->ResponseFormat = $_POST['rf'];
 		$this->_CheckForResponseFormat();
 		
-		$valid = $this->validationchutney->ValidateUrl($url);
+		$valid = Validation::ValidateUrl($url);
 		
 		if ($valid[0])
 		{
@@ -2661,7 +2661,7 @@ class API extends Jelly
 	public function PostChangeAutoRemoveStatus()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-		$twid = $this->validationchutney->UnobscureNumber($_POST['usr'],$this->Salt1);
+		$twid = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
         
         $this->_CheckForResponseFormat();
 		
@@ -2711,7 +2711,7 @@ class API extends Jelly
 		
         $this->_CheckForResponseFormat();
 		
-		$rss = $this->curlbind->GetXMLString('http://www.eventbrite.co.uk/rss/user_list_events/78072036317');
+		$rss = CurlRequests::GetXMLString('http://www.eventbrite.co.uk/rss/user_list_events/78072036317');
 		
 		//$this->errorschutney->DebugArray($rss);
 					
@@ -2719,30 +2719,32 @@ class API extends Jelly
 					
 		$children = array('title','description','link','pubDate');
 					
-		$items = $this->domchutney->ParseXMLString($rss,$query,$children);
+		$items = DomHelper::ParseXMLString($rss,$query,$children);
 		
 		if ($items['code']==200)
 		{
 			$c = 0;
 			
-			foreach ($items['data'] as $k => $i)
+			if (!empty($items['data']))
 			{
-				$items['data'][$c]['id'] = 0;
-				
-				preg_match('/-([0-9]+)\?/',$i['link'],$match);
-				
-				//$this->errorschutney->DebugArray($match);
-				
-				if (!empty($match[1]))
+				foreach ($items['data'] as $k => $i)
 				{
-					$items['data'][$c]['id'] = $match[1];
+					$items['data'][$c]['id'] = 0;
+					
+					preg_match('/-([0-9]+)\?/',$i['link'],$match);
+					
+					//$this->errorschutney->DebugArray($match);
+					
+					if (!empty($match[1]))
+					{
+						$items['data'][$c]['id'] = $match[1];
+					}
+					
+					$items['data'][$c]['date'] = date('Y/m/d H:i',strtotime($items['data'][$c]['pubDate']));
+					
+					$c++;
 				}
-				
-				$items['data'][$c]['date'] = date('Y/m/d H:i',strtotime($items['data'][$c]['pubDate']));
-				
-				$c++;
 			}
-			
 			//$this->errorschutney->DebugArray($items);
 			
 			$this->_APISuccess(201, 'Eventbrite Feed Data Returned.',$items['data']);
@@ -2764,7 +2766,7 @@ class API extends Jelly
     {
         header('Content-type: application/rss+xml');
         
-        $output['xml'] = $this->xmlchutney->XMLAPIError(400,'#FAIL, No Response Format!!');
+        $output['xml'] = XML::XMLAPIError(400,'#FAIL, No Response Format!!');
 
         $this->glaze->view('API/xml.php',$output);
         
@@ -2776,7 +2778,7 @@ class API extends Jelly
         
         if ($this->ResponseFormat == 'json')
         {
-            $output['json'] = $this->jsonchutney->JSONAPIError($code,$message,$data);
+            $output['json'] = JSON::JSONAPIError($code,$message,$data);
 
             $this->glaze->view('API/json.php',$output);
         }
@@ -2784,7 +2786,7 @@ class API extends Jelly
         {
             header('Content-type: application/rss+xml');
 
-            $output['xml'] = $this->xmlchutney->XMLAPIError($code,$message,$data);
+            $output['xml'] = XML::XMLAPIError($code,$message,$data);
 
             $this->glaze->view('API/xml.php',$output);
         }
@@ -2797,7 +2799,7 @@ class API extends Jelly
         
         if ($this->ResponseFormat == 'json')
         {
-            $output['json'] = $this->jsonchutney->JSONAPIOutput(201,$message,$data);
+            $output['json'] = JSON::JSONAPIOutput(201,$message,$data);
 
             $this->glaze->view('API/json.php',$output);
         }
@@ -2805,7 +2807,7 @@ class API extends Jelly
         {
             header('Content-type: application/rss+xml');
 
-            $output['xml'] = $this->xmlchutney->XMLAPIOutput(201,$message,$data,$simple,$tag);
+            $output['xml'] = XML::XMLAPIOutput(201,$message,$data,$simple,$tag);
 
             $this->glaze->view('API/xml.php',$output);
         }
@@ -2834,7 +2836,7 @@ class API extends Jelly
     protected function _CheckURL($url)
     {
          
-        $valid = $this->validationchutney->ValidateUrl($url);
+        $valid = Validation::ValidateUrl($url);
         
         if ($valid[0] == false)
         {
@@ -2857,7 +2859,7 @@ class API extends Jelly
     
     protected function _CheckInteger($int,$name)
     {
-        $valid = $this->validationchutney->ValidateInteger($int,$name);
+        $valid = Validation::ValidateInteger($int,$name);
 
         if ($valid[0] == false)
         {
@@ -2869,7 +2871,7 @@ class API extends Jelly
     {
         if (!empty($text))
         {
-            $valid = $this->validationchutney->ValidateString($text,$name);
+            $valid = Validation::ValidateString($text,$name);
 
             if ($valid[0] == false)
             {
@@ -2882,7 +2884,7 @@ class API extends Jelly
     {
         if (!empty($text))
         {
-            $valid = $this->validationchutney->ValidateLongString($text,$name);
+            $valid = Validation::ValidateLongString($text,$name);
 
             if ($valid[0] == false)
             {
@@ -2932,7 +2934,7 @@ class API extends Jelly
             foreach ($images[1] as $image)
             {
                     //Checks that the image source is a valid url.
-                    $valid = $this->validationchutney->ValidateUrl($image);
+                    $valid = Validation::ValidateUrl($image);
 
                     if ($valid[0])
                     {

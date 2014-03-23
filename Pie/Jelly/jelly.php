@@ -9,7 +9,7 @@ class Jelly
 
 	public $glaze;
         //Bind
-        public $dbbind;
+/*         public $dbbind;
         public $sttsplbind;
         public $twitterbind;
         public $curlbind;
@@ -17,9 +17,9 @@ class Jelly
         public $paymentbind;
 		public $deepdivebind;
 		public $mainbind;
-		public $apibind;
+		public $apibind; */
         //Chutney        
-        public $formschutney;
+/*         public $formschutney;
 		public $buildchutney;
         public $seesionschutney;
         public $validationchutney;
@@ -32,7 +32,7 @@ class Jelly
         public $twitterchutney;
         public $facebookchutney;
         public $feedschutney;
-		public $domchutney;
+		public $domchutney; */
         
 	// Normally you should have mod rewrite turned on, however if not set $mod_rewrite to false and your site will 
 	// work with index.php/Class/Method urls.
@@ -47,29 +47,29 @@ class Jelly
 		$this->glaze = new Glaze();
 		//Bind
 		$this->dbbind = new DBRequests();
-		$this->sttsplbind = new SttsplRequests();
+		//$this->sttsplbind = new SttsplRequests();
 		$this->twitterbind = new TwitterRequests();
-		$this->curlbind = new CurlRequests();
+/* 		$this->curlbind = new CurlRequests();
 		$this->kredbind = new KredRequests();
 		$this->paymentbind = new PaymentRequests();
 		$this->deepdivebind = new DeepdiveRequests();
 		$this->mainbind = new MainRequests();
-		$this->apibind = new APIRequests();
+		$this->apibind = new APIRequests(); */
 		//Chutney
-		$this->formschutney = new Forms();
+/* 		$this->formschutney = new Forms();
 		$this->buildchutney = new Build();
 		$this->sessionschutney = new Sessions();
-		$this->validationchutney = new Validation();
+		$this->validationchutney = new Validation();*/
 		$this->routechutney = new Route();
-		$this->emailchutney = new Email();
+		//$this->emailchutney = new Email();*/
 		$this->errorschutney = new Errors();
-		$this->datetimechutney = new DateAndTime();
+		/*$this->datetimechutney = new DateAndTime();
 		$this->jsonchutney = new JSON();
 		$this->xmlchutney = new XML();
 		$this->twitterchutney = new TwitterHelper();
 		$this->facebookchutney = new FacebookHelper();
 		$this->feedschutney = new FeedsHelper();
-		$this->domchutney = new DomHelper();
+		$this->domchutney = new DomHelper(); */
 		
                 
 		//This sets your default error handler
@@ -171,8 +171,10 @@ class Jelly
                                             
                                             $data['title'] = 'Status People &mdash; Page Not Found.';
                                             $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
-                                            $data['message'] = $this->buildchutney->PageMessage('alert',array('The page you were looking for could not be found.'));
-                                            $this->glaze->view('error.php',$data);
+                                            $data['message'] = Build::PageMessage('alert',array('Sadly the page you were looking for could not be found.'));
+                                            $data['menu'] = Fakers::_BuildMenu();
+											$data['logout'] = 2;
+											$this->glaze->view('error.php',$data);
 
                                     }
                                 }
@@ -180,8 +182,10 @@ class Jelly
                                 {
                                     $data['title'] = 'Status People &mdash; Page Not Found.';
                                     $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
-                                    $data['message'] = $this->buildchutney->PageMessage('alert',array('This page does not exist.'));
-                                    $this->glaze->view('error.php',$data);
+                                    $data['message'] = Build::PageMessage('alert',array('This page does not exist.'));
+                                    $data['menu'] = Fakers::_BuildMenu();
+									$data['logout'] = 2;
+									$this->glaze->view('error.php',$data);
                                 }
 
                         }
@@ -192,20 +196,24 @@ class Jelly
                                
 								$class = str_replace('@','',$class);
 							
-							//$this->errorschutney->DebugArray($class);
+							//$this->errorschutney->PrintArray($class);
 							
-								$valid = $this->validationchutney->ValidateString($class,'Screen Name');
+								$valid = Validation::ValidateString($class,'Screen Name');
 	
+							//$this->errorschutney->DebugArray($valid);
+							
 								if ($valid[0] == false)
 								{
 									$data['title'] = 'Status People &mdash; Page Not Found.';
 									$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
-									$data['message'] = $this->buildchutney->PageMessage('alert',array('The page you were looking for could not be located.'));
+									$data['message'] = Build::PageMessage('alert',array('The page you were looking for could not be located.'));
+									$data['menu'] = Fakers::_BuildMenu();
+									$data['logout'] = 2;
 									$this->glaze->view('error.php',$data);
 								}
 								else
 								{
-									$check = $this->apibind->CheckForScreenNameScore($class);
+									$check = APIRequests::CheckForScreenNameScore($class);
 									
 									if ($check > 0)
 									{
@@ -215,14 +223,16 @@ class Jelly
 									{
 										$data['title'] = 'Status People &mdash; Page Not Found.';
 										$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
-										$data['message'] = $this->buildchutney->PageMessage('alert',array('Sorry, but the page you were looking for could not be located.'));
+										$data['message'] = Build::PageMessage('alert',array('Sorry, but the page you were looking for could not be located.'));
+										$data['menu'] = Fakers::_BuildMenu();
+										$data['logout'] = 2;
 										$this->glaze->view('error.php',$data);
 									}
 								}
 							
 /*                                 $data['title'] = 'Status People &mdash; Page Not Found.';
                                 $data['homelink'] = $this->routechutney->HREF('/User/Signup',$this->mod_rewrite);
-                                $data['message'] = $this->buildchutney->PageMessage('alert',array('The page you were looking for could not be located.'));
+                                $data['message'] = Build::PageMessage('alert',array('The page you were looking for could not be located.'));
                                 $this->glaze->view('error.php',$data); */
 
                         }

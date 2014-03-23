@@ -53,7 +53,7 @@ class Forms
 			if ($obj[1] == 'Title')
 			{
 				$output .= '<fieldset id="field'.$key.'"><label for="title">'.$obj[0].':</label>';
-				$output .= $this->GenerateTitlesList($obj[3]);
+				$output .= self::GenerateTitlesList($obj[3]);
 				$output .= '</fieldset>';
 			}
 			elseif ($obj[1] == 'Calendar')
@@ -63,7 +63,7 @@ class Forms
 				// We suggest you use the jQuery datepicker plugin with a normal text field if you can. 
 				
 				$output .= '<fieldset id="field'.$key.'"><label>'.$obj[0].':</label>';
-				$output .= $this->CalendarFields();
+				$output .= self::CalendarFields();
 				$output .= '</fieldset>';
 			}
 			elseif ($obj[1] == 'Time')
@@ -74,7 +74,7 @@ class Forms
 			{
 				
 				$output .= '<fieldset id="field'.$key.'"><label for="country">'.$obj[0].':</label>';
-				$output .= $this->GetCountriesList($obj[3]);
+				$output .= self::GetCountriesList($obj[3]);
 				$output .= '</fieldset>';
 				
 			}
@@ -82,14 +82,14 @@ class Forms
 			{
 				
 				$output .= '<fieldset id="field'.$key.'"><label for="gender">'.$obj[0].':</label>';
-				$output .= $this->GetGendersList($obj[3]);
+				$output .= self::GetGendersList($obj[3]);
 				$output .= '<fieldset>';
 				
 			}
 			elseif ($obj[1] == 'Timezone')
 			{
 				$output .= '<fieldset id="field'.$key.'"><label for="timezone">'.$obj[0].':</label>';
-				$output .= $this->GetTimezoneList($obj[3]);
+				$output .= self::GetTimezoneList($obj[3]);
 				$output .= '</fieldset>';
 			}
 			elseif ($obj[1] == 'Password')
@@ -246,7 +246,7 @@ class Forms
 	protected function GenerateTitlesList($selected = null)
 	{
 		
-		$titles = $this->Titles();
+		$titles = self::Titles();
 		
 		$ttlsoptns = '<select id="title" name="title">';
 		
@@ -288,7 +288,7 @@ class Forms
 	protected function GetCountriesList($selected)
 	{
 		
-		$countries = $this->Countries();
+		$countries = self::Countries();
 		
 		$cntryoptns = '<select name="country" id="country">';
 		
@@ -525,7 +525,7 @@ class Forms
 	protected function GetGendersList($selected)
 	{
 		
-		$genders = $this->Genders();
+		$genders = self::Genders();
 		
 		$gndrsoptns = '<select name="gender" id="gender">';
 		
@@ -611,7 +611,7 @@ class Forms
 	public function GetTimezoneList($selected)
 	{
 		
-		$timezones = $this->TimeZonesList();
+		$timezones = self::TimeZonesList();
 		
 		$output .= '<select id="timezone" name="timezone">';
 		

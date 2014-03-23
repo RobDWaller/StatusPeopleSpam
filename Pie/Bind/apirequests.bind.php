@@ -11,7 +11,7 @@ class APIRequests Extends DBAPI
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0));
 		
-		$count = $this->SelectCount($query,$params);
+		$count = self::SelectCount($query,$params);
 		
 		return $count;
 	}
@@ -24,7 +24,7 @@ class APIRequests Extends DBAPI
 		
 		$params = array('screen_name'=>array($screen_name,'STR',140));
 		
-		$count = $this->SelectCount($query,$params);
+		$count = self::SelectCount($query,$params);
 		
 		return $count;
 	}
@@ -38,7 +38,7 @@ class APIRequests Extends DBAPI
 		$params = array('twitterid'=>array($twitterid,'INT',0),
 					   	'score_date'=>array($score_date,'INT',0));
 		
-		$count = $this->SelectCount($query,$params);
+		$count = self::SelectCount($query,$params);
 		
 		return $count;
 	}
@@ -51,7 +51,7 @@ class APIRequests Extends DBAPI
 		
 		$params = array('screen_name'=>array($screen_name,'STR',140));
 		
-		$result = $this->SelectRecord($query,$params);
+		$result = self::SelectRecord($query,$params);
 		
 		return $result;
 	}
@@ -73,7 +73,7 @@ class APIRequests Extends DBAPI
 					   	'score_date'=>array($score_date,'INT',0),
 					   	'created'=>array($created,'INT',0));
 		
-		$result = $this->InsertRecord($query,$params);
+		$result = self::InsertRecord($query,$params);
 		
 		return $result;
 	}
@@ -103,7 +103,7 @@ class APIRequests Extends DBAPI
 						'type'=>array($type,'INT',0),
 					   	'score_date'=>array($score_date,'INT',0));
 		
-		$result = $this->InsertRecord($query,$params);
+		$result = self::InsertRecord($query,$params);
 		
 		return $result;
 	}
@@ -116,7 +116,7 @@ class APIRequests Extends DBAPI
 		
 		$params = array('key'=>array($key,'STR',64));
 		
-		$result = $this->SelectCount($query,$params);
+		$result = self::SelectCount($query,$params);
 		
 		return $result;
 	}
@@ -129,7 +129,7 @@ class APIRequests Extends DBAPI
 		
 		$params = array('userid'=>array($userid,'INT',0));
 		
-		$result = $this->SelectCount($query,$params);
+		$result = self::SelectCount($query,$params);
 		
 		return $result;
 	}
@@ -142,7 +142,7 @@ class APIRequests Extends DBAPI
 		
 		$params = array('userid'=>array($userid,'INT',0));
 		
-		$result = $this->SelectRecord($query,$params);
+		$result = self::SelectRecord($query,$params);
 		
 		return $result;
 	}
@@ -158,7 +158,7 @@ class APIRequests Extends DBAPI
 		
 		//Errors::PrintArray($params);
 		
-		$result = $this->InsertRecord($query,$params);
+		$result = self::InsertRecord($query,$params);
 		
 		return $result;
 	}
@@ -172,7 +172,7 @@ class APIRequests Extends DBAPI
 		$params = array('twitterid'=>array($twitterid,'INT',0),
 					   'apikey'=>array($apikey,'STR',64));
 		
-		$result = $this->UpdateRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 	}

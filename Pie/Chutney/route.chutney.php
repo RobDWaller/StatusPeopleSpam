@@ -85,7 +85,12 @@ class Route
 		
 		$classes = $this->BuildRouteArray($splitcv[0]);
 		
-		$vars = $this->BuildRouteArray($splitcv[1]);
+		$vars = '';
+		
+		if (!empty($splitcv[1]))
+		{
+			$vars = $this->BuildRouteArray($splitcv[1]);
+		}
 		
 		return array($classes,$vars);
 		

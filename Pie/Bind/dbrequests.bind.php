@@ -97,7 +97,7 @@ class DBRequests extends DB
                         FROM spsp_spam_scores AS sc 
                         JOIN spsp_user_info AS ui ON sc.twitterid = ui.twitterid
                         ORDER BY sc.apicheck ASC
-                        LIMIT 0,10000";
+                        LIMIT 0,1000";
             
             $result = $this->SelectRecords($query,$params);
             
@@ -499,16 +499,15 @@ class DBRequests extends DB
             return $result;
         }
         
-		public function UpdateFakerCheck($userid,$twitterid,$screen_name,$avatar)
+		public function UpdateFakerCheck($twitterid,$screen_name,$avatar)
 		{
 			$query = "UPDATE spsp_checks 
 						SET screen_name = :screen_name,
 						avatar = :avatar
-						WHERE userid = :userid AND twitterid = :twitterid AND live = 1";
+						WHERE twitterid = :twitterid AND live = 1";
 			
 			
-			$params = array('userid'=>array($userid,'INT',0),
-                            'twitterid'=>array($twitterid,'INT',0),
+			$params = array('twitterid'=>array($twitterid,'INT',0),
                             'screen_name'=>array($screen_name,'STR',140),
                             'avatar'=>array($avatar,'INT',0));
             
@@ -1039,6 +1038,17 @@ class DBRequests extends DB
 			$params = array('parentid'=>array($parentid,'INT',0));
 			
 			$result = $this->SelectRecords($query,$params);
+			
+			return $result;
+		}
+	
+		public function GetAllChildren()
+		{
+			$query = "SELECT userid 
+						FROM spsp_parents
+						WHERE live = 1";
+			
+			$result = $this->SelectRecords($query);
 			
 			return $result;
 		}
