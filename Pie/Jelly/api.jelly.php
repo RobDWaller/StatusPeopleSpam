@@ -2514,17 +2514,17 @@ class API extends Jelly
 		
 		$this->_CheckText($screen_name,'Screen Name');
 		
-		$check = $this->apibind->CheckForKey($apikey);
+		$check = APIRequests::CheckForKey($apikey);
 		
 		if ($check)
 		{
-			$exists = $this->apibind->CheckForScreenNameScore($screen_name);
+			$exists = APIRequests::CheckForScreenNameScore($screen_name);
 			
 			//$this->errorschutney->DebugArray($exists);
 			
 			if ($exists>0)
 			{
-				$result = $this->apibind->GetScore($screen_name);	
+				$result = APIRequests::GetScore($screen_name);	
 				//$this->errorschutney->DebugArray($result);
 				
 				$results['screen_name'] = $result[2];
@@ -2561,7 +2561,7 @@ class API extends Jelly
 		//$userid = 1101473544;
 		//$userid = 18746024;
 		
-		$user = 'WBPictures';
+		$user = 'KylieMinogue';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
@@ -2571,7 +2571,7 @@ class API extends Jelly
 		$this->errorschutney->PrintArray($bio['user']->screen_name);
 		$this->errorschutney->PrintArray($bio['user']->followers_count);
 		
-		$this->deepdivebind->AddDive($userid,$bio['user']->id_str,$bio['user']->screen_name,$bio['user']->followers_count,time());
+		DeepdiveRequests::AddDive($userid,$bio['user']->id_str,$bio['user']->screen_name,$bio['user']->followers_count,time());
 	}
 	
 	public function PostAddSite()
