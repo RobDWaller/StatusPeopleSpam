@@ -18,9 +18,9 @@ class SttsplRequests extends sttspl
                     {		
                             //echo $url;
                             
-                            if (!$this->CheckForShortUrls($url))
+						if (!self::CheckForShortUrls($url))
                             {				
-                                    $shorturl = $this->CreateSttsplUrl(0, $url, $type, $network);
+							$shorturl = self::CreateSttsplUrl(0, $url, $type, $network);
                                     
                                     //Errors::PrintArray($shorturl);
                                     
@@ -53,7 +53,7 @@ class SttsplRequests extends sttspl
 
             $params = array('accountid'=>array($accountid,'INT',0),'url'=>array($url,'STR',255),'guid'=>array($hash,'STR',64),'title'=>array($title,'STR',255),'type'=>array($type,'INT',0),'network'=>array($network,'INT',0),'date'=>array($date,'INT',0));
 
-            $returnid = $this->InsertRecord($query,$params);
+			$returnid = self::InsertRecord($query,$params);
             
             $id = $returnid;
             

@@ -1839,7 +1839,7 @@ class API extends Jelly
             
             $details = $this->dbbind->GetTwitterDetails($user);
 
-            $tweet = $this->sttsplbind->ConvertToShortURL(0, $tweet, 0, 0);
+            $tweet = SttsplRequests::ConvertToShortURL(0, $tweet, 0, 0);
 
             if (strlen($tweet['text']) <= 140)
             {

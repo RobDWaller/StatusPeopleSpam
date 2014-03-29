@@ -112,7 +112,7 @@ class Cron extends Jelly
 														$headers['reply'] = 'info@statuspeople.com';
 														$headers['return'] = 'info@statuspeople.com';
 	
-														$this->emailchutney->SendEmail($to,$subject,$message,$headers);
+														Email::SendEmail($to,$subject,$message,$headers);
 													}
 												}
 	
@@ -194,7 +194,7 @@ class Cron extends Jelly
 	#                                $headers['reply'] = 'info@statuspeople.com';
 	#                                $headers['return'] = 'info@statuspeople.com';
 	#
-	#                                $this->emailchutney->SendEmail($to,$subject,$message,$headers);
+	#                                Email::SendEmail($to,$subject,$message,$headers);
 									$this->dbbind->AddSpamError(print_r($bio,true),print_r($results,true),1,time());
 								}
 	
@@ -339,7 +339,7 @@ class Cron extends Jelly
 						$message .= '<p>And if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
-						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription about to Expire',$message,$headers);
+						Email::SendEmail($email,'StatusPeople Fakers Dashboard Subscription about to Expire',$message,$headers);
 						
 						$this->dbbind->AddEmailSend($email,'StatusPeople Fakers Dashboard Subscription about to Expire',time());
 					}
@@ -357,7 +357,7 @@ class Cron extends Jelly
 						$message .= '<p>And if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
-						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription has Expired',$message,$headers);
+						Email::SendEmail($email,'StatusPeople Fakers Dashboard Subscription has Expired',$message,$headers);
 						
 						$this->dbbind->AddEmailSend($email,'StatusPeople Fakers Dashboard Subscription has Expired',time());
 					}
@@ -375,7 +375,7 @@ class Cron extends Jelly
 						$message .= '<p>And if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
-						$this->emailchutney->SendEmail($email,'StatusPeople Fakers Dashboard Subscription Expiry Reminder',$message,$headers);
+						Email::SendEmail($email,'StatusPeople Fakers Dashboard Subscription Expiry Reminder',$message,$headers);
 						
 						$this->dbbind->AddEmailSend($email,'StatusPeople Fakers Dashboard Subscription Expiry Reminder',time());
 					}
@@ -393,7 +393,7 @@ class Cron extends Jelly
 						$message .= '<p>We won\'t pester you with any more reminders but if you have any thoughts and feedback on how we can improve things please let us know. Email us at info@statuspeople.com or tweet us at <a href="http://twitter.com/StatusPeople">@StatusPeople</a>.</p>';
 						$message .= '<p>Cheers, StatusPeople</p>';
 						
-						$this->emailchutney->SendEmail($email,'Goodbye from StatusPeople Fakers Dashboard',$message,$headers);
+						Email::SendEmail($email,'Goodbye from StatusPeople Fakers Dashboard',$message,$headers);
 						
 						$this->dbbind->AddEmailSend($email,'Goodbye from StatusPeople Fakers Dashboard',time());
 					}
@@ -1028,7 +1028,7 @@ class Cron extends Jelly
 			{
 				$message = $this->_MarketingMessage($e);
 				
-				$send = $this->emailchutney->SendEmail($e['email'],'Join our Social Media Training Webinars on Friday and Monday and Learn How to Boost Engagement and ROI From Twitter',$message,$headers,1);
+				$send = Email::SendEmail($e['email'],'Join our Social Media Training Webinars on Friday and Monday and Learn How to Boost Engagement and ROI From Twitter',$message,$headers,1);
 				
 				$this->errorschutney->PrintArray($e);
 				

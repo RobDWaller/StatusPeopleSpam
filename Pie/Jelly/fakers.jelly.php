@@ -1113,7 +1113,7 @@ class Fakers extends Jelly
 				
 				$message = print_r(array($this->twitter,$access_token),true);
 			
-				$send = $this->emailchutney->SendEmail('rdwaller1984@googlemail.com','Sign Up Warning for 2147483647',$message,$headers,0);
+				$send = Email::SendEmail('rdwaller1984@googlemail.com','Sign Up Warning for 2147483647',$message,$headers,0);
 			} */
 			
 /* 			$_SESSION['status'] = 'verified';
@@ -1642,7 +1642,7 @@ class Fakers extends Jelly
 			
 			$message = '<p>Dear Rob</p><p>Hello World!!</p><p>Cheers, StatusPeople</p>';
 			
-			$this->emailchutney->SendEmail($email,'StatusPeople',$message,$headers);
+			Email::SendEmail($email,'StatusPeople',$message,$headers);
 		}
         
 		public function Server()
