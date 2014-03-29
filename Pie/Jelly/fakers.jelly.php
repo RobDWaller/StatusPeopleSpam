@@ -115,6 +115,11 @@ class Fakers extends Jelly
 			
 			$this->glaze->view('Spam/test.php',$data);
 		}*/
+		
+		public function SessionTest()
+		{
+			$this->errorschutney->DebugArray($_SESSION);
+		}
 	
         public function Scores($vars)
         {
