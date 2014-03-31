@@ -378,7 +378,18 @@ class Payments extends Jelly
         if ($transaction)
         {
             
-			$data['type'] = ($_COOKIE['type']==1?'Basic':'Premium');
+			$data['type'] = 'Basic'; 
+			
+			if ($_COOKIE['type']==2)
+			{
+				$data['type'] = 'Premium'; 
+			}
+			else if ($_COOKIE['type']==3)
+			{
+				$data['type'] = 'Agency';
+			}
+			
+			$_SESSION['type'] = $_COOKIE['type'];
             $data['months'] = $_COOKIE['months'];
             $data['subtotal'] = $_COOKIE['subtotal'];
             $data['saving'] = $_COOKIE['saving'];

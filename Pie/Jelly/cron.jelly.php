@@ -26,23 +26,25 @@ class Cron extends Jelly
     
     public function UpdateFakersCheck()
     {
-		//if (true)
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
         { 
             $users = $this->dbbind->GetCheckers();
 			
-			//$this->errorschutney->PrintArray($users);
+			$this->errorschutney->PrintArray($users);
 			
-			$children = $this->dbbind->GetAllChildren();
+			//$children = $this->dbbind->GetAllChildren();
 			
 			//$this->errorschutney->PrintArray($children);
 			
-			$usersdata = $this->_MergeUsersAndChildren($users,$children);
+			//$usersdata = $this->_MergeUsersAndChildren($users,$children);
 			
 			//$this->errorschutney->DebugArray($usersdata);
 		
-			foreach ($usersdata as $u)
+			foreach ($users as $u)
 			{
+				$this->dbbind->UpdateCheckerTime($u['userid'],time());
+				
 				$records = $this->dbbind->GetUserToCheck($u['userid']);
 				
 	            if (!empty($records))

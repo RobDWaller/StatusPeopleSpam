@@ -33,11 +33,11 @@ class Fakers extends Jelly
                 if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
 #                   $_SESSION['userid'] = 114873621;
-                  	$_SESSION['userid'] = 31386162;
-					$_SESSION['primaryid'] = 31386162;
+#                 	$_SESSION['userid'] = 31386162;
+#					$_SESSION['primaryid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
-#					$_SESSION['userid'] = 198192466;
-#					$_SESSION['primaryid'] = 198192466;
+					$_SESSION['userid'] = 198192466;
+					$_SESSION['primaryid'] = 198192466;
 #					$_SESSION['userid'] = 545309711;
 #					$_SESSION['primaryid'] = 545309711;
 #					$_SESSION['userid'] = 96269828;
