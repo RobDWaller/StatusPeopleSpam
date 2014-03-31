@@ -378,7 +378,18 @@ class Payments extends Jelly
         if ($transaction)
         {
             
-			$data['type'] = ($_COOKIE['type']==1?'Basic':'Premium');
+			$data['type'] = 'Basic'; 
+			
+			if ($_COOKIE['type']==2)
+			{
+				$data['type'] = 'Premium'; 
+			}
+			else if ($_COOKIE['type']==3)
+			{
+				$data['type'] = 'Agency';
+			}
+			
+			$_SESSION['type'] = $_COOKIE['type'];
             $data['months'] = $_COOKIE['months'];
             $data['subtotal'] = $_COOKIE['subtotal'];
             $data['saving'] = $_COOKIE['saving'];
@@ -511,7 +522,7 @@ class Payments extends Jelly
         $message .= '<p>If you have any problems with your purchase please email us at info@statuspeople.com quoting your Purchase ID.</p>';
         $message .= '<p>Thanks, The StatusPeople Team</p>';
 
-        $this->emailchutney->SendEmail($email,'Thank You for Purchasing StatusPeople Fakers Dashboard',$message,$headers);
+        Email::SendEmail($email,'Thank You for Purchasing StatusPeople Fakers Dashboard',$message,$headers);
 
     }
     

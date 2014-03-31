@@ -20,10 +20,10 @@ class Generic extends Jelly
                     $mess = $vars[0];
                 }
             
-		$this->sessionschutney->DestroySessions();
+		Sessions::DestroySessions();
 		//echo $_COOKIE['hubtab'];
 		//$this->errorschutney->DebugArray($_COOKIE);
-		$this->sessionschutney->DestroyCookies($_COOKIE);
+		Sessions::DestroyCookies($_COOKIE);
 		
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers/V/1',$this->mod_rewrite));
                 
@@ -296,11 +296,11 @@ class Generic extends Jelly
             
             //$this->errorschutney->DebugArray($twitterbio);
             
-            $this->sessionschutney->GenerateSessions(array('TwitterID'=>$twitter[0],'TwitterToken'=>$twitter[1],'TwitterSecret'=>$twitter[2],'TwitterImage'=>$twitterbio[0]));
+            Sessions::GenerateSessions(array('TwitterID'=>$twitter[0],'TwitterToken'=>$twitter[1],'TwitterSecret'=>$twitter[2],'TwitterImage'=>$twitterbio[0]));
                 
             $fbdetails = $this->dbbind->GetFacebookDetails($accountid);
                 
-            $this->sessionschutney->GenerateSessions(array('fb_user_id'=>$fbdetails[0],'fb_access_token'=>$fbdetails[3],'fb_page_id'=>$fbdetails[1],'fb_page_access_token'=>$fbdetails[2]));
+            Sessions::GenerateSessions(array('fb_user_id'=>$fbdetails[0],'fb_access_token'=>$fbdetails[3],'fb_page_id'=>$fbdetails[1],'fb_page_access_token'=>$fbdetails[2]));
         }
         
         public function _AddTwitterBio($accountid)
