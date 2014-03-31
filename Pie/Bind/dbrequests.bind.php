@@ -776,10 +776,12 @@ class DBRequests extends DB
 	
 		public function GetCheckers()
 		{
-			$query = "SELECT sc.userid,FROM_UNIXTIME(sv.valid)
+			$query = "SELECT sc.userid,FROM_UNIXTIME(sv.valid),FROM_UNIXTIME(sc.updated)
 						FROM spsp_checkers AS sc
 						JOIN spsp_valid AS sv ON sc.userid = sv.userid
-						WHERE sv.valid > (UNIX_TIMESTAMP()-(3600*24*30))";
+						WHERE sv.valid > (UNIX_TIMESTAMP()-(3600*24*30))
+						ORDER BY sc.updated ASC
+						LIMIT 0,20";
 			
 			$result = $this->SelectRecords($query);
 			
@@ -796,6 +798,22 @@ class DBRequests extends DB
 						   'created'=>array($created,'INT',0));
 			
 			$result = $this->InsertRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function UpdateCheckerTime($userid,$updated)
+		{
+			$query = "UPDATE spsp_checkers
+						SET updated = :updated
+						WHERE userid = :userid";
+			
+			$params = array('userid'=>array($userid,'INT',0),
+						   'updated'=>array($updated,'INT',0));
+			
+			//Errors::DebugArray($params);
+			
+			$result = $this->UpdateRecord($query,$params);
 			
 			return $result;
 		}

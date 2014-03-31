@@ -33,11 +33,11 @@ class Fakers extends Jelly
                 if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
 #                   $_SESSION['userid'] = 114873621;
-                  	$_SESSION['userid'] = 31386162;
-					$_SESSION['primaryid'] = 31386162;
+#                 	$_SESSION['userid'] = 31386162;
+#					$_SESSION['primaryid'] = 31386162;
 #					$_SESSION["userid"] = 633786383;
-#					$_SESSION['userid'] = 198192466;
-#					$_SESSION['primaryid'] = 198192466;
+					$_SESSION['userid'] = 198192466;
+					$_SESSION['primaryid'] = 198192466;
 #					$_SESSION['userid'] = 545309711;
 #					$_SESSION['primaryid'] = 545309711;
 #					$_SESSION['userid'] = 96269828;
@@ -1113,7 +1113,7 @@ class Fakers extends Jelly
 				
 				$message = print_r(array($this->twitter,$access_token),true);
 			
-				$send = $this->emailchutney->SendEmail('rdwaller1984@googlemail.com','Sign Up Warning for 2147483647',$message,$headers,0);
+				$send = Email::SendEmail('rdwaller1984@googlemail.com','Sign Up Warning for 2147483647',$message,$headers,0);
 			} */
 			
 /* 			$_SESSION['status'] = 'verified';
@@ -1642,7 +1642,7 @@ class Fakers extends Jelly
 			
 			$message = '<p>Dear Rob</p><p>Hello World!!</p><p>Cheers, StatusPeople</p>';
 			
-			$this->emailchutney->SendEmail($email,'StatusPeople',$message,$headers);
+			Email::SendEmail($email,'StatusPeople',$message,$headers);
 		}
         
 		public function Server()
