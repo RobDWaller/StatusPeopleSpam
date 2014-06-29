@@ -114,7 +114,7 @@ class Fakers extends Jelly
 					$details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
 					$verify = $this->twitterbind->Verify($details[2],$details[3]);
 				
-					$this->errorschutney->DebugArray($verify);
+					#$this->errorschutney->DebugArray($verify);
                 
 					if ($verify['code']!=200)
 					{
