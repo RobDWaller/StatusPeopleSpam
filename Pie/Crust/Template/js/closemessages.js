@@ -147,6 +147,20 @@ $(document).ready(function(){
 		
 	});
 	
+	$('.selectMenu').bind('touchstart',function(e){
+	
+		if ($('.header .menu').is(':hidden'))
+		{
+			$('.header .menu').show();
+			$(this).addClass('selected');
+		}
+		else
+		{
+				$('.header .menu').hide();
+				$(this).removeClass('selected');
+		}
+	});
+	
 	infobox();
    
 });

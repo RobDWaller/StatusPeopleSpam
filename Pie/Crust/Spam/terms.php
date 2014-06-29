@@ -1,12 +1,11 @@
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/header.php'); ?>
-	<div class="columnholder bg5">
-		<div class="banner">
-			<ul>
-				<li class="bannerimage"></li>   
-				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Terms &amp; Conditions</a></li>
-			</ul>
-		</div>
-		<div class="column bgwhite">
+		<div class="column">
+			<div class="banner">
+				<ul>
+					<li class="bannerimage"></li>   
+					<li class="bannertext bree"><a href="/" class="whitelink nounderline">Terms &amp; Conditions</a></li>
+				</ul>
+			</div>			
 			<div class="one">
 				<div class="content">
 					<p class="bree">Welcome to StatusPeople, please read our terms and conditions carefully. We aim to make them as clear and simple as possible, but if you have any questions please contact info@statuspeople.com.</p>
@@ -45,5 +44,4 @@
 				</div>
 			</div>
 		</div>
-	</div>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

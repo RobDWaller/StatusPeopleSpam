@@ -21,6 +21,7 @@ $(document).ready(function(){
         }
         
         var div = $('<div/>');
+		div.addClass('content');
         div.attr('id','scoresholder');
         div.addClass('row');
         
@@ -102,8 +103,9 @@ $(document).ready(function(){
         $('#handle').text(twuser);
         $('#searchquery').val('');
         $('#searchquery').attr('placeholder','Twitter username...');
+		var srchs = parseInt($.cookie('searches'));
         
-        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamData',1);
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser+'&srchs='+srchs,'Spam_ProcessSpamData',1);
         
     });
     

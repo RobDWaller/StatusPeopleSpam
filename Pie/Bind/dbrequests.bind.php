@@ -76,11 +76,14 @@ class DBRequests extends DB
 
         public function GetLatestSpamRecords($limit)
         {
+		
+			$time = strtotime('-4 weeks');
             
-            $query = "SELECT ui.screen_name, ui.avatar, sc.spam, sc.potential, sc.checks, sc.followers, ui.twitterid
+            $query = "SELECT ui.screen_name, ui.avatar, sc.spam, sc.potential, sc.checks, sc.followers, ui.twitterid, FROM_UNIXTIME(sc.updated)
                         FROM spsp_spam_scores AS sc 
                         JOIN spsp_user_info AS ui ON sc.twitterid = ui.twitterid
-                        ORDER BY (sc.spam/sc.checks) DESC, sc.spam DESC
+						WHERE sc.updated > ".$time."
+                        ORDER BY (sc.spam/sc.checks) DESC, sc.spam DESC, sc.updated DESC
                         LIMIT 0,:limit";
             
             $params = array('limit'=>array($limit,'INT',0));

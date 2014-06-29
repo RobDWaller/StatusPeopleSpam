@@ -7,7 +7,7 @@ class KredRequests extends Curl
     {
         $url = 'http://api.kred.com/kredscore?app_id='.KRED_APP_ID.'&app_key='.KRED_KEY.'&source=twitter&term='.$username;
         
-        $kred = $this->GrabJson($url);
+        $kred = self::GrabJson($url);
         
         return $kred;
     }

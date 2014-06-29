@@ -208,7 +208,7 @@ function Charts()
         {
             $('#'+data[0].id).html('<p>No Data Returned</p>');
         }
-        
+       
     }
 }
 
@@ -728,7 +728,7 @@ function Spam()
             }
             
             var spam = $('<div/>');
-            spam.attr('class','three a red');
+            spam.attr('class','three center');
             spam.html('<h1 class="red">Fake</h1><h2 class="red">'+spamscore+'%</h2>');
             
             if (source==1)
@@ -737,11 +737,11 @@ function Spam()
             }
             
             var inactive = $('<div/>');
-            inactive.attr('class','three a');
+            inactive.attr('class','three center');
             inactive.html('<h1>Inactive</h1><h2>'+potentialscore+'%</h2>');
                         
             var good = $('<div/>');
-            good.attr('class','three');
+            good.attr('class','three center');
             good.html('<h1 class="green">Good</h1><h2 class="green">'+goodscore+'%</h2>');
             
             spam.appendTo('#scoresholder');
@@ -749,7 +749,7 @@ function Spam()
             good.appendTo('#scoresholder');
             
             var div2 = $('<div/>');
-            div2.attr('class','row');
+            div2.attr('class','one');
             div2.attr('id','shareform');
             
             var button = $('<input/>');
@@ -863,26 +863,28 @@ function Spam()
         else
         {
             
+			var div = $('<div class="one"></div>');
             var h1 = $('<h1/>');
             var s = $('<small/>');
             
             if (result.code == 429)
             {
                 h1.text('We are sorry but you have breached your Twitter API 1.1 Limit.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
                 
                 s.html('Please wait 15 minutes and try again. For more information on Twitter API limits please read their <a href="https://dev.twitter.com/docs/rate-limiting/1.1" target="_blank">rate limiting policies</a> or contact info@statuspeople.com.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
             else
             {
                 h1.text('No data returned for this user.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
             
                 s.html('If you are having any persistant problems accessing data with StatusPeople please <a href="/Fakers/Reset">reset your connection details</a>.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
             
+			div.appendTo('#scoresholder');
         }
         
         $('#loader').hide('slow').remove();
@@ -909,15 +911,15 @@ function Spam()
             }
             
             var spam = $('<div/>');
-            spam.attr('class','three a red');
+            spam.attr('class','three center');
             spam.html('<h1 class="red">Fake</h1><h2 class="red">'+spamscore+'%</h2>');
             
             var inactive = $('<div/>');
-            inactive.attr('class','three a');
+            inactive.attr('class','three center');
             inactive.html('<h1>Inactive</h1><h2>'+potentialscore+'%</h2>');
                         
             var good = $('<div/>');
-            good.attr('class','three');
+            good.attr('class','three center');
             good.html('<h1 class="green">Good</h1><h2 class="green">'+goodscore+'%</h2>');
             
             spam.appendTo('#scoresholder');
@@ -925,7 +927,7 @@ function Spam()
             good.appendTo('#scoresholder');
             
             var div2 = $('<div/>');
-            div2.attr('class','row');
+            div2.attr('class','one');
             div2.attr('id','shareform');
             
             var button = $('<input/>');
@@ -948,25 +950,28 @@ function Spam()
         }
         else
         {
+			var div = $('<div class="one"></div>');
             var h1 = $('<h1/>');
             var s = $('<small/>');
             
             if (result.code == 429)
             {
                 h1.text('We are sorry but you have breached your Twitter API 1.1 Limit.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
                 
                 s.html('Please wait 15 minutes and try again. For more information on Twitter API limits please read their <a href="https://dev.twitter.com/docs/rate-limiting/1.1" target="_blank">rate limiting policies</a> or contact info@statuspeople.com.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
             else
             {
                 h1.text('No data returned for this user.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
             
                 s.html('If you are having any persistant problems accessing data with StatusPeople please <a href="/Fakers/Reset">reset your connection details</a>.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
+			
+			div.appendTo('#scoresholder');
         }
         
         $('#loader').hide('slow').remove();
@@ -997,15 +1002,15 @@ function Spam()
 			var name = $('<h2 id="friendsearchname">'+$('#friendsearchquery').val()+'</h2>');
 			
             var spam = $('<div/>');
-            spam.attr('class','three a red');
+            spam.attr('class','three center');
             spam.html('<h1 class="red">Fake</h1><h2 class="red">'+spamscore+'%</h2>');
             
             var inactive = $('<div/>');
-            inactive.attr('class','three a');
+            inactive.attr('class','three center');
             inactive.html('<h1>Inactive</h1><h2>'+potentialscore+'%</h2>');
                         
             var good = $('<div/>');
-            good.attr('class','three');
+            good.attr('class','three center');
             good.html('<h1 class="green">Good</h1><h2 class="green">'+goodscore+'%</h2>');
             
 			var div2 = $('<div/>');
@@ -1060,17 +1065,17 @@ function Spam()
             var potentialscore = result.data.Inactive[0].count;
             
             var spam = $('<div/>');
-            spam.attr('class','three a red');
+            spam.attr('class','three center');
             spam.html('<h1 class="red">Fake</h1><h2 class="red">'+spamscore+'%</h2>');
             
             $('#spamscore').val(spamscore);
             
             var inactive = $('<div/>');
-            inactive.attr('class','three a');
+            inactive.attr('class','three center');
             inactive.html('<h1>Inactive</h1><h2>'+potentialscore+'%</h2>');
                         
             var good = $('<div/>');
-            good.attr('class','three');
+            good.attr('class','three center');
             good.html('<h1 class="green">Good</h1><h2 class="green">'+goodscore+'%</h2>');
             
             spam.appendTo('#scoresholder');
@@ -1078,7 +1083,7 @@ function Spam()
             good.appendTo('#scoresholder');
             
             var div2 = $('<div/>');
-            div2.attr('class','row');
+            div2.attr('class','one');
             div2.attr('id','shareform');
             
             var button = $('<input/>');
@@ -1093,25 +1098,28 @@ function Spam()
         }
         else
         {
+			var div = $('<div class="one"></div>');
             var h1 = $('<h1/>');
             var s = $('<small/>');
             
             if (result.code == 429)
             {
                 h1.text('We are sorry but you have breached your Twitter API 1.1 Limit.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
                 
                 s.html('Please wait 15 minutes and try again. For more information on Twitter API limits please read their <a href="https://dev.twitter.com/docs/rate-limiting/1.1" target="_blank">rate limiting policies</a> or contact info@statuspeople.com.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
             else
             {
                 h1.text('No data returned for this user.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
             
                 s.html('If you are having any persistant problems accessing data with StatusPeople please <a href="/Fakers/Reset">reset your connection details</a>.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
+			
+			div.appendTo('#scoresholder');
         }
         
         $('#loader').hide('slow').remove();
@@ -1135,15 +1143,15 @@ function Spam()
             }
             
             var spam = $('<div/>');
-            spam.attr('class','three a red');
+            spam.attr('class','three center');
             spam.html('<h1 class="red">Fake</h1><h2 class="red">'+spamscore+'%</h2>');
             
             var inactive = $('<div/>');
-            inactive.attr('class','three a');
+            inactive.attr('class','three center');
             inactive.html('<h1>Inactive</h1><h2>'+potentialscore+'%</h2>');
                         
             var good = $('<div/>');
-            good.attr('class','three');
+            good.attr('class','three center');
             good.html('<h1 class="green">Good</h1><h2 class="green">'+goodscore+'%</h2>');
             
             spam.appendTo('#scoresholder');
@@ -1151,7 +1159,7 @@ function Spam()
             good.appendTo('#scoresholder');
             
             var div2 = $('<div/>');
-            div2.attr('class','row');
+            div2.attr('class','one');
             div2.attr('id','shareform');
             
             var srv = new Server();
@@ -1175,25 +1183,28 @@ function Spam()
         }
         else
         {
+			var div = $('<div class="one"></div>');
             var h1 = $('<h1/>');
             var s = $('<small/>');
             
             if (result.code == 429)
             {
                 h1.text('We are sorry but you have breached your Twitter API 1.1 Limit.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
                 
                 s.html('Please wait 15 minutes and try again. For more information on Twitter API limits please read their <a href="https://dev.twitter.com/docs/rate-limiting/1.1" target="_blank">rate limiting policies</a> or contact info@statuspeople.com.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
             else
             {
                 h1.text('No data returned for this user.');
-                h1.appendTo('#scoresholder');
+                h1.appendTo(div);
             
                 s.html('If you are having any persistant problems accessing data with StatusPeople please <a href="/Fakers/Reset">reset your connection details</a>.');
-                s.appendTo('#scoresholder');
+                s.appendTo(div);
             }
+			
+			div.appendTo('#scoresholder');
         }
         
         $('#loader').hide('slow').remove();
@@ -1229,6 +1240,7 @@ function Spam()
 			chr.BuildChart(data,[{'id':'langchart','type':'pie','multi':false,'size':'large','xreverse':false,'backgroundcolor':'#fefefe','colors':['#FE7D1D','#36B6D5','#2AFE1B','#FE1B2A','#7D1BFE']}]);
 			
 			this.BuildAverages(result.data.avg);
+			
 		}
 		else
 		{
@@ -1755,8 +1767,8 @@ function Spam()
 			
 			var h2 = $('<h2>Auto Block Fakes </h2>');
 			span.appendTo(h2);
-			$('#autoblock .two h2').remove();
-			h2.appendTo('#autoblock .two');
+			$('#autoblock.two h2').remove();
+			h2.appendTo('#autoblock.two');
 		}
 		else
 		{
