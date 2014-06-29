@@ -1,13 +1,12 @@
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/header.php'); ?>
-	<div class="columnholder bg5">
-		<div class="banner">
-			<ul>
-				<li class="bannerimage"></li>   
-				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Faker Sites</a></li>
-			</ul>
-		</div>
-		<div class="column row bgwhite">
-			<div class="content row one">
+		<div class="column">
+			<div class="banner">
+				<ul>
+					<li class="bannerimage"></li>   
+					<li class="bannertext bree"><a href="/" class="whitelink nounderline">Faker Sites</a></li>
+				</ul>
+			</div>
+			<div class="content">
 				<p>
 					Do you know of a site that sells fake followers, likes or views? Let us know by submitting the website URL below. We will collate them all 
 					so we can keep our coummunity informed on who the sellers and frauds are.
@@ -21,7 +20,7 @@
 					</fieldset>
 				</form>
 			</div>
-			<div class="row one">
+			<div class="one">
 				<h2>
 					The Faker Site List
 				</h2>
@@ -31,7 +30,6 @@
 				<?=$sites;?>
 			</div>
 		</div>
-	</div>
 <script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
 <script src="/Pie/Crust/Template/js/sites.js"></script>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

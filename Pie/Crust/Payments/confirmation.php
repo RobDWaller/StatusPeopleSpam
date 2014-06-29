@@ -1,14 +1,12 @@
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/header.php'); ?>
-	<div class="columnholder bg5">
+	<div class="column">
 		<div class="banner">
 			<ul>
 				<li class="bannerimage"></li>   
 				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Confirmation</a></li>
 			</ul>
 		</div>
-		<div class="column row bgwhite">
-			<div class="content row">
-				<div class="one">
+			<div class="content one">
 					<p>Thank you for purchasing a Fakers Dashboard subscription. You can start using your <a href="/Fakers/Dashboard">Fakers Dashboard</a> now.</p>
 					<p>We have sent you an email confirming all your details. Including your purchase id which you should reference in any communication with us about your purchase.</p>
 					<h2>Purchase ID: <?=$transactionid?></h2>
@@ -35,8 +33,6 @@
 						</tr>
 					</table>
 					<p>Go to your <a href="/Fakers/Dashboard">Fakers Dashboard</a> now.</p>
-				</div>
 			</div>
-		</div>
 	</div>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

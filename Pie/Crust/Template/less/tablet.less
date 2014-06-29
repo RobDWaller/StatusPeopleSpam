@@ -1,0 +1,70 @@
+body
+{
+
+	@media screen and (max-width:1180px)
+	{
+		#infobox
+		{
+			left:0px;
+			.border-func(2px 0px);
+			border:2px solid @baseColor2;
+			top:auto;
+			bottom:0px;
+			width:auto;
+			
+			a
+			{
+				display:inline;
+			}
+		}
+	}
+
+	@media screen and (max-width:960px)
+	{
+
+		.holder
+		{
+			.column
+			{
+				width:100%;
+				
+				.one
+				{
+					width:96%;
+					padding-left:2%;
+					padding-right:2%;
+				}
+				
+				.two,.four
+				{
+					width:46%;
+					padding-left:2%;
+					padding-right:2%;
+				}
+				
+				.three
+				{
+					width:29%;
+					padding-left:2%;
+					padding-right:2%;
+				}
+			}
+		}
+		
+		#rightinfobox
+		{
+			display:none;
+		}
+		
+		#loaderfade,#loaderfade2
+		{
+			#popup,#tinyloader
+			{
+				width:70%;
+				left:15%;
+			}
+		}
+	
+	}
+	
+}

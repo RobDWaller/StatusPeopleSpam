@@ -1,0 +1,248 @@
+/* Messages */
+
+.e1
+{
+	width:10%;
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	margin-bottom:10px;
+}
+
+.e2
+{
+	width:75%;
+	float:left;
+	margin:15px 0px;
+}
+
+.e3
+{
+	float:right;
+	cursor: pointer;
+	margin-top:14px;
+	margin-right:20px;
+	font-weight:bold;
+	display:block;
+	height:25px;
+	width:25px;
+	text-align:center;
+	line-height:25px;
+	.border-func(0,5px);
+	
+	span
+	{
+		display:block;
+		font-family:@f2;
+		font-size:16px;
+	}
+} 
+
+.alertmessage
+{
+	background:@alertColor1;
+	color:@alertColor2;
+	min-height:50px;
+	overflow:hidden;
+	
+	li
+	{
+		color:@alertColor2;	
+		font-size:16px;
+		font-family:@f2;
+		margin:0px;
+	}
+}
+
+#alertmessage a
+{
+	color:@alertColor2;
+	text-decoration:underline;
+	font-weight:normal;
+}
+
+.alertclose
+{
+	background:@alertColor3;
+	display:block;
+}
+
+.infomessage
+{
+	background:@infoColor1;
+	min-height:50px;
+	overflow:hidden;
+	
+	li
+	{
+		color:@infoColor2;	
+		font-size:16px;
+		font-family:@f2;
+		margin:0px;
+	}
+}
+
+#infomessage a
+{
+	color:@infoColor2;
+	text-decoration:underline;
+	font-weight:normal;
+}
+
+
+.infoclose
+{
+	background:@infoColor3;
+	display:block;
+	color:@baseColor2;
+}
+
+.successmessage
+{
+	background:@successColor1;
+	color:@successColor2;
+	min-height:50px;
+	overflow:hidden;
+	
+	li
+	{
+		color:@successColor2;	
+		font-size:16px;
+		font-family:@f2;
+		margin:0px;
+	}
+}
+
+#successmessage a
+{
+	color:@successColor2;
+	text-decoration:underline;
+	font-weight:normal;
+}
+
+.successclose
+{
+	background:@successColor3;
+	display:block; 
+}
+
+.failuremessage
+{
+	background:@errorColor1;
+	color:#ea0c0c;
+	min-height:50px;
+	overflow:hidden;
+	
+	li
+	{
+		color:@errorColor2;	
+		font-size:16px;
+		font-family:@f2;
+		margin:0px;
+	}
+}
+
+#failuremessage a
+{
+	color:@errorColor2;
+	text-decoration:underline;
+	font-weight:normal;
+}
+
+.failureclose
+{
+	background:@errorColor3;
+}
+
+#micromessage
+{
+	font-size: @fs4;
+	line-height: @lh4;
+	font-family: @f2;
+}
+
+#viewnewtweets
+{
+	cursor:pointer;
+	background:@baseColor4;
+	color:@baseColor2;
+	line-height:@lh3;
+	padding:10px;
+	text-align:center;        
+	font-size:@fs3;
+}
+
+.iconmessage
+{
+	background:@baseColor1;
+}
+
+.passcirc
+{
+	display: block;
+	float: right;
+	height: 40px;
+	width: 40px;
+	line-height: 45px;
+	text-align: center;
+	background: @successColor1;
+	margin: 0px 5px;
+	color: @successColor2;
+	.border-func(0,20px);
+	font-family:@f3;
+	font-size:20px;
+}
+
+.failcirc
+{
+	display: block;
+	float: right;
+	height: 40px;
+	width: 40px;
+	line-height: 37px;
+	text-align: center;
+	background: @errorColor1;
+	margin: 0px 5px;
+	color: @errorColor2;
+	.border-func(0,20px);
+	font-size:25px;
+	font-weight:bold;
+}
+
+#popupcontent .failcirc
+{
+	display: block;
+	position: absolute;
+	overflow:hidden;
+	top:0px;
+	left:50px;
+	height: 30px;
+	width: 30px;
+	line-height: 25px;
+	text-align: center;
+	margin: 3px 0px;
+	color: @errorColor2;
+	.border-func(0,15px);
+	font-size:20px;
+	font-weight:bold;
+}
+
+#popupcontent .passcirc
+{
+	display: block;
+	position: absolute;
+	overflow:hidden;
+	top:0px;
+	left:50px;
+	height: 30px;
+	width: 30px;
+	line-height: 32px;
+	text-align: center;
+	margin: 3px 0px;
+	color: @successColor2;
+	.border-func(0,15px);
+	font-size:15px;
+	font-weight:bold;
+}
+
+/* Messages */

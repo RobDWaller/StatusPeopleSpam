@@ -1,0 +1,187 @@
+/* Popups */
+	
+#infobox
+{
+	position:fixed;
+	left:20px;
+	top:120px;
+	width:80px;
+	background:@baseColor5;
+	.border-func(2px,solid,@baseColor2,5px);
+
+	a
+	{
+		font-family:@f3;
+		display:block;
+		width:50px;
+		height:50px;
+		line-height:50px;
+		font-size:36px;
+		color:@baseColor2;
+		text-align:center;
+		padding:5px;
+		margin:10px;
+		text-decoration:none;
+	}
+	
+	a#infotraining
+	{
+		font-family:@f6;
+	}
+}
+
+#rightinfobox
+{
+	position:fixed;
+	right:20px;
+	top:120px;
+	width:150px;
+	background:@baseColor5;
+	.border-func(2px,solid,@baseColor2,5px);
+	
+	#rightinfoclose
+	{
+		width:15px;
+		height:15px;
+		color:@baseColor5;
+		background:@baseColor1;
+		float:right;
+		margin:5px;
+		.border-func(0,5px);
+		cursor:pointer;
+		text-align:center;
+		font-size:12px;
+		font-weight:bold;
+		line-height:15px;
+	}
+	
+	.content
+	{
+		clear:right;
+		margin:5px;
+		text-align:center;
+		
+		strong
+		{
+			color:@baseColor1;
+			font-family:@f2;
+		}
+		
+		form
+		{
+			padding:0px;
+			margin:0px;
+			background:transparent;
+			
+			input[type=button]
+			{
+				color:@baseColor5;
+				background:@baseColor2;
+				font-family:@f2;
+				.border-func(0,5px);
+				height:30px;
+				width:130px;
+				font-size:@fs4;
+				line-height:30px;
+				padding:0px;
+				margin:0px;
+			}
+		
+		}
+		
+		a
+		{
+			input[type=button]
+			{
+				color:@baseColor5;
+				background:@baseColor2;
+				font-family:@f2;
+				.border-func(0,5px);
+				height:30px;
+				width:130px;
+				font-size:@fs4;
+				line-height:30px;
+				padding:0px;
+				margin:0px;
+			}
+		}
+	
+	}
+}
+
+.iconmessage
+{
+	background:lighten(@baseColor1,5%);
+}
+
+#loader
+{
+	img
+	{
+		width:35px !important;
+	}
+}
+
+#loaderfade,#loaderfade2
+{
+	position:fixed;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.5);
+	z-index:20;
+	
+	#tinyloader
+	{
+		position:absolute;
+		width:20%;
+		left:38%;
+		padding:20px 2%;
+		top:80px;
+		background:@baseColor5;
+		.border-func(0px,20px);
+		text-align:center;
+	}
+	
+	#popup
+	{
+		position:absolute;
+		width:40%;
+		left:28%;
+		padding:20px 2%;
+		top:80px;
+		background:@baseColor5;
+		.border-func(0px,20px);
+		
+		#popupcloseholder
+		{
+			text-align:right;
+			font-family:@f2;
+			font-size:@fs3;
+			line-height:@lh3;
+			float:right;
+			color:@baseColor1;
+			cursor:pointer;
+		}
+		
+		#popupdata
+		{
+			display:block;
+			clear:both;
+			
+			.center
+			{
+				text-align:center;
+			}
+		}
+	}
+	
+}
+
+#loaderfade2
+{
+	z-index:19;
+}
+
+/* End Popups */

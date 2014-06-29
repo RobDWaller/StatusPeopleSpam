@@ -1,11 +1,11 @@
 			<footer class="row bg1">
 				<div class="footer">
-					<div class="two a">
+					<div class="two">
 						<small class="white">
 							&copy; <?php echo date('Y'); ?> StatusPeople.com. Built by <a href="http://twitter.com/statuspeople" target="_blank" class="whitelink">@StatusPeople</a>
 						</small>
 					</div> 
-					<div class="two textright">
+					<div class="two right">
 						<small>
 							<a href="http://twitter.com/statuspeople" target="_blank" class="whitelink">Twitter</a> <a href="http://www.facebook.com/pages/StatusPeople/206864836039961" target="_blank" class="whitelink">Facebook</a>
 						</small>

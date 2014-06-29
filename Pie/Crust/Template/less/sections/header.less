@@ -1,0 +1,204 @@
+/* Header */
+
+	header
+	{
+
+		margin:0px;
+		padding:0px;
+		list-style:none;
+		position:fixed;
+		width:100%;
+		z-index:18;
+		top:0px;
+		left:0px;
+
+		.header
+		{	
+
+			height:30px;
+			padding:5px 0px;
+			width:100%;
+			background:@baseColor2;
+			overflow:hidden;
+			
+			.logo
+			{
+				position:absolute;
+				top:5px;
+				left:0px;
+				width:58px;
+				margin:0px 20px;
+				
+				a
+				{
+					img
+					{
+						width:100%;
+						margin:0px;
+					}
+				}
+			}
+			
+			.menu
+			{
+				display:block;
+				width:660px;
+				margin:0px auto;
+			}
+			
+			.connect
+			{
+				width:160px;
+				margin:0px 20px;
+				position:absolute;
+				top:5px;
+				right:0px;
+			}
+
+			.menu,.connect
+			{
+				overflow:hidden;
+			
+				ul
+				{
+					
+					margin:0px;
+					padding:0px;
+					list-style:none;
+
+					li
+					{
+						display:block;
+						color:@baseColor5;
+						float:left;
+						height:30px;
+          				margin:0px;
+						margin-right:20px;
+						font-weight:normal;
+						
+						a
+						{
+							display:block;
+							height:30px;
+							line-height:30px;
+							font-size:14px;
+							font-weight:normal;
+							
+							span
+							{
+								font-size:18px;
+								line-height:30px;
+								float:left;
+								margin-right:5px;
+								.text-shadow(2px,2px,0,@baseColor7);
+								font-weight:normal;
+							}
+						}
+						
+						&.accountform
+						{
+							margin-right:0px;
+							width:175px;
+						
+							img
+							{
+								float:left;
+							}
+							
+							#changeaccountform
+							{
+								padding:0px;
+								margin:0px;
+								background:transparent;
+								float:right;
+								width:125px;
+								
+								select
+								{
+									border:none;
+									background:@baseColor5;
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			.selectMenu
+			{
+				display:none;
+			}
+
+		}
+
+		a
+		{
+			color:@baseColor5;
+			text-decoration:none;
+			font-weight:bold;
+		}
+
+		a:visited
+		{
+			color:@baseColor5;
+		}
+		
+		a:hover
+		{
+			color:@baseColor5;
+		}
+		
+		ul
+		{
+			li
+			{
+				#changeaccountform
+				{
+					float:left;
+					margin:3px;	
+					
+					input
+					{
+						float:left;
+					}
+					
+					select
+					{
+						float:left;
+						.border-func(2px,solid,@baseColor5,5px);
+						background:@baseColor4;
+					}
+				}
+				
+				.accountselection
+				{
+					.border-func(2px,solid,@baseColor4,5px);
+					padding:5px; 
+					margin-right:5px;
+					color:@baseColor2;
+					font-family:@f2;
+					font-size:12px; 
+				}
+				
+				#accountname
+				{
+					font-size:@fs3;
+					line-height:40px;
+					font-family:@f2;
+					margin:0px 10px;
+					float:left;
+					text-align:left;
+				}
+				
+				.accountselection option
+				{
+					color:@baseColor1;
+					font-family:@f2;
+					font-size:@fs4; 
+				}
+			}
+		}
+		
+	}
+
+/* End Header */
