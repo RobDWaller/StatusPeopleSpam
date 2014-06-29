@@ -1,0 +1,30 @@
+body
+{
+	background:@baseColor1;
+	
+	.holder
+	{
+		overflow:hidden;
+		background:@baseColor4;
+		
+		/* Generic */
+		
+		color:@baseColor6;
+		font-family:@f1;
+		background:@baseColor4;
+		
+		/* End Generic */
+		
+		@import url('sections/header.less');
+		@import url('sections/body.less');
+		@import url('sections/footer.less');
+		@import url('sections/messages.less');
+		@import url('sections/tables.less');
+		@import url('sections/banner.less');
+		
+	}
+	
+	@import url('sections/popups.less');
+	@import url('sections/forms.less');
+	@import url('sections/text.less');
+}

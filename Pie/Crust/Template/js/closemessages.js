@@ -1,1 +1,166 @@
-$(document).ready(function(){var b=$("#twitterid").val();var g=$("#twitterhandle").val();var e=$("#accounttype").val();var d=new Popup();var c=new Server();var h=new Scroll();var f=new Lengths();function a(){d.InfoBox()}$(document).on("click","#failureclose",function(){$("#failuremessage").fadeOut("slow",function(){$(this).remove()})});$(document).on("click","#successclose",function(){$("#successmessage").fadeOut("slow",function(){$(this).remove()})});$(document).on("click","#infoclose",function(){$("#infomessage").fadeOut("slow",function(){$(this).remove()})});$(document).on("click","#alertclose",function(){$("#alertmessage").fadeOut("slow",function(){$(this).remove()})});$(document).on("mouseover",".icon",function(j){if($(window).width()>640){var i=$(this).data("tip");if($(this).attr("id")=="toolbarbut"){if($("#toolbarform").length){i="Close Post"}}var k=$('<div class="iconmessage" style="z-index:2001; position:absolute; top:'+(j.pageY+15)+"px; left:"+(j.pageX-30)+'px; font-weight:bold; color:white; padding:5px; border-radius:5px;">'+i+"</div>");k.appendTo("body")}});$(document).on("mouseout",".icon",function(){$(".iconmessage").remove()});$(document).on("click",".icon",function(){$(".iconmessage").remove()});$(document).on("click","#webinarbut",function(i){i.preventDefault();window.location=$(this).attr("data-link")});$(document).on("click","#rightinfoclose",function(i){i.preventDefault();d.RightInfoClose()});$(document).on("click","#popupclose",function(){d.RemovePopup()});$(document).on("click","#friendsearch",function(j){j.preventDefault();d.Loader();var i=$('<p>Search for a friend\'s faker score</p><form><fieldset><input type="text" id="friendsearchquery" /></fieldset><fieldset><input type="submit" value="Search" id="searchforfriend" /></fieldset></form>');d.Content(i)});$(document).on("click","#searchforfriend",function(j){j.preventDefault();var k=$("#friendsearchquery").val();var i=f.StringLength(k);if(i>0){d.TinyLoader();c.CallServer("GET","json","/API/GetSpamScores","rf=json&usr="+encodeURIComponent(b)+"&srch="+k+"&srchs=3","Spam_ProcessSpamDataPopup",b)}else{d.AddMessage("Please enter a Twitter username to search for",true)}});$(document).on("click","#addfakerpopup",function(m){m.preventDefault();var n=$("#friendsearchname").text();var l=$("#spam").val();var i=$("#potential").val();var j=$("#checks").val();var k=$("#followers").val();c.CallServer("POST","json","/API/PostAddFaker","rf=json&usr="+encodeURIComponent(b)+"&srch="+n+"&sp="+l+"&pt="+i+"&ch="+j+"&fl="+k,"Spam_AddFaker",b);d.RemovePopup()});$("#account").bind("change",function(){$("#changeaccountform").submit()});a()});
+$(document).ready(function(){
+   
+	var twid = $('#twitterid').val();
+    var twuser = $('#twitterhandle').val();
+	var type = $('#accounttype').val();
+	
+	var pop = new Popup();
+	var srv = new Server();
+	var sc = new Scroll();
+    var ln = new Lengths();
+	
+	function infobox()
+	{
+		pop.InfoBox();
+	}
+	
+   $(document).on('click','#failureclose',function(){
+      
+      $('#failuremessage').fadeOut("slow",function(){$(this).remove();});
+      
+   });
+   
+   $(document).on('click','#successclose',function(){
+      
+      $('#successmessage').fadeOut("slow",function(){$(this).remove();});
+      
+   });
+   
+   $(document).on('click','#infoclose',function(){
+      
+      $('#infomessage').fadeOut("slow",function(){$(this).remove();});
+      
+   });
+   
+   $(document).on('click','#alertclose',function(){
+      
+      $('#alertmessage').fadeOut("slow",function(){$(this).remove();});
+      
+   });
+	
+	$(document).on('mouseover','.icon',function(e){
+		
+		if ($(window).width()>640)
+		{
+			var message = $(this).data('tip');
+			
+			if ($(this).attr('id')=='toolbarbut')
+			{
+				if ($('#toolbarform').length)
+				{
+					message = 'Close Post';
+				}
+			}
+			
+			var div = $('<div class="iconmessage" style="z-index:2001; position:absolute; top:'+(e.pageY+15)+'px; left:'+(e.pageX-30)+'px; font-weight:bold; color:white; padding:5px; border-radius:5px;">'+message+'</div>');
+			div.appendTo('body');
+		}
+		
+	});
+	
+	$(document).on('mouseout','.icon',function(){
+		
+		$('.iconmessage').remove();
+		
+	});
+	
+	$(document).on('click','.icon',function(){
+		
+		$('.iconmessage').remove();
+		
+	});
+	
+	$(document).on('click','#webinarbut',function(e){
+		
+		e.preventDefault();
+		
+		window.location = $(this).attr('data-link');
+		
+	});
+	
+	$(document).on('click','#rightinfoclose',function(e){
+		
+		e.preventDefault();
+		
+		pop.RightInfoClose();
+		
+	});
+	
+	$(document).on('click','#popupclose',function(){
+
+        pop.RemovePopup();
+
+    });
+
+	$(document).on('click','#friendsearch',function(e){
+		
+		e.preventDefault();
+		
+		pop.Loader();
+		
+		var form = $('<p>Search for a friend\'s faker score</p><form><fieldset><input type="text" id="friendsearchquery" /></fieldset><fieldset><input type="submit" value="Search" id="searchforfriend" /></fieldset></form>');
+		
+		pop.Content(form);
+	});
+	
+	$(document).on('click','#searchforfriend',function(e){
+
+        e.preventDefault();
+        
+        var usersearch = $('#friendsearchquery').val();
+
+        var sl = ln.StringLength(usersearch);
+        
+        if (sl > 0)
+        {
+			pop.TinyLoader();
+
+            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataPopup',twid);
+		}
+        else
+        {
+            pop.AddMessage('Please enter a Twitter username to search for',true);
+        }
+
+    });
+	
+	$(document).on('click','#addfakerpopup',function(e){
+       
+        e.preventDefault();
+
+        var usersearch = $('#friendsearchname').text();
+        var spam = $('#spam').val();
+        var potential = $('#potential').val();
+        var checks = $('#checks').val();
+        var followers = $('#followers').val();
+
+        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
+
+        pop.RemovePopup();
+
+
+    });
+	
+	$('#account').bind('change',function(){
+		
+		$('#changeaccountform').submit();
+		
+	});
+	
+	$('.selectMenu').bind('touchstart',function(e){
+	
+		if ($('.header .menu').is(':hidden'))
+		{
+			$('.header .menu').show();
+			$(this).addClass('selected');
+		}
+		else
+		{
+				$('.header .menu').hide();
+				$(this).removeClass('selected');
+		}
+	});
+	
+	infobox();
+   
+});

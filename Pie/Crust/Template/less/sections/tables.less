@@ -1,0 +1,174 @@
+/* Tables */
+	.column
+	{
+
+		table
+		{
+			margin:20px 0px 30px 0px; 
+			padding:10px;  
+			border:2px solid @baseColor2;
+			width:100% !important;
+			
+			th
+			{
+				background:@baseColor2;
+				text-align:left;
+				padding:7px;
+				font-weight:bold;
+				font-size:14px; 
+				line-height:18px;   
+				color:#fefefe;  
+				font-family: 'BreeSerifRegular', Tahoma, Helvetica, Arial, sans-serif;
+			}
+			
+			td
+			{
+				padding:7px;
+				font-size:14px; 
+				line-height:18px;    
+				border-bottom:1px dashed @baseColor3;
+				background:@baseColor4;
+				
+				.left
+				{
+					float:left;
+					width:35%;
+					margin-left:5%;
+					text-align: left;
+				}
+				
+				.right
+				{
+					float:right;
+					width:35%;
+					margin-right:5%;
+					text-align: right;
+				}
+				
+				img
+				{
+					width:25px !important;
+					
+					&.connect
+					{
+						width:48px !important;
+					}
+				}
+				
+				&.orange
+				{
+					color:@orange !important;
+				}
+				
+				&.green
+				{
+					color:@green !important;
+				}
+				
+				&.red
+				{
+					color:@red !important;
+				}
+				
+				form
+				{
+					margin:0px;
+					padding:0px;
+					
+					fieldset
+					{
+						padding:0px;
+						
+						input[type="submit"]
+						{
+								
+						}
+					}
+				}
+			}
+			
+			.right
+			{
+				float:right;
+			}
+			
+			.stats
+			{
+				border:none;
+				margin:10px 0px;
+				
+				td
+				{
+					border:none;
+					padding:5px 0px;
+					margin:0px;  
+					min-height:50px;
+				}
+			}
+			
+			&.competitorlist
+			{
+				td
+				{
+					span
+					{
+						background:transparent;
+						line-height:25px;
+						font-family:@f2;
+						font-size:@fs3;
+						
+						&.blue
+						{
+							color:@baseColor2;
+						}
+						
+						&.green
+						{
+							color:@green;
+						}
+						
+						&.red
+						{
+							color:@red;
+						}
+						
+						&.orange
+						{
+							color:@orange;
+						}
+						
+						&.delete
+						{
+							display:block;
+							width:25px;
+							height:25px;
+							background:@red;
+							color:@baseColor5;
+							text-align:center;
+							.border-func(0px,5px);
+						}
+						
+						&.chart
+						{
+							display:block;
+							width:25px;
+							height:25px;
+							background:@baseColor1;
+							color:@baseColor5;
+							.border-func(0px,5px);
+						}
+					}
+				}
+			}
+			
+		}
+		
+		#subscriptiontypes
+		{
+			th
+			{
+				text-align:center;
+			}
+		}
+	}
+/* End Tables */

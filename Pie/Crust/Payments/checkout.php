@@ -1,14 +1,12 @@
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/header.php'); ?>
-	<div class="columnholder bg5">
+	<div class="column">
 		<div class="banner">
 			<ul>
 				<li class="bannerimage"></li>   
 				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Checkout</a></li>
 			</ul>
 		</div>
-		<div class="column row bgwhite">
-			<div class="content row">
-				<div class="one">
+			<div class="content one">
 					<p>All payments are taken via PayPal. Please be aware that to complete the transaction you must return to our site after paying. This will usually occur automatically, if not please click one of the links provided by PayPal.</p>
 					<h2>Cart</h2>
 					<table id="checkoutcart">
@@ -35,9 +33,7 @@
 						<small id="termstext"><input type="checkbox" id="tc"/> I have read and agree to the StatusPeople.com <a href="/Fakers/Terms" target="_blank">terms and conditions</a>.</small>
 					</div>
 					<?=$form;?>
-				</div>
 			</div>
-		</div>
 	</div>
 <script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
 <script src="/Pie/Crust/Template/js/payments.js"></script>

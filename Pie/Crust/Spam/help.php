@@ -1,12 +1,11 @@
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/header.php'); ?>
-	<div class="columnholder bg5">
-		<div class="banner">
-			<ul>
-				<li class="bannerimage"></li>   
-				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Help</a></li>
-			</ul>
-		</div>
-		<div class="column bgwhite">
+		<div class="column">
+			<div class="banner">
+				<ul>
+					<li class="bannerimage"></li>   
+					<li class="bannertext bree"><a href="/" class="whitelink nounderline">Help</a></li>
+				</ul>
+			</div>
 			<div class="one">
 				<div class="content">
 					<p>
@@ -18,5 +17,4 @@
 				</div>
 			</div>
 		</div>
-	</div>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

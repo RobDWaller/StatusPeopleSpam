@@ -1,0 +1,66 @@
+/* Banner */
+
+.banner
+{
+	position:absolute;
+	top:20px;
+	left:-10px;
+	z-index:8;
+	height:53px;
+	min-width:100px;
+
+	ul
+	{
+		margin:0px;
+		
+		li
+		{
+			list-style:none;
+			float:left;
+			margin:0px;
+		}
+	
+	}
+
+}
+
+.bannerimage
+{
+	height:53px;
+	width:10px;     
+	background:url('/Pie/Crust/Template/img/left_header.png') no-repeat;
+}
+
+.bannertext
+{
+	height:33px;
+	background:@baseColor1;
+	padding:5px 20px; 
+	line-height:29px;
+	font-size:27px;
+	color:@baseColor5;
+	font-family:@f2;
+
+	a
+	{
+		color:@baseColor5;
+		text-decoration:none;			
+	}
+
+}
+
+@media screen and (max-width:640px)
+{
+	.bannertext
+	{
+		font-size:19px;
+	}
+}
+
+.content
+{
+	margin:40px 0px 0px 0px;
+	overflow: hidden;
+}
+
+/* End Banner */

@@ -1,0 +1,150 @@
+/* Forms */
+
+form
+{
+	width:96%;
+	padding:10px 2%;
+	.border-func(0px,10px);
+	background:@baseColor3;
+	margin:10px 0px;
+	
+	&#connectform
+	{
+		display:none;
+	}
+	
+	&#searchform
+	{
+		//background:transparent;
+		display:block;
+		width:50%;
+		margin:0px auto;
+	}
+	
+	fieldset
+	{
+		padding:10px 0px;
+	
+		label
+		{
+			display:block;
+			margin:5px 0px;
+			font-size:@fs3;
+			line-height:@lh3;
+			font-family:@f2;
+			color:@baseColor1;
+		}
+	
+		input,textarea
+		{
+			.border-func(0px,10px);
+			width:96%;
+			padding:10px 2%;
+			font-size:@fs3;
+			
+			&[type="submit"]
+			{
+				.border-func(0px,10px);
+				width:100%;
+				font-size:@fs3;
+				margin:0px;
+				background:@baseColor2;
+				color:@baseColor5;
+				font-size:@fs3;
+				font-family:@f2;
+				
+				&:hover
+				{
+					background:@baseColor4;
+					color:@baseColor2;
+				}
+			}
+		}
+		
+		textarea
+		{
+			height:100px;
+		}
+		
+		select
+		{
+			.border-func(0px,10px);
+			width:100%;
+			padding:10px 2%;
+			font-size:@fs3;
+			background:@baseColor5;
+		}
+	}
+}
+
+.connect 
+{
+	
+	&.show
+	{
+		#connectform
+		{
+			display:block;
+			background:@baseColor5;
+			width:400px;
+			margin:0px auto;
+			height:50px;
+
+			img
+			{
+				width:50px !important;
+				float:left;
+			}
+
+			input[type="submit"]
+			{
+				width:300px;
+				font-size:@fs3;
+				margin:0px;
+				background:@baseColor2;
+				color:@baseColor5;
+				font-size:@fs3;
+				font-family:@f2;
+				padding:10px 2%;
+				.border-func(0px,10px);
+				
+				&:hover
+				{
+					background:@baseColor4;
+					color:@baseColor2;
+				}
+			}
+		}
+	}
+}
+
+input[type="button"]
+{
+	.border-func(0px,10px);
+	padding:10px 2%;
+	width:100%;
+	font-size:@fs3;
+	margin:0px;
+	background:@baseColor2;
+	color:@baseColor5;
+	font-size:@fs3;
+	font-family:@f2;
+	
+	&:hover
+	{
+		background:@baseColor4;
+		color:@baseColor2;
+	}
+}
+
+#shareform
+{
+	input
+	{
+		display:block;
+		margin:0px auto;
+		width:50%;
+	}
+}
+
+/* End Forms */

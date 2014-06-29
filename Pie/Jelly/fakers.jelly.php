@@ -32,44 +32,12 @@ class Fakers extends Jelly
         {
                 if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
-#                   $_SESSION['userid'] = 114873621;
 #                 	$_SESSION['userid'] = 31386162;
 #					$_SESSION['primaryid'] = 31386162;
-#					$_SESSION["userid"] = 633786383;
-					$_SESSION['userid'] = 198192466;
-					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 545309711;
-#					$_SESSION['primaryid'] = 545309711;
-#					$_SESSION['userid'] = 96269828;
-#					$_SESSION['userid'] = 1101473544;
-#					$_SESSION['userid'] = 1919216960;
-#					$_SESSION['primaryid'] = 1919216960;
-#					$_SESSION['userid'] = 18746024;
-#					$_SESSION['userid'] = 2147483647;
-# 					$_SESSION['userid'] = 32816581;
-#					$_SESSION['userid'] = 573776137;					
-#					$_SESSION['userid'] = 151643053;	
-#					$_SESSION['userid'] = 16816972;
-#					$_SESSION['userid'] = 17322641;
-#					$_SESSION['userid'] = 42609957;
-#					$_SESSION['primaryid'] = 42609957;
-#					$_SESSION['userid'] = 12491732;
-#					$_SESSION['userid'] = 2279299242;
-#					$_SESSION['userid'] = 200579165;
-#					$_SESSION['primaryid'] = 200579165;
-#					$_SESSION['userid'] = 381857747;
-#					$_SESSION['primaryid'] = 381857747;
-#					$_SESSION['userid'] = 1081901;
-#					$_SESSION['primaryid'] = 1081901;
-#					$_SESSION['userid'] = 49900915;
-#					$_SESSION['primaryid'] = 49900915;
-#					$_SESSION['userid'] = 717122384;
-#                   $_SESSION['primaryid'] = 717122384;
-#					$_SESSION['userid'] = 2263173437;
-#					$_SESSION['primaryid'] = 2263173437;
-#					$_SESSION['userid'] = 2332143871;
-#					$_SESSION['primaryid'] = 2332143871;
-					
+#					$_SESSION['userid'] = 198192466;
+#					$_SESSION['primaryid'] = 198192466;
+					$_SESSION['userid'] = 297692168;
+					$_SESSION['primaryid'] = 297692168;
 						
                     if (isset($_SESSION['message']))
                     {
@@ -146,7 +114,7 @@ class Fakers extends Jelly
 					$details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
 					$verify = $this->twitterbind->Verify($details[2],$details[3]);
 				
-					//$this->errorschutney->DebugArray($verify);
+					$this->errorschutney->DebugArray($verify);
                 
 					if ($verify['code']!=200)
 					{
@@ -225,7 +193,7 @@ class Fakers extends Jelly
 				
                 $verify = $this->twitterbind->Verify($details[2],$details[3]);
 				
-				//$this->errorschutney->PrintArray($verify);
+				//$this->errorschutney->DebugArray($verify);
                 
 				if ($verify['code']!=200)
 				{
@@ -244,6 +212,8 @@ class Fakers extends Jelly
 
                 $count = $this->dbbind->CheckForFakerCheck($_SESSION['userid'],$_SESSION['userid']);
                 
+				//$this->errorschutney->DebugArray($count);
+				
                 $data['firsttime'] = 0;
                 
                 if (!$count)
@@ -1333,7 +1303,7 @@ class Fakers extends Jelly
 							$button = 'Disconnect';
 						}
 						
-						$output .= '<tr><td><img src="'.$s['avatar'].'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.Validation::ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.Validation::ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
+						$output .= '<tr><td><img class="connect" src="'.$s['avatar'].'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.Validation::ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.Validation::ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
 					}
 				}
 				
@@ -1421,16 +1391,16 @@ class Fakers extends Jelly
             $spam = round(($scores[4]/$scores[2])*100,0);
             $potential = round(($scores[3]/$scores[2])*100,0);
             
-            $output = '<div class="row" id="scoresholder">';
-            $output .= '<div class="three a">';
+            $output = '<div id="scoresholder">';
+            $output .= '<div class="three center">';
             $output .= '<h1 class="red">Fake</h1>';
             $output .= '<h2 class="red">'.$spam.'%</h2>';
             $output .= '</div>';
-            $output .= '<div class="three a">';
+            $output .= '<div class="three center">';
             $output .= '<h1>Inactive</h1>';
             $output .= '<h2>'.$potential.'%</h2>';
             $output .= '</div>';
-            $output .= '<div class="three red">';
+            $output .= '<div class="three center">';
             $output .= '<h1 class="green">Good</h1>';
             $output .= '<h2 class="green">'.(100-($spam+$potential)).'%</h2>';
             $output .= '</div>';
@@ -1457,9 +1427,10 @@ class Fakers extends Jelly
                 }
                 
                 $output .= '<div class="three'.($i<($k-1)?' a':'').'">';
-                $output .= '<img src="'.$r['avatar'].'" height="28" width="28" alt="'.$r['screen_name'].'" />';
-                $output .= '<span class="spamscore"><a href="http://twitter.com/'.$r['screen_name'].'" target="_blank">'.$r['screen_name'].':</a> <span class="red">'.$spam.'% Fake</span></span>';
-                $output .= '</div>';
+                $output .= '<span class="spamImg"><img src="'.$r['avatar'].'" height="28" width="28" alt="'.$r['screen_name'].'" /></span>';
+				$output .= '<span class="spamScore"> <span class="red">'.$spam.'% Fake</span></span>';
+                $output .= '<a href="http://twitter.com/'.$r['screen_name'].'" target="_blank" class="spamName">@'.$r['screen_name'].'</a>';
+				$output .= '</div>';
                 
                 if ($i==($k-1))
                 {
@@ -1518,7 +1489,7 @@ class Fakers extends Jelly
                 
                 foreach ($fakes as $f)
                 {
-					$output .= '<li><input type="hidden" value="'.$f['screen_name'].'" class="sc" /><input type="hidden" value="'.$f['twitterid'].'" class="ti"/><img src="'.$f['avatar'].'" width="48px" height="48px" /> '.$f['screen_name'].'<small><a href="#details" class="details">Details</a> | '.($type==1?'<a href="#block" class="block">Block</a> | <a href="#spam" class="notspam">Not Spam</a>':'<a href="#unblock" class="unblock">Unblock</a>').'</small></li>';
+					$output .= '<li><input type="hidden" value="'.$f['screen_name'].'" class="sc" /><input type="hidden" value="'.$f['twitterid'].'" class="ti"/><img src="'.$f['avatar'].'" width="48px" height="48px" /> <span>'.$f['screen_name'].'</span><small><a href="#details" class="details">Details</a> | '.($type==1?'<a href="#block" class="block">Block</a> | <a href="#spam" class="notspam">Not Spam</a>':'<a href="#unblock" class="unblock">Unblock</a>').'</small></li>';
                 }
                 
                 $output .= '</ul>';
@@ -1627,7 +1598,8 @@ class Fakers extends Jelly
 	
 		public function _BuildMenu()
 		{
-			$menu = '<ul><li><span class="ico3">&</span> <a href="http://statuspeople.com">Website</a></li><li><span class="ico3">%</span> <a href="http://blog.statuspeople.com">Blog</a></li></ul>';
+			$menu = '<ul><li><a href="http://statuspeople.com"><span class="ico3">&</span> Website</a></li>
+			<li><a href="http://blog.statuspeople.com"><span class="ico3">%</span> Blog</a></li></ul>';
 		
 			return $menu;
 		}

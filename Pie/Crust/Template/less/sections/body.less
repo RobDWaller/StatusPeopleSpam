@@ -1,0 +1,307 @@
+/* Body */
+	
+	.cursor,.pointer
+	{
+		cursor:pointer;
+	}
+	
+	.column
+	{
+		width:960px;
+		margin:0px auto;
+		background:@baseColor5;
+		margin-top:40px;
+		padding:20px 0px;
+		min-height:350px;
+		position:relative;
+		
+		img
+		{
+			width:100% !important;
+			height:auto !important;
+		}
+		
+		.one
+		{
+			.grid(920px,10px,20px);
+			
+			&.top
+			{
+				margin-top:40px;;
+			}
+			
+			&.bottom
+			{
+				margin-bottom:40px;
+			}
+			
+			&#autoblock
+			{
+				h2
+				{
+					width:300px;
+					float:left;
+				}
+			
+				.green
+				{
+					color:@green;
+				}
+				
+				.red
+				{
+					color:@red;
+				}
+				
+				.microbutton
+				{
+					color:@baseColor5;
+					display:block;
+					margin-left:20px;
+					background:@baseColor2;
+					.border-func(0px,5px);
+					width:120px;
+					text-align:center;
+					cursor:pointer;
+					float:left;
+					font-size:@fs4;
+					font-family:@f2;
+					margin:10px;
+					height:30px;
+					line-height:30px;
+					
+					&:hover
+					{
+						background:@baseColor4;
+						color:@baseColor2;
+					}
+				}
+			}
+			
+			code
+			{
+				pre
+				{
+					display:block;
+					padding:20px;
+					border:2px solid @baseColor2;
+					background:@baseColor4;
+					font-size:@fs4;
+					line-height:@lh4;
+				}
+			}
+		}
+		
+		.two
+		{
+			.grid(440px,10px,20px,left);
+			
+			#searchblocked
+			{
+				color:@baseColor2;
+				margin-left:20px;
+			}
+			
+			.fakeslist
+			{
+				margin:0px;
+				padding:0px;
+				list-style:none;
+				
+				li
+				{
+					display: block;
+					overflow: hidden;
+					height: 75px;
+					position: relative;
+					margin:20px 0px;
+					
+					img
+					{
+						width:75px !important;
+					}
+					
+					span
+					{
+						height: 60px;
+						line-height: 60px;
+						width: 350px;
+						overflow: hidden;
+						position: absolute;
+						top: 0px;
+						left: 85px;
+						font-family:@f2;
+						font-size:@fs2;
+						color:@red;
+					}
+					
+					small
+					{
+						font-size: 11px;
+						width: 350px;
+						height: 15px;
+						line-height: 15px;
+						position: absolute;
+						left: 85px;
+						bottom: 0px;
+					}
+					
+				}
+			}
+		
+		}
+		
+		.three
+		{
+			.grid(280px,10px,20px,left);
+		}
+		
+		.four
+		{
+			.grid(200px,10px,20px,left);
+		}
+		
+		.oneThird
+		{
+			.grid(280px,10px,20px,left);
+		}
+		
+		.twoThird
+		{
+			.grid(600px,10px,20px,left);
+		}
+		
+		.center
+		{
+			text-align:center;
+		}
+		
+		.blue
+		{
+			background:@baseColor2;
+			color:@baseColor5;
+			
+			a,h1,h2,h3,p
+			{
+				color:@baseColor5;
+			}
+		}
+		
+		.orange
+		{
+			background:@baseColor1;
+			color:@baseColor5;
+			
+			a,h1,h2,p
+			{
+				color:@baseColor5;
+			}
+		}
+		
+		.lBlue
+		{
+			background:@baseColor4;
+		}
+		
+		.imgholder
+		{
+			display:block;
+			overflow:hidden;
+			margin:10px 0px;
+			padding:5px;
+			text-align:center;
+			
+			&.black
+			{
+				background:@baseColor6;
+			}	
+			
+			img
+			{
+				width:80% !important;
+			}
+		}
+		
+		p,h2,h1,small,a
+		{
+			&.blue
+			{
+				background:transparent;
+				color:@baseColor2;
+			}
+			
+			&.orange
+			{
+				background:transparent;
+				color:@baseColor1;
+			}
+		}
+		
+		.row
+		{
+			.grid(100%,0px,0px);
+			
+			&.blue
+			{
+				background:@baseColor2;
+				color:@baseColor5;
+			
+				a,h1,h2,p
+				{
+					color:@baseColor5;
+				}
+			}
+			
+			&.lBlue
+			{
+				background:@baseColor4;
+			}
+			
+			&.orange
+			{
+				background:@baseColor1;
+				color:@baseColor5;
+				
+				a,h1,h2,p
+				{
+					color:@baseColor5;
+				}
+			}
+			
+			.spamImg
+			{
+				width:80px; 
+				float:left;
+				margin-right:10px;
+			}
+			
+			.spamScore
+			{
+				width:150px;
+				float:left;
+				padding:0px 20px;
+				height:80px;
+				line-height:80px;
+				font-size:@fs1;
+				font-family:@f2;
+				color:@red;
+			}
+			
+			.spamName
+			{
+				width:100%;
+				display:block;
+				height:30px;
+				line-height:30px;
+				font-size:@fs2;
+				float:left;
+				text-align:center;
+				font-family:@f2;
+				text-decoration:none;
+				padding:10px 0px;
+			}
+		}
+		
+	}
+	
+	/* End Body */

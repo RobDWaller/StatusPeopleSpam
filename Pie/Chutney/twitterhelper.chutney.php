@@ -119,7 +119,7 @@ class TwitterHelper
             $userdetails['favourites'] = number_format($user->favourites_count);
             $userdetails['daysactive'] = number_format(round((((time() - strtotime($user->created_at))/60)/60)/24,0));
             $userdetails['following'] = ($user->following==true?1:0);
-			$userdetails['spam'] = $this->_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
+			$userdetails['spam'] = self::_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
             
             return $userdetails;
         }

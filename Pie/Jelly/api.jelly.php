@@ -1739,9 +1739,9 @@ class API extends Jelly
         
         if ($user)
         {
-            $kred = $this->kredbind->GetKredScore($user);
+            $kred = KredRequests::GetKredScore($user);
             
-//            $this->errorschutney->DebugArray($kred);
+            //$this->errorschutney->DebugArray($kred);
             
             if (empty($kred->data))
             {

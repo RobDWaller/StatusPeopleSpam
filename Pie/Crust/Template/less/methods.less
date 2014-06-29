@@ -1,0 +1,154 @@
+/* Functions */
+
+	/* Structure */
+	
+	.grid (@width;@padTb;@padLr;@float:none;)
+	{
+		width:@width;
+		padding:@padTb @padLr;
+		float:@float;
+		overflow:hidden;
+	}
+	
+	/* End Structure */
+
+	/* Fonts */
+	
+	.text-shadow (@hshadow;@vshadow;@blur;@color)
+	{
+		-webkit-text-shadow: @hshadow @vshadow @blur @color;
+		-moz-text-shadow: @hshadow @vshadow @blur @color;
+		-o-text-shadow: @hshadow @vshadow @blur @color;
+		-ms-text-shadow: @hshadow @vshadow @blur @color;
+		text-shadow: @hshadow @vshadow @blur @color;
+	}
+	
+	/* End Fonts */
+	
+	/* Borders */
+	
+	.border-func (@width;@type:solid;@color:@baseColor1;@radius:0px;) when (ispixel(@width))
+	{
+		border:@width @type @color;
+		-moz-border-radius:@radius;
+		-webkit-border-radius:@radius;
+		-ms-border-radius:@radius;
+		-o-border-radius:@radius;
+		border-radius:@radius;
+	}
+
+	.border-func (@width;@radius:0px;)
+	{
+		border:none;
+		-moz-border-radius:@radius;
+		-webkit-border-radius:@radius;
+		-ms-border-radius:@radius;
+		-o-border-radius:@radius;
+		border-radius:@radius;
+	}
+
+	/* End Borders */
+
+	/* Boxes */
+
+	.box-shadow (@horizontal,@vertical,@blur,@spread,@color)
+	{
+		-moz-box-shadow:@horizontal,@vertical,@blur,@spread,@color; 
+		-webkit-box-shadow:@horizontal,@vertical,@blur,@spread,@color;
+		-ms-box-shadow:@horizontal,@vertical,@blur,@spread,@color;
+		-o-box-shadow:@horizontal,@vertical,@blur,@spread,@color;
+		box-shadow:@horizontal,@vertical,@blur,@spread,@color; 
+	}
+
+	/* End Boxes */
+	
+	/* Twitter */
+	
+	.twittertimeline(@fs:14px;@lh:20px;)
+	{
+	
+		margin:0px;
+		clear:left;
+			
+		li
+		{
+			list-style: none;
+			padding-bottom:10px;
+			margin: 25px 0px;
+			border-bottom: 1px dashed @baseColor3;
+			min-height: 55px;
+			clear:left;
+			overflow:hidden;
+			
+			strong
+			{
+				color:@baseColor1;
+			}
+			
+			small
+			{
+				font-size:12px;
+				line-height:18px;
+				
+				.ico
+				{
+					color:@baseColor2;
+				}
+			}
+			
+			@media screen and (max-width:640px)
+			{
+				small
+				{
+					font-size:14px;
+					line-height:20px;
+				}
+			}
+		}
+			
+		img
+		{
+			margin:6px 10px 6px 0px;
+			float:left;
+		}
+			
+		p
+		{
+			margin-left:55px;
+			min-height:55px;
+			margin-top:0px;
+			font-size:@fs;
+			line-height:@lh;
+		}
+			
+		small a
+		{
+			text-decoration:none;
+		}
+			
+		.retweetrlist
+		{
+			margin:5px;
+			padding:0px;
+			display:block;
+			width:95%;
+			overflow:hidden;
+			
+			li
+			{
+				float:left;
+				margin:0px 10px 0px 0px;
+				padding:0px;
+				line-height:40px;
+				font-size:14px;
+				border:0px;
+				min-height:30px;
+			}
+		}
+		
+	}
+	
+	
+	/* End Twitter */
+
+/* Functions */
