@@ -399,7 +399,7 @@ class DBRequests extends DB
 	
         public function GetCompetitors($userid)
         {
-            $query = "SELECT c.userid, cs.twitterid, cs.screen_name, c.avatar, cs.spam, cs.potential, cs.checks, cs.followers, cs.created
+            $query = "SELECT c.userid, cs.twitterid, cs.screen_name, c.avatar, cs.spam, cs.potential, cs.checks, cs.followers, cs.created, c.updated, c.lastcheck
                      	FROM spsp_checks AS c
                         JOIN spsp_check_scores AS cs ON c.twitterid = cs.twitterid
 			JOIN(	
@@ -625,7 +625,7 @@ class DBRequests extends DB
                     WHERE c.autoremove = 1 AND c.accounttype = 1
                     GROUP BY c.userid
                     ORDER BY c.autocheck ASC
-                    LIMIT 0,3";
+                    LIMIT 0,10";
             
             $result = $this->SelectRecords($query);
             
@@ -785,6 +785,12 @@ class DBRequests extends DB
 						WHERE sv.valid > (UNIX_TIMESTAMP()-(3600*24*30))
 						ORDER BY sc.updated ASC
 						LIMIT 0,20";
+			
+			// $query = "SELECT sc.userid,FROM_UNIXTIME(sv.valid),FROM_UNIXTIME(sc.updated)
+						// FROM spsp_checkers AS sc
+						// JOIN spsp_valid AS sv ON sc.userid = sv.userid
+						// WHERE sv.valid > (UNIX_TIMESTAMP()-(3600*24*30))
+						// AND sc.userid = 198192466";
 			
 			$result = $this->SelectRecords($query);
 			
