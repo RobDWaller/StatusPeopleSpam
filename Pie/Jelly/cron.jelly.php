@@ -47,6 +47,8 @@ class Cron extends Jelly
 				
 				$records = $this->dbbind->GetUserToCheck($u['userid']);
 				
+				//$this->errorschutney->PrintArray($records);
+				
 	            if (!empty($records))
 				{
 					//$this->errorschutney->DebugArray($records);
@@ -285,7 +287,7 @@ class Cron extends Jelly
                     
 					//$this->errorschutney->PrintArray($details);
                     
-                    $fakes = $this->dbbind->GetFakes($u['userid'],1,15);
+                    $fakes = $this->dbbind->GetFakes($u['userid'],1,50);
                     
 					if (!empty($fakes))
 					{

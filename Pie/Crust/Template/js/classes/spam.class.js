@@ -1220,12 +1220,12 @@ function Spam()
         if (result.code==201)
         {
             //h2.text('Scores shared to Twitter.');
-			ms.build("success",["Scores shared to Twitter."],".header");
+			ms.Build("success",["Scores shared to Twitter."],".header");
         }
         else
         {
             //h2.text('Failed to share scores to Twitter.');
-			ms.build("failure",["Failed to share scores to Twitter."],".header");
+			ms.Build("failure",["Failed to share scores to Twitter."],".header");
         }
         
         //$('#sharing').remove();
@@ -1251,7 +1251,7 @@ function Spam()
 		else
 		{
 			var ms = new Messages();
-			ms.build("failure",["No language or average data was returned."],".header");
+			ms.Build("failure",["No language or average data was returned."],".header");
 		}
 		
 		var pop = new Popup();
