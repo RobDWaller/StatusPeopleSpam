@@ -82,7 +82,6 @@
 			</div>
 		</div>
 <img src="/Pie/Crust/Template/img/287.gif" style="display:none;" />
-<script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
-<script src="/Pie/Crust/Template/js/getscores.js"></script>
-<script src="/Pie/Crust/Template/js/sharescores.js"></script>
+<script src="/Pie/Crust/Template/minify/js/getscores.min.js"></script>
+<script src="/Pie/Crust/Template/minify/js/sharescores.min.js"></script>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

@@ -147,7 +147,12 @@ $(document).ready(function(){
 		
 	});
 	
-	$('.selectMenu').bind('touchstart',function(e){
+	$('.selectMenu').bind('touchstart click',function(e){
+	
+		e.stopPropagation();
+		e.preventDefault();
+		
+		console.log('click');
 	
 		if ($('.header .menu').is(':hidden'))
 		{

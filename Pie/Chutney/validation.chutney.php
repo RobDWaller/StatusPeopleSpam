@@ -127,7 +127,7 @@ class Validation
 		$valid = true;
 		$message = '';
 	
-		if (!preg_match('/^[a-zA-Z0-9\+._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z.]{2,5}$/', $email) || strlen($email) > 255)
+		if (!preg_match('/^[a-zA-Z0-9\+._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z.]{2,10}$/', $email) || strlen($email) > 255)
 		{
 			
 			$valid = false;
