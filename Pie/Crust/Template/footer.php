@@ -12,8 +12,8 @@
 					</div>
 				</div>
 			</footer>
-			<script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
-			<script src="/Pie/Crust/Template/js/closemessages.js"></script>
+			<script src="/Pie/Crust/Template/minify/js/spam.class.min.js"></script>
+			<script src="/Pie/Crust/Template/minify/js/closemessages.min.js"></script>
 		</div>
     </body>
 </html>

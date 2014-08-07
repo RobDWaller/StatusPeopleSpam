@@ -1232,7 +1232,7 @@ class Fakers extends Jelly
 					$ip = $_SERVER["REMOTE_ADDR"];
 					//$_SESSION['message'] = Build::PageMessage('success',array('Twitter successfully authenticated.'));
 					$this->dbbind->AddLogin($userid,$ip,time());
-					Generic::_LastPage();
+					//Generic::_LastPage();
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
 				}
 				else

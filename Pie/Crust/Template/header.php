@@ -11,7 +11,8 @@
     <meta name="description" content=""> 
     <meta name="author" content=""> 
  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> 
+	<link rel="icon" type="image/png" href="/Pie/Crust/Template/img/ico.png">
     <!--<link rel="shortcut icon" href="/Pie/Crust/Template/favicon.ico">
     <link rel="apple-touch-icon" href="/Pie/Crust/Template/apple-touch-icon.png"> -->
 	<link href="http://blog.statuspeople.com/Posts/RSS" rel="alternate" title="StatusPeople Blog" type="application/rss+xml">

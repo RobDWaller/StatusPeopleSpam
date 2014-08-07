@@ -153,6 +153,7 @@
 		top:80px;
 		background:@baseColor5;
 		.border-func(0px,20px);
+		max-height:500px;
 		
 		#popupcloseholder
 		{
@@ -173,6 +174,172 @@
 			.center
 			{
 				text-align:center;
+			}
+			
+			#popupcontent
+			{
+				&.popupscroll
+				{
+					overflow:scroll;
+					max-height:460px;
+				}
+			
+				ul
+				{
+					margin:0px;
+					padding:0px;
+					list-style:none;
+					
+					&.twittertimeline
+					{
+						li
+						{
+							img
+							{
+								float:left;
+								margin-right:20px;
+							}
+						}
+					}
+					
+					li
+					{
+						&:nth-of-type(n+2)
+						{
+							border-top:1px dotted @baseColor3;
+							margin-top:20px;
+							padding-top:20px;
+						}
+					
+						.userholder
+						{
+							div:first-of-type
+							{
+								overflow:hidden;
+								margin-bottom:20px;
+								
+								img
+								{
+									float:left;
+									margin-right:20px;
+									width:50px !important;
+									height:50px !important;
+								}
+								
+								.fakers
+								{
+									float:left;
+									margin-right:20px;
+									
+									&.orange
+									{
+										color:orange;
+										
+										.red
+										{
+											color:@red;
+										}
+										
+										.green
+										{
+											color:@green;
+										}
+									}
+								}
+								
+								.kredsmall
+								{
+									clear:none;
+									float:left;
+									position:relative;
+									background:#63bad8 url(/Pie/Crust/Template/img/Kred_Sheild.png) no-repeat -150px -125px;
+									height:50px;
+									width:50px;
+									margin:0px auto;
+									margin-top:0px;
+									.border-func(0,5px);
+									
+									.influence
+									{
+										color:white;
+										font-family:helvetica;
+										font-size:14px;
+										line-height:20px;
+										text-align:center;
+										font-weight:bold;
+										position:absolute;
+										top:5px;
+										left:5px;
+										min-width:0px;
+										width:25px;
+										height:20px;
+									}
+									
+									.outreach
+									{
+										color:white;
+										font-family:helvetica;
+										font-size:14px;
+										line-height:20px;
+										font-weight:bold;
+										text-align:center;
+										position:absolute;
+										bottom:5px;
+										right:5px;
+										margin-bottom:0;
+										width:25px;
+										height:20px;
+									}
+								}
+							}
+							
+							div:nth-of-type(2)
+							{
+								width:49%;
+								float:left;
+								margin-right:1%;
+								margin-bottom:20px;
+								
+								.screenname
+								{
+									font-family:@f2;
+									font-size:@fs3;
+									line-height:@lh3;
+									color:@baseColor2;
+								}
+							}
+							
+							div:nth-of-type(3)
+							{
+								width:49%;
+								float:left;
+								margin-left:1%;
+								margin-bottom:20px;
+							}
+							
+							div:last-of-type
+							{
+								clear:both;
+								width:100%;
+								margin-top:20px;
+								
+								a
+								{
+									text-decoration:none;
+									font-family:@f3;
+									font-size:@fs3;
+									line-height:@lh3;
+									
+									&:after
+									{
+										content:" View Tweets";
+										font-family:@f2;
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}

@@ -30,6 +30,5 @@
 				<?=$sites;?>
 			</div>
 		</div>
-<script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
-<script src="/Pie/Crust/Template/js/sites.js"></script>
+<script src="/Pie/Crust/Template/minify/js/sites.js"></script>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>
