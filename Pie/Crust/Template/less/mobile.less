@@ -23,10 +23,31 @@
 						
 						ul
 						{
+							padding:0px;
+							margin:10px 0px;
+							
 							li
 							{
-								margin:20px;
+								margin:0px;
 								float:none;
+								display:block;
+								overflow:hidden;
+								height:auto;
+								
+								a
+								{
+									display:block;
+									padding:10px 0px;
+									border-top:2px solid @baseColor2;
+								}
+								
+								&:last-child
+								{
+									a
+									{
+										border-bottom:2px solid @baseColor2;
+									}
+								}
 							}
 						}
 					}
@@ -45,6 +66,7 @@
 						right:20px;
 						top:5px;
 						display:block;
+						cursor:pointer;
 						
 						div
 						{
@@ -222,8 +244,22 @@
 		{
 			#popup,#tinyloader
 			{
-				width:92%;
+				width:88%;
 				left:2%;
+				padding:20px 4%;
+				top:45px;
+				max-height:400px;
+				
+				#popupdata
+				{
+					#popupcontent
+					{
+						&.popupscroll
+						{
+							max-height:360px;
+						}
+					}
+				}
 			}
 		}
 		

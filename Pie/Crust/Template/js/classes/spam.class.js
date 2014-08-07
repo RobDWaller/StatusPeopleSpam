@@ -1213,19 +1213,25 @@ function Spam()
     
     this.ProcessSpamScoreShare = function(result)
     {
-        var h2 = $('<h2/>');
-        
+        //var h2 = $('<h2/>');
+        pop = new Popup();
+		var ms = new Messages();
+		
         if (result.code==201)
         {
-            h2.text('Scores shared to Twitter.');
+            //h2.text('Scores shared to Twitter.');
+			ms.build("success",["Scores shared to Twitter."],".header");
         }
         else
         {
-            h2.text('Failed to share scores to Twitter.');
+            //h2.text('Failed to share scores to Twitter.');
+			ms.build("failure",["Failed to share scores to Twitter."],".header");
         }
         
-        $('#sharing').remove();
-        h2.appendTo('#shareform');
+        //$('#sharing').remove();
+		
+		pop.RemoveTinyLoader();
+        //h2.appendTo('#shareform');
     }
 	
 	this.ProcessCacheData = function(result)
@@ -1282,16 +1288,19 @@ function Spam()
     {
         $('#sharescores').remove();
         
-        var loader = $('<div/>');
-        loader.attr('id','sharing');
+        // var loader = $('<div/>');
+        // loader.attr('id','sharing');
         
-        var img = $('<img/>');
-        img.attr('src','/Pie/Crust/Template/img/287.gif');
-        img.attr('id','imageloader');
+        // var img = $('<img/>');
+        // img.attr('src','/Pie/Crust/Template/img/287.gif');
+        // img.attr('id','imageloader');
         
-        img.appendTo(loader);
+        // img.appendTo(loader);
         
-        loader.appendTo('#shareform');   
+        // loader.appendTo('#shareform');  
+
+		var pop = new Popup();
+		pop.TinyLoader();
     }
     
     this.AddCompetitorButton = function(result)

@@ -10,6 +10,5 @@
 				<?=$sites;?>
 			</div>
 		</div>
-<script src="/Pie/Crust/Template/js/classes/spam.class.js"></script>
-<script src="/Pie/Crust/Template/js/sitesadmin.js"></script>
+<script src="/Pie/Crust/Template/minify/js/sitesadmin.js"></script>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

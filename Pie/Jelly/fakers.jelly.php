@@ -34,10 +34,10 @@ class Fakers extends Jelly
                 {
 #                 	$_SESSION['userid'] = 31386162;
 #					$_SESSION['primaryid'] = 31386162;
-#					$_SESSION['userid'] = 198192466;
-#					$_SESSION['primaryid'] = 198192466;
-					$_SESSION['userid'] = 297692168;
-					$_SESSION['primaryid'] = 297692168;
+					$_SESSION['userid'] = 198192466;
+					$_SESSION['primaryid'] = 198192466;
+#					$_SESSION['userid'] = 505083;
+#					$_SESSION['primaryid'] = 505083;
 						
                     if (isset($_SESSION['message']))
                     {
@@ -1225,7 +1225,7 @@ class Fakers extends Jelly
 					$ip = $_SERVER["REMOTE_ADDR"];
 					//$_SESSION['message'] = Build::PageMessage('success',array('Twitter successfully authenticated.'));
 					$this->dbbind->AddLogin($userid,$ip,time());
-					Generic::_LastPage();
+					//Generic::_LastPage();
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
 				}
 				else
