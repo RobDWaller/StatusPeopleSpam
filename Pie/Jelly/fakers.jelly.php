@@ -34,10 +34,10 @@ class Fakers extends Jelly
                 {
 #                 	$_SESSION['userid'] = 31386162;
 #					$_SESSION['primaryid'] = 31386162;
-					$_SESSION['userid'] = 198192466;
-					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 505083;
-#					$_SESSION['primaryid'] = 505083;
+#					$_SESSION['userid'] = 198192466;
+#					$_SESSION['primaryid'] = 198192466;
+#					$_SESSION['userid'] = 79181321;
+#					$_SESSION['primaryid'] = 79181321;
 						
                     if (isset($_SESSION['message']))
                     {
@@ -1521,7 +1521,7 @@ class Fakers extends Jelly
                     $good = (100-($fake+$inactive));
                     
                     $output .= '<tr>';
-					$output .= '<td><a href="http://twitter.com/'.$c['screen_name'].'" target="_blank"><img src="'.$c['avatar'].'" width="36px" height="36px" /></a></td>';
+					$output .= '<td><a href="http://twitter.com/'.$c['screen_name'].'" target="_blank" date-Up="'.$c['updated'].'"><img src="'.$c['avatar'].'" width="36px" height="36px" /></a></td>';
                     $output .= '<td><span class="blue details pointer" data-sc="'.$c['screen_name'].'">'.$c['screen_name'].'</span></td>';
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
