@@ -151,9 +151,14 @@ class API extends Jelly
                                 
                                 foreach ($followerdetails['data'] as $follower)
                                 {	
+									//$this->errorschutney->PrintArray($follower);
+								
 									$faker = $this->_GetFakerStatus($follower);
 									
-									//$this->errorschutney->PrintArray($faker);
+									// if ($faker['status']==1)
+									// {
+										// $this->errorschutney->PrintArray($faker);
+									// }
 									
 									if ($faker['status']==1)
 									{
@@ -337,83 +342,10 @@ class API extends Jelly
 
 //                    $this->errorschutney->PrintArray($bio);
 
-//                    $uid = $bio['user']->id;
-
-//                    $spamrecords = $this->dbbind->GetSpamDetails($uid);
 			$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 			$hndrds = $gethundreds[0];
 			$h = $gethundreds[1];
 			$followers = $gethundreds[2];
-			
-			/*             $followers = $bio['user']->followers_count;
-
-            $requests = round($followers/5000);
-
-            if ($requests > 10)
-            {
-                $requests = 10;
-            }
-            elseif ($requests < 1)
-            {
-                $requests = 1;
-            }
-
-            $a = 0;
-            $c = 1;
-            $cursor = '-1';
-
-            while ($c <= $requests)
-            {
-                $idslist = $this->twitterbind->GetFollowerIDsByName($details[2],$details[3],$search,$cursor);
-                    
-                if ($idslist['code']==429)
-                {
-                    $this->_APIFail(429,'Twitter API 1.1 limit breached. Please wait 15 minutes and try again.');
-                }
-
-                $fids[$a] = $idslist['data'];
-
-                $cursor = $fids[$a]->next_cursor_str;
-
-                $a++;
-                $c++;
-            }
-
-            $h = 0; 
-            $i = 0;
-
-//                $this->errorschutney->PrintArray($fids);
-
-            foreach ($fids as $ids)
-            {
-//                    $this->errorschutney->DebugArray($ids);
-
-                if (!isset($ids->errors)&&!isset($ids->error)&&!empty($ids->ids))
-                {
-
-                    foreach ($ids->ids as $id)
-                    {
-                        $hndrds[$h][] = $id; 
-
-                        if ($i == 99)
-                        {
-                            $h++;
-                            $i = 0;
-                        }
-                        else
-                        {
-                            $i++;
-                        }
-                    }
-
-                }
-            }
-
-            $h++;*/
-
-//                echo $h.'<br/>';
-
-//                $this->errorschutney->PrintArray($hndrds);
 
             if (!empty($hndrds))
             {
@@ -423,52 +355,6 @@ class API extends Jelly
 				$c = 0;
                 $sc = 0;
                 $p = 0;
-				
-/*                 if ($h < 5)
-                {
-                    $checks = $h;
-                }
-                elseif ($h >= 5 && $h < 100)
-                {
-                    $checks = 5;
-                }
-                elseif ($h >= 100 && $h < 300)
-                {
-                    $checks = 7;
-                }
-                elseif ($h >= 300)
-                {
-                    $checks = 10;
-                }
-
-                $incr = round($h/$checks,0,PHP_ROUND_HALF_DOWN);
-
-                if ($incr < 2)
-                {
-                    $incr = 1;
-                }
-
-                //echo $incr.'<br/>';
-
-                $y = 0;
-                $z = 1;
-
-//                    echo $h;
-//                    echo $checks;
-
-                while ($z <= $checks)
-                {
-                    $chcks[$y] = round($y*$incr);  
-
-                    $y++;
-                    $z++;
-                }
-
-//                    $this->errorschutney->PrintArray($chcks);
-
-                $c = 0;
-                $sc = 0;
-                $p = 0; */
 
                 foreach ($chcks as $ch)
                 {
@@ -561,12 +447,6 @@ class API extends Jelly
                 {
                     $cks = $results['followers'];
                 }
-
-/*                 if ($results['checks']==$cks)
-                {
-                    $this->dbbind->AddCheckScore($bio['user']->id,$bio['user']->screen_name,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
-                    $update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
-                } */
 
                 $s = 0;
 
@@ -900,17 +780,30 @@ class API extends Jelly
 		
 			$ffratio = 0;
 			$status = 0;
+			$actRatio = 0;
 	
-		//$this->errorschutney->PrintArray($follower);
-		
+			//$this->errorschutney->PrintArray($follower);
+			
 			if ($follower['friends']>0&&$follower['followers']>0)
 			{
 				$ffratio = round(($follower['followers']/$follower['friends'])*100); 
+				$actRatio = round(($follower['followers']/$follower['friends'])*100); 
 			}
-			elseif($follower['friends']==0&&$follower['followers']>50)
+			elseif ($follower['friends']==0&&$follower['followers']>50)
 			{
 				$ffratio = 21;
 			}
+		
+			if ($follower['created']<=90&&$ffratio>=10)
+			{
+				$ffratio = 21;
+			}
+			elseif ($follower['created']<=45)
+			{
+				$ffratio = 21;
+			}
+		
+			//$this->errorschutney->PrintArray($ffratio);	
 		
 			if ($ffratio < 20)
 			{
@@ -919,12 +812,12 @@ class API extends Jelly
 					$status = 1;
 					//$this->errorschutney->PrintArray($follower);
 				}
-				elseif($ffratio<=2)
+				elseif ($ffratio<=2)
 				{
 					$status = 1;
 					//$this->errorschutney->PrintArray($follower);
 				}
-				elseif($ffratio<10&&empty($follower['website'])&&$follower['favourites']==0)
+				elseif ($ffratio<10&&empty($follower['website'])&&$follower['favourites']==0)
 				{
 					$status = 1;
 					//$this->errorschutney->PrintArray($follower);
@@ -933,23 +826,28 @@ class API extends Jelly
 				{
 					$status = 1;
 				}*/ 
+				elseif ($follower['tweetsperday']<=0.5&&!$this->_tweetLink($follower['tweet']))
+				{	
+					$status = 1;
+				}
 				else 
 				{
 					$status = 2;
 				}
 				
 			}
-			elseif($follower['followers'] < 20&&$follower['friends']<20&&$follower['tweets']<20)
+			elseif ($follower['followers'] < 20 && $follower['friends'] < 20 &&$follower['tweets'] < 20)
 			{
 				$status = 2;
 			}
-			elseif($follower['tweetsperday']<=0.1||$follower['lasttweet']>=90)
+			elseif ($follower['tweetsperday'] <= 0.1 || $follower['lasttweet'] >= 90)
 			{
 				$status = 2;
 			}
 		
 			$result['status'] = $status;
 			$result['follower'] = $follower;
+			$result['ffRatio'] = $actRatio;
 		
 /* 			if (!$status)
 			{
@@ -2108,11 +2006,6 @@ class API extends Jelly
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
-		//$q = '@presidenciamx';
-		//$q = '#SaluteNaurozBaloch';
-		//$q = '#BanGeo';
-		//$q = '#xmasjumperday';
-		//$q = '#ExtinctionDay';
 		$q = '#MeReEnojoCuando';
 		
 		$search = $this->twitterbind->SearchTweets($details[2],$details[3],$q,100,'mixed','');
@@ -2129,42 +2022,6 @@ class API extends Jelly
 		
 		foreach ($search['data']->statuses as $d)
 		{
-			//$this->errorschutney->PrintArray($d->user);
-			//$this->errorschutney->PrintArray($d);
-			
-/* 			if ($c==5)
-			{
-				die();
-			} */
-			
-/* 			if ($d->retweeted)
-			{
-				$rt++;
-			}
-			
-			$user = TwitterHelper::ProcessSpamUser($d->user);
-			$this->errorschutney->PrintArray(array('id'=>$d->id_str,'tweet'=>$d->text,'user'=>$user));
-			
-			$faker = $this->_GetFakerStatus($user);
-									
-			//$this->errorschutney->PrintArray($faker);
-			
-			if ($faker['status']==1)
-			{
-				$sc++;
-				$spam[] = $faker['follower'];
-			}
-			elseif ($faker['status']==2)
-			{
-				$p++;
-				//$this->errorschutney->PrintArray($faker);
-			}
-			
-			$c++; */
-		
-# 			$ids[$c] = $d->user->id_str;
-			
-			
 			if ($d->retweet_count>5)
 			{
 				//$this->errorschutney->PrintArray($d->retweeted_status->id_str);
@@ -2265,44 +2122,6 @@ class API extends Jelly
 			
 		}
 		
-		//$this->errorschutney->PrintArray($retweets);
-		//$this->errorschutney->PrintArray($tweets);
-		
-		//$ids = substr($ids,0,-1);
-		
-/* 		$this->errorschutney->PrintArray($ids);
-		
-		$count = count($ids);
-		
-		$followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$ids,$count);
-		
-		$this->errorschutney->PrintArray($followerdetails);
-		
-		$sc = 0;
-		$p = 0;
-		$c = 0;
-		
-		foreach ($followerdetails['data'] as $u)
-		{
-			$faker = $this->_GetFakerStatus($u);
-									
-			//$this->errorschutney->PrintArray($faker);
-			
-			if ($faker['status']==1)
-			{
-				$sc++;
-				$spam[] = $faker['follower'];
-			}
-			elseif ($faker['status']==2)
-			{
-				$p++;
-				//$this->errorschutney->PrintArray($faker);
-			}
-			
-			$c++;
-		}
-		
-		$this->errorschutney->PrintArray(array('count'=>$c,'spam'=>$sc,'potential'=>$p)); */
 	}
 	
 	protected function _BuildRetweets($retweets)
@@ -3050,7 +2869,28 @@ class API extends Jelly
 			$this->dbbind->AddCache($uid,$langs,$avg,$spam,time());
 		}
 	}
-
+	
+	public function _tweetLink($tweet)
+	{
+		$result = true;
+		
+		//$tweet = 'Hello Wolrd http://google.com how are you today?';
+		
+		preg_match('/http:\/\/|https:\/\//i',$tweet,$match);
+		
+		//$this->errorschutney->PrintArray($match);
+		//$this->errorschutney->PrintArray($tweet);
+		
+		if (!$match)
+		{
+			$result = false;
+		}
+		
+		//$this->errorschutney->DebugArray($result);
+		
+		return $result;
+	}
+	
     # End Protected Functions #
     
 }

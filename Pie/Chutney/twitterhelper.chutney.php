@@ -106,20 +106,40 @@ class TwitterHelper
         if (!empty($user))
         {
             $userdetails['id'] = $user->id_str;
-            $userdetails['name'] = $user->name;
-            $userdetails['screenname'] = $user->screen_name;
-            $userdetails['url'] = $user->url;
-            $userdetails['image'] = $user->profile_image_url;
-            $userdetails['location'] = $user->location;
-            $userdetails['description'] = $user->description;
-            $userdetails['tweets'] = number_format($user->statuses_count);
-            $userdetails['followers'] = number_format($user->followers_count);
-            $userdetails['friends'] = number_format($user->friends_count);
-            $userdetails['listed'] = number_format($user->listed_count);
-            $userdetails['favourites'] = number_format($user->favourites_count);
-            $userdetails['daysactive'] = number_format(round((((time() - strtotime($user->created_at))/60)/60)/24,0));
-            $userdetails['following'] = ($user->following==true?1:0);
-			$userdetails['spam'] = self::_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
+			$userdetails['name'] = $user->name;
+			$userdetails['screenname'] = $user->screen_name;
+			$userdetails['url'] = $user->url;
+			$userdetails['image'] = $user->profile_image_url;
+			$userdetails['location'] = $user->location;
+			$userdetails['timezone'] = $user->time_zone;
+			$userdetails['language'] = $user->lang;
+			$userdetails['description'] = $user->description;
+			$userdetails['tweets'] = $user->statuses_count;
+			$userdetails['followers'] = $user->followers_count;
+			$userdetails['friends'] = $user->friends_count;
+			$userdetails['listed'] = $user->listed_count;
+			$userdetails['favourites'] = $user->favourites_count;
+			$userdetails['daysactive'] = number_format(round((((time() - strtotime($user->created_at))/60)/60)/24,0));
+			$userdetails['following'] = ($user->following==true?1:0);
+			$userdetails['created'] = round(((time()/3600)/24)-((strtotime($user->created_at)/3600)/24));
+			$userdetails['lasttweet'] = round(((time()/3600)/24)-((strtotime($user->status->created_at)/3600)/24));
+			$userdetails['tweet'] = $user->status->text;
+			$userdetails['tweet_retweet'] = $user->status->retweet_count;
+			$userdetails['tweet_favorite'] = $user->status->favorite_count;
+			$tpd = 0;
+			if ($user->statuses_count>0&&$userdetails['created']>0)
+			{
+				$tpd = round($user->statuses_count/$userdetails['created'],2);
+			}
+			$userdetails['tweetsperday'] = $tpd;
+			//$userdetails['spam'] = self::_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
+			$userdetails['spam'] = self::_IsUserSpam($userdetails);
+			
+			$userdetails['tweets'] = number_format($user->statuses_count);
+			$userdetails['followers'] = number_format($user->followers_count);
+			$userdetails['friends'] = number_format($user->friends_count);
+			$userdetails['listed'] = number_format($user->listed_count);
+			$userdetails['favourites'] = number_format($user->favourites_count);
             
             return $userdetails;
         }
@@ -133,21 +153,43 @@ class TwitterHelper
         {
             if (!empty($user))
             {
+				//Errors::PrintArray($user);
+			
                 $userdetails['id'] = $user->id_str;
-                $userdetails['name'] = $user->name;
-                $userdetails['screenname'] = $user->screen_name;
-                $userdetails['url'] = $user->url;
-                $userdetails['image'] = $user->profile_image_url;
-                $userdetails['location'] = $user->location;
-                $userdetails['description'] = $user->description;
-                $userdetails['tweets'] = number_format($user->statuses_count);
-                $userdetails['followers'] = number_format($user->followers_count);
-                $userdetails['friends'] = number_format($user->friends_count);
-                $userdetails['listed'] = number_format($user->listed_count);
-                $userdetails['favourites'] = number_format($user->favourites_count);
-                $userdetails['daysactive'] = number_format(round((((time() - strtotime($user->created_at))/60)/60)/24,0));
-                $userdetails['following'] = ($user->following==true?1:0);
-				$userdetails['spam'] = self::_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
+				$userdetails['name'] = $user->name;
+				$userdetails['screenname'] = $user->screen_name;
+				$userdetails['url'] = $user->url;
+				$userdetails['image'] = $user->profile_image_url;
+				$userdetails['location'] = $user->location;
+				$userdetails['timezone'] = $user->time_zone;
+				$userdetails['language'] = $user->lang;
+				$userdetails['description'] = $user->description;
+				$userdetails['tweets'] = $user->statuses_count;
+				$userdetails['followers'] = $user->followers_count;
+				$userdetails['friends'] = $user->friends_count;
+				$userdetails['listed'] = $user->listed_count;
+				$userdetails['favourites'] = $user->favourites_count;
+				$userdetails['daysactive'] = number_format(round((((time() - strtotime($user->created_at))/60)/60)/24,0));
+				$userdetails['following'] = ($user->following==true?1:0);
+				$userdetails['created'] = round(((time()/3600)/24)-((strtotime($user->created_at)/3600)/24));
+				$userdetails['lasttweet'] = round(((time()/3600)/24)-((strtotime($user->status->created_at)/3600)/24));
+				$userdetails['tweet'] = $user->status->text;
+				$userdetails['tweet_retweet'] = $user->status->retweet_count;
+				$userdetails['tweet_favorite'] = $user->status->favorite_count;
+				$tpd = 0;
+				if ($user->statuses_count>0&&$userdetails['created']>0)
+				{
+					$tpd = round($user->statuses_count/$userdetails['created'],2);
+				}
+				$userdetails['tweetsperday'] = $tpd;
+				//$userdetails['spam'] = self::_IsUserSpam(array('followers'=>$user->followers_count,'friends'=>$user->friends_count,'tweets'=>$user->statuses_count,'website'=>$user->url,'favourites'=>$user->favourites_count));
+				$userdetails['spam'] = self::_IsUserSpam($userdetails);
+				
+				$userdetails['tweets'] = number_format($user->statuses_count);
+				$userdetails['followers'] = number_format($user->followers_count);
+				$userdetails['friends'] = number_format($user->friends_count);
+				$userdetails['listed'] = number_format($user->listed_count);
+				$userdetails['favourites'] = number_format($user->favourites_count);
 				
                 $usersdata[] = $userdetails;
             }
@@ -189,40 +231,55 @@ class TwitterHelper
     {
         $ffratio = 0;
         
-#        Errors::DebugArray($user);
-        
+        //Errors::PrintArray($user);	
+		
         $result = 'Good';
 
-        if ($user['friends']>0)
-        {
-            $ffratio = round(($user['followers']/$user['friends'])*100); 
-        }
+        // if ($user['friends']>0)
+        // {
+            // $ffratio = round(($user['followers']/$user['friends'])*100); 
+        // }
 
-        if ($ffratio < 20)
-        {
-            if ($user['tweets']==0||$user['followers']==0)
-            {
-                $result = 'Fake';
-            }
-            elseif($ffratio<=2)
-            {
-                $result = 'Fake';
-            }
-            elseif($ffratio<10&&empty($user['website'])&&$user['favourites']==0)
-            {
-                $result = 'Fake';                       
-            }
-            else 
-            {
-                $result = 'Inactive';
-            }
+        // if ($ffratio < 20)
+        // {
+            // if ($user['tweets']==0||$user['followers']==0)
+            // {
+                // $result = 'Fake';
+            // }
+            // elseif($ffratio<=2)
+            // {
+                // $result = 'Fake';
+            // }
+            // elseif($ffratio<10&&empty($user['website'])&&$user['favourites']==0)
+            // {
+                // $result = 'Fake';                       
+            // }
+            // else 
+            // {
+                // $result = 'Inactive';
+            // }
 
-        }
-        elseif($user['followers']<20&&$user['friends']<20&&$user['tweets']<20)
-        {
-            $result = 'Inactive';
-        }
+        // }
+        // elseif($user['followers']<20&&$user['friends']<20&&$user['tweets']<20)
+        // {
+            // $result = 'Inactive';
+        // }
         
+		$api = new API();
+		
+		$check = $api->_GetFakerStatus($user);
+		
+		//Errors::DebugArray($status);	
+		
+		if ($check['status']==1)
+		{
+			$result = 'Fake';
+		}
+		elseif ($check['status']==2)
+		{
+			$result = 'Inactive';
+		}
+		
         return $result;
     }
     
