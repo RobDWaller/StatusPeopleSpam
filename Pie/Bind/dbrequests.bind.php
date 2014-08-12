@@ -79,11 +79,11 @@ class DBRequests extends DB
 		
 			$time = strtotime('-4 weeks');
             
-            $query = "SELECT ui.screen_name, ui.avatar, sc.spam, sc.potential, sc.checks, sc.followers, ui.twitterid, FROM_UNIXTIME(sc.updated)
+            $query = "SELECT ui.screen_name, ui.avatar, sc.spam, sc.potential, sc.checks, sc.followers, ui.twitterid
                         FROM spsp_spam_scores AS sc 
                         JOIN spsp_user_info AS ui ON sc.twitterid = ui.twitterid
 						WHERE sc.updated > ".$time."
-                        ORDER BY (sc.spam/sc.checks) DESC, sc.spam DESC, sc.updated DESC
+						ORDER BY (sc.spam/sc.checks) DESC, sc.spam DESC, sc.updated DESC
                         LIMIT 0,:limit";
             
             $params = array('limit'=>array($limit,'INT',0));
@@ -255,7 +255,7 @@ class DBRequests extends DB
                             'screen_name'=>array($screenname,'STR',140),
                             'avatar'=>array($avatar,'STR',255));
             
-            $result = $this->InsertRecord($query, $params);
+            $result = $this->UpdateRecord($query, $params);
             
             return $result;
             
