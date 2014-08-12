@@ -64,13 +64,22 @@ class Cron extends Jelly
 						//$search = $this->validationchutney->StripNonAlphanumeric($r['screen_name']);
 				
 						$bio = $this->twitterbind->GetUserByID($details[2],$details[3],$r['userid']);
+						//$bio = $this->twitterbind->GetUserByID($details[2],$details[3],171026460);
+						
 						
 						$countinfo = $this->dbbind->CountUserInfoRecords($r['userid']); 
                     
+						//$this->errorschutney->PrintArray($countinfo);
+					
                         if ($countinfo>=1)
                         {
+							//$this->errorschutney->PrintArray($countinfo);
 							$this->dbbind->UpdateUserInfo($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+							$this->dbbind->UpdateFakerCheck($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
 						}
+						
+						//$this->errorschutney->DebugArray($bio);
+						
 						
 						$this->dbbind->UpdateFakerCheck($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
 						
