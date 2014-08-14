@@ -6,7 +6,7 @@
 				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Confirmation</a></li>
 			</ul>
 		</div>
-			<div class="content one">
+			<div class="content one table">
 					<p>Thank you for purchasing a Fakers Dashboard subscription. You can start using your <a href="/Fakers/Dashboard">Fakers Dashboard</a> now.</p>
 					<p>We have sent you an email confirming all your details. Including your purchase id which you should reference in any communication with us about your purchase.</p>
 					<h2>Purchase ID: <?=$transactionid?></h2>

@@ -45,7 +45,7 @@ class Payments extends Jelly
             }
             
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Details';
+            $data['title'] = 'Your Details : Fakers App from StatusPeople.com';
 			$data['menu'] = '&nbsp;';
             
             Sessions::UnsetSessions(array('message','email','title','firstname','lastname'));
@@ -205,6 +205,7 @@ class Payments extends Jelly
         
 		$validity = Fakers::_CheckValidity($_SESSION['userid']);
 		$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+		$data['title'] = 'Purchase A Subscription : Fakers App from StatusPeople.com';
 		
 		if (!$validity[0])
 		{
@@ -280,6 +281,7 @@ class Payments extends Jelly
         
 		$validity = Fakers::_CheckValidity($_SESSION['userid']);
 		$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+		$data['title'] = 'Checkout : Fakers App from StatusPeople.com';
 		
 		if (!$validity[0])
 		{
@@ -374,6 +376,7 @@ class Payments extends Jelly
         $firstname = $_COOKIE['firstname'];
         
         $transaction = PaymentRequests::CountPurchases($transactionid);
+		$data['title'] = 'Purchase Confirmation : Fakers App from StatusPeople.com';
         
         if ($transaction)
         {
@@ -487,6 +490,7 @@ class Payments extends Jelly
         
 		$validity = Fakers::_CheckValidity($_SESSION['userid']);
 		$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+		$data['title'] = 'Purchase Cancellation : Fakers App from StatusPeople.com';
 		
 		if (!$validity[0])
 		{

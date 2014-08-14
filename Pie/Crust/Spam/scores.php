@@ -36,14 +36,6 @@
 				<p>
 					Advanced Follower Metrics
 				</p>
-				<!--<h2>UK</h2>
-				<h1>&pound;3.49</h1>
-				<small>Per Month</small>
-				<p>
-					Unlimited Searches
-				</p>
-				<p>Block Spam</p>
-				<p>Track 5 Accounts</p>-->
 			</div>
 			<div class="two center pricingborders blue">
 				<h2>Premium</h2>
@@ -57,17 +49,9 @@
 				<p>
 					Advanced Follower Metrics
 				</p>
-				<!--<h2>US</h2>
-				<h1>&#36;5.49</h1>
-				<small>Per Month</small>
-				<p>
-					Unlimited Searches
-				</p>
-				<p>Block Spam</p>
-				<p>Track 5 Accounts</p>-->
 			</div>									
 			<div class="one">
-				<h2 class="white">Your Details</h2>
+				<h2 class="white">Purchase a Subscription: Your Details</h2>
 			</div>
 			<div class="one">
 				<?=$form;?>

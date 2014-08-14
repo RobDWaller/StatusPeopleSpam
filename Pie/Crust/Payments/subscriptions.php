@@ -6,7 +6,7 @@
 				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Subscriptions</a></li>
 			</ul>
 		</div>
-		<div class="one content">
+		<div class="one content table">
 			<h2>Subscription Types</h2>
 				<table id="subscriptiontypes">
 					<tr>
@@ -64,7 +64,7 @@
 			<p>Get 1 month free when you buy a 6 month subscription and 2 if you buy 12.</p>
 			<?=$form;?>
 		</div>
-		<div class="two">
+		<div class="two table">
 			<input type="hidden" id="subtype" value="<?=$type;?>"/>
 			<h2>Cart</h2>
 			<table id="cart">

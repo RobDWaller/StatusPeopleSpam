@@ -22,7 +22,7 @@
 						<!--<input type="hidden" id="firsttime" value="1" />-->
 				</div>
 			</div>
-			<div class="one" id="fakerslist">
+			<div class="one table" id="fakerslist">
 				<h2>Friend's List</h2>
 				<?=$competitors;?>
 			</div>
@@ -40,7 +40,7 @@
 				<h2><span id="charttitle">@<span id="charthandle"><?=$twitterhandle;?></span>'s Fakers Chart</span></h2>
 				<div id="chart"></div>
 			</div>
-			<div class="one">
+			<div class="one table">
 				<h2>
 					Your Followers
 				</h2>
