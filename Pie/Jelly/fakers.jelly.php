@@ -34,10 +34,10 @@ class Fakers extends Jelly
                 {
 #                 	$_SESSION['userid'] = 31386162; /* RobDWaller */
 #					$_SESSION['primaryid'] = 31386162;
-#					$_SESSION['userid'] = 198192466; /* Status People */
-#					$_SESSION['primaryid'] = 198192466;
-					$_SESSION['userid'] = 79181321;
-					$_SESSION['primaryid'] = 79181321;
+					$_SESSION['userid'] = 198192466; /* Status People */
+					$_SESSION['primaryid'] = 198192466;
+#					$_SESSION['userid'] = 79181321;  
+#					$_SESSION['primaryid'] = 79181321;
 #					$_SESSION['userid'] = 1919216960; /* Fakers App */
 #					$_SESSION['primaryid'] = 1919216960;
 						
@@ -51,7 +51,7 @@ class Fakers extends Jelly
                     }
 
                     $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);	
-                    $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
+                    $data['title'] = 'Home : Fakers App from StatusPeople.com';
 
                     $spamrecords = $this->dbbind->GetLatestSpamRecords(3);
 
@@ -124,7 +124,7 @@ class Fakers extends Jelly
 					}
 					
                     $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
-                    $data['title'] = 'Status People Fake Follower Check &mdash; Social Media Management Platform for Business';
+                    $data['title'] = 'Fakers Dasboard : Fakers App from StatusPeople.com';
 					$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
 
                     $fields = array('email'=>array('Email','Text','',$_SESSION['email']),
@@ -258,6 +258,8 @@ class Fakers extends Jelly
 				
 				$data['accountform'] = $this->_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 				
+				$data['title'] = 'Fakers Dashboard : Fakers App from StatusPeople.com';
+				
                 $this->glaze->view('Spam/advanced.php',$data); 
             }
             else
@@ -328,6 +330,8 @@ class Fakers extends Jelly
 				
 				$data['accountform'] = $this->_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 				
+				$data['title'] = 'Follower Analytics : Fakers App from StatusPeople.com';
+				
                 $this->glaze->view('Spam/followers.php',$data); 
 			}
             else
@@ -393,7 +397,7 @@ class Fakers extends Jelly
 			Sessions::UnsetSessions(array('message'));
 			
 			$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
-			$data['title'] = 'Settings';
+			$data['title'] = 'Settings : Fakers App from StatusPeople.com';
 			
 			$details = PaymentRequests::GetUserDetails($_SESSION['userid']);
 			
@@ -536,6 +540,7 @@ class Fakers extends Jelly
 			}
 			
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
+			$data['title'] = 'Twitter Reset : Fakers App from StatusPeople.com';
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
@@ -579,7 +584,7 @@ class Fakers extends Jelly
 		public function Help()
 		{
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Help';
+            $data['title'] = 'Help : Fakers App from StatusPeople.com';
 			
 			if (!empty($_SESSION['userid']))
 			{
@@ -611,7 +616,7 @@ class Fakers extends Jelly
         public function FindOutMore()
         {
             $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Find Out More';
+            $data['title'] = 'Find Out More : Fakers App from StatusPeople.com';
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
@@ -643,7 +648,7 @@ class Fakers extends Jelly
         public function Terms()
         {
             $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Terms';
+            $data['title'] = 'Terms and Conditions : Fakers App from StatusPeople.com';
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
@@ -675,7 +680,7 @@ class Fakers extends Jelly
         public function Wall()
         {
             $data['homelink'] = $this->routechutney->HREF('/',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check &mdash; Fakers Wall';
+            $data['title'] = 'Wall of Shame : Fakers App from StatusPeople.com';
             
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
@@ -759,7 +764,7 @@ class Fakers extends Jelly
 			}
 			
 			$data['homelink'] = $this->routechutney->HREF('/',$this->mod_rewrite);	
-            $data['title'] = 'Status People Fake Follower Check';
+            $data['title'] = 'Unsubscribe : Fakers App from StatusPeople.com';
 			$data['logout'] = 1;
 			
 			$this->glaze->view('Spam/unsubscribe.php',$data);

@@ -852,11 +852,12 @@ function Spam()
 								+'<p class="f2 sp2 green">Yay!! You have no Fake Followers</p></div>');
 				}
 				
-				var subscrp = $('<div class="row"><div class="one center f2 sp2"><a href="/Payments/Details" class="orange">Find out more about your followers &mdash; purchase a subscription</a></div></div>');
+				var subscrp = $('<div class="row"><div class="one center f2 sp2"><a href="/Payments/Details" class="orange">Learn more about your Followers &mdash; Purchase a Subscription</a></div></div>');
 				
+				subscrp.appendTo(exinf);
 				extra.appendTo(exinf);
 				fakers.appendTo(exinf);
-				subscrp.appendTo(exinf);
+				
 				exinf.insertAfter('#SearchForm');
 			}
         }

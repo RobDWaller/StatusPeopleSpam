@@ -21,13 +21,25 @@
 				font-family: 'BreeSerifRegular', Tahoma, Helvetica, Arial, sans-serif;
 			}
 			
+			tr:nth-of-type(odd)
+			{
+				td
+				{
+					background:@baseColor4;
+				}
+				
+				td#compmore
+				{
+					background:@baseColor2;
+				}
+			}
+			
 			td
 			{
 				padding:7px;
 				font-size:14px; 
 				line-height:18px;    
 				border-bottom:1px dashed @baseColor3;
-				background:@baseColor4;
 				
 				.left
 				{
