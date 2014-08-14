@@ -826,7 +826,7 @@ class API extends Jelly
 				{
 					$status = 1;
 				}*/ 
-				elseif ($follower['tweetsperday']<=0.5&&!$this->_tweetLink($follower['tweet']))
+				elseif ($follower['tweetsperday']<=0.5&&!self::_tweetLink($follower['tweet']))
 				{	
 					$status = 1;
 				}

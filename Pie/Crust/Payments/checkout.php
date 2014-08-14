@@ -6,7 +6,7 @@
 				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Checkout</a></li>
 			</ul>
 		</div>
-			<div class="content one">
+			<div class="content one table">
 					<p>All payments are taken via PayPal. Please be aware that to complete the transaction you must return to our site after paying. This will usually occur automatically, if not please click one of the links provided by PayPal.</p>
 					<h2>Cart</h2>
 					<table id="checkoutcart">
