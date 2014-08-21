@@ -1,1 +1,324 @@
-$(document).ready(function(){var i=$("#twitterid").val();var d=$("#twitterhandle").val();var h=$("#accounttype").val();var c=new Server();var j=new Popup();var g=new Scroll();var e=new Lengths();function f(){if($("#scoresholder").length){$("#scoresholder").remove()}if($("#shareform").length){$("#shareform").remove()}var l=$("<div/>");l.attr("id","scoresholder");l.addClass("row");l.insertBefore("#SearchForm")}function a(o,n){var l=$("<div/>");l.attr("id","loader");l.html("<h1>"+o+"</h1>");l.attr("class","row connect center");var m=$("<img/>");m.attr("src","/Pie/Crust/Template/img/287.gif");m.attr("id","imageloader");m.appendTo(l);l.appendTo(n)}function k(){$("#GetScoresForms").remove();f();a("Getting Faker Scores","#scoresholder");var l=parseInt($("#firsttime").val());if(l==1){c.CallServer("GET","json","/API/GetSpamRecords","rf=json&usr="+encodeURIComponent(i)+"&srch="+d,"Spam_ProcessSpamDataFirstTime",i)}else{c.CallServer("GET","json","/API/GetCachedSpamScore","rf=json&usr="+encodeURIComponent(i),"Spam_ProcessCachedSpamData",1)}}$("#searchsubmit").bind("click",function(m){m.preventDefault();$(this).attr("disabled","disabled");var n=$("#searchquery").val();var l=e.StringLength(n);if(l>0){f();a("Getting Faker Scores","#scoresholder");$("#handle").text(n);c.CallServer("GET","json","/API/GetSpamScores","rf=json&usr="+encodeURIComponent(i)+"&srch="+n+"&srchs=3","Spam_ProcessSpamDataAdvanced",i)}else{j.Loader();j.AddMessage("Please enter a Twitter username to search for.",true);$(this).removeAttr("disabled")}});$(document).on("click","#resetscores",function(l){l.preventDefault();f();a("Getting Faker Scores","#scoresholder");$("#handle").text(d);$("#searchquery").val("");$("#searchquery").attr("placeholder","Twitter username...");c.CallServer("GET","json","/API/GetSpamScores","rf=json&usr="+encodeURIComponent(i)+"&srch="+d,"Spam_ProcessSpamData",3)});$(document).on("click","#addfaker",function(p){p.preventDefault();var q=$("#searchquery").val();var o=$("#spam").val();var l=$("#potential").val();var m=$("#checks").val();var n=$("#followers").val();c.CallServer("POST","json","/API/PostAddFaker","rf=json&usr="+encodeURIComponent(i)+"&srch="+q+"&sp="+o+"&pt="+l+"&ch="+m+"&fl="+n,"Spam_AddFaker",i);f();a("Getting Faker Scores","#scoresholder");$("#handle").text(d);$("#searchquery").val("");$("#searchquery").attr("placeholder","Twitter username...");c.CallServer("GET","json","/API/GetSpamScores","rf=json&usr="+encodeURIComponent(i)+"&srch="+d,"Spam_ProcessSpamData",3)});$(document).on("click",".details",function(o){o.preventDefault();var l=$(this).parent().parent();var m=l.children(".sc");var n=m.val();j.Loader("Loading...");c.CallServer("GET","json","/API/GetTwitterUserData","rf=json&usr="+encodeURIComponent(i)+"&srch="+n,"Spam_BuildUser","")});$(document).on("click",".block",function(o){o.preventDefault();var l=$(this).parent().parent();var m=l.children(".ti");var n=m.val();c.CallServer("POST","json","/API/PostBlockSpam","rf=json&usr="+encodeURIComponent(i)+"&twid="+n,"Spam_BlockUser",i)});$(document).on("click",".unblock",function(o){o.preventDefault();var l=$(this).parent().parent();var m=l.children(".ti");var n=m.val();c.CallServer("POST","json","/API/PostUnBlockSpam","rf=json&usr="+encodeURIComponent(i)+"&twid="+n,"Spam_UnBlockUser",i)});$(document).on("click",".notspam",function(o){o.preventDefault();var l=$(this).parent().parent();var m=l.children(".ti");var n=m.val();c.CallServer("POST","json","/API/PostNotSpam","rf=json&usr="+encodeURIComponent(i)+"&twid="+n,"Spam_NotSpam",i)});$(document).on("click",".tweetfollowers",function(n){n.preventDefault();var l=$(this).attr("href");var m=l.split("//");var o=m[1].split("/");j.Loader("Loading...");c.CallServer("GET","json","/API/GetFollowerData","rf=json&usr="+encodeURIComponent(i)+"&ct=10&nm="+o[1],"Tweets_Followers")});$(document).on("click",".usertweettimeline",function(m){m.preventDefault();j.Loader("Loading...");j.Content("");var l=$(this).attr("href");var n=l.split("/");c.CallServer("GET","json","/API/GetUserTwitterTimeline","rf=json&usr="+encodeURIComponent(i)+"&srch="+n[3]+"&cnt=10","Tweets_BuildUserTimeline")});$(document).on("click","#chartreset",function(){$("#charthandle").text(d);c.CallServer("GET","json","/API/GetSpamScoresOverTime","rf=json&usr="+encodeURIComponent(i),"Charts_BuildChart");g.To("#charthandle",500,10);$(this).fadeOut(1000,function(){$(this).remove()})});$(document).on("click","#checkfakes",function(){j.TinyLoader();c.CallServer("GET","json","/API/GetUpdateFakersList","rf=json&usr="+encodeURIComponent(i)+"&srch="+d,"Spam_UpdateFakersList",i)});$("#searchblocked").bind("click",function(){j.BuildPopup();j.Content('<p>Search Your Blocked Users<p><form><fieldset><input type="text" id="searchforblocked" /></fieldset></form><div id="blocksearchdata"></div>')});$(document).on("keyup","#searchforblocked",function(){var l=$(this).val();c.CallServer("POST","json","/API/PostBlockedSearch","rf=json&usr="+encodeURIComponent(i)+"&srch="+l,"Spam_ProcessFakerFind")});$(document).on("mouseup","#searchforblocked",function(){var l=$(this).val();c.CallServer("POST","json","/API/PostBlockedSearch","rf=json&usr="+encodeURIComponent(i)+"&srch="+l,"Spam_ProcessFakerFind")});$(document).on("click","#autoon",function(l){l.preventDefault();j.BuildPopup();var m=$('<div><p>If you turn on auto-blocking it will cause the Fakers App to begin blocking your fake followers as we find them. You can search and unblock any follower at any time if you think we have got it wrong.</p><p>In addition if you have a lot of fake followers &mdash; tens of thousands &mdash; it may take a number of days or even weeks before you notice a significant improvement in your scores. Your scores may also fluctuate during this period. <strong>Please confirm you wish to turn on auto-blocking</strong></p><form><fieldset><input id="confirmautoon" value="Confirm" type="button"/></fieldset></form></div>');j.Content(m)});$(document).on("click","#autooff",function(l){l.preventDefault();j.TinyLoader();c.CallServer("POST","json","/API/PostChangeAutoRemoveStatus","rf=json&usr="+encodeURIComponent(i),"Spam_AutoBlockUpdate")});$(document).on("click","#confirmautoon",function(l){l.preventDefault();j.TinyLoader();c.CallServer("POST","json","/API/PostChangeAutoRemoveStatus","rf=json&usr="+encodeURIComponent(i),"Spam_AutoBlockUpdate")});$(document).on("click","#gotopremium",function(l){l.preventDefault();window.location="/Payments/Subscriptions?type=2"});if(h==1){j.BuildRightInfoBox();var b=$('<p><strong>Auto Block</strong></p><p>To Auto Block your Fake Followers and track up to 15 Friends upgrade to a Premium subscription.</p><form><fieldset><input type="button" id="gotopremium" value="Go Premium" /></fieldset></form>');j.RightInfoContent(b)}k()});
+$(document).ready(function(){
+   
+    var twid = $('#twitterid').val();
+    var twuser = $('#twitterhandle').val();
+	var type = $('#accounttype').val();
+
+    var srv = new Server();
+    var pop = new Popup();
+    var sc = new Scroll();
+    var ln = new Lengths();
+
+    function Build()
+    {
+        if ($('#scoresholder').length)
+        {
+            $('#scoresholder').remove();
+        }
+
+        if ($('#shareform').length)
+        {
+            $('#shareform').remove();
+        }
+
+        var div = $('<div/>');
+        div.attr('id','scoresholder');
+        div.addClass('row');
+
+        div.insertBefore('#SearchForm');
+    }
+
+    function Loader(message,where)
+    {
+        var loader = $('<div/>');
+        loader.attr('id','loader');
+//        loader.html('<h1>Getting Faker Scores</h1>');
+        loader.html('<h1>'+message+'</h1>');
+        loader.attr('class','row connect center');
+
+        var img = $('<img/>');
+        img.attr('src','/Pie/Crust/Template/img/287.gif');
+        img.attr('id','imageloader');
+
+        img.appendTo(loader);
+
+//        loader.appendTo('#scoresholder');
+        loader.appendTo(where);
+    }
+
+    function Begin()
+    {
+        $('#GetScoresForms').remove();
+
+        Build();
+        //Loader('Getting Faker Scores','#scoresholder');
+		pop.TinyLoader();
+
+//        GetScores(twid,twuser,1);
+
+        var ft = parseInt($('#firsttime').val());
+
+        if (ft==1)
+        {
+            srv.CallServer('GET','json','/API/GetSpamRecords','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamDataFirstTime',twid);
+        }
+        else
+        {
+            srv.CallServer('GET','json','/API/GetCachedSpamScore','rf=json&usr='+encodeURIComponent(twid),'Spam_ProcessCachedSpamData',1);
+        }
+    }
+
+    $('#searchsubmit').bind('click',function(e){
+
+        e.preventDefault();
+        
+        $(this).attr('disabled','disabled');
+
+        var usersearch = $('#searchquery').val();
+
+        var sl = ln.StringLength(usersearch);
+        
+        if (sl > 0)
+        {
+
+            Build();
+            //Loader('Getting Faker Scores','#scoresholder');
+			pop.TinyLoader();
+			
+			$('#handle').text(usersearch);
+
+            srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&srchs=3','Spam_ProcessSpamDataAdvanced',twid);
+
+        }
+        else
+        {
+            pop.Loader();
+            pop.AddMessage('Please enter a Twitter username to search for.',true);
+            $(this).removeAttr('disabled');
+        }
+
+    });
+
+    $(document).on('click','#resetscores',function(e){
+
+        e.preventDefault();
+
+        Build();
+        //Loader('Getting Faker Scores','#scoresholder');
+		pop.TinyLoader();
+
+        $('#handle').text(twuser);
+        $('#searchquery').val('');
+        $('#searchquery').attr('placeholder','Twitter username...');
+
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamData',3);
+
+    });
+
+    $(document).on('click','#addfaker',function(e){
+       
+        e.preventDefault();
+
+        var usersearch = $('#searchquery').val();
+        var spam = $('#spam').val();
+        var potential = $('#potential').val();
+        var checks = $('#checks').val();
+        var followers = $('#followers').val();
+
+        srv.CallServer('POST','json','/API/PostAddFaker','rf=json&usr='+encodeURIComponent(twid)+'&srch='+usersearch+'&sp='+spam+'&pt='+potential+'&ch='+checks+'&fl='+followers,'Spam_AddFaker',twid);
+
+        Build();
+        Loader('Getting Faker Scores','#scoresholder');
+
+        $('#handle').text(twuser);
+        $('#searchquery').val('');
+        $('#searchquery').attr('placeholder','Twitter username...');
+
+        srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_ProcessSpamData',3);
+
+
+    });
+	
+    $(document).on('click','.details',function(e){
+        
+        e.preventDefault();
+        
+        var li = $(this).parent().parent();
+        var inp = li.children('.sc');
+        var srch = inp.val();
+        
+        pop.Loader('Loading...');
+       
+        srv.CallServer('GET','json','/API/GetTwitterUserData','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_BuildUser','');
+    });
+    
+    $(document).on('click','.block',function(e){
+        
+        e.preventDefault();
+        
+        var li = $(this).parent().parent();
+        var inp = li.children('.ti');
+        var srch = inp.val();
+        
+        srv.CallServer('POST','json','/API/PostBlockSpam','rf=json&usr='+encodeURIComponent(twid)+'&twid='+srch,'Spam_BlockUser',twid);
+    });
+    
+	$(document).on('click','.unblock',function(e){
+        
+        e.preventDefault();
+        
+        var li = $(this).parent().parent();
+        var inp = li.children('.ti');
+        var srch = inp.val();
+        
+        srv.CallServer('POST','json','/API/PostUnBlockSpam','rf=json&usr='+encodeURIComponent(twid)+'&twid='+srch,'Spam_UnBlockUser',twid);
+    });
+	
+    $(document).on('click','.notspam',function(e){
+        
+        e.preventDefault();
+        
+        var li = $(this).parent().parent();
+        var inp = li.children('.ti');
+        var srch = inp.val();
+        
+        srv.CallServer('POST','json','/API/PostNotSpam','rf=json&usr='+encodeURIComponent(twid)+'&twid='+srch,'Spam_NotSpam',twid);
+    });
+    
+    $(document).on('click','.tweetfollowers',function(e){
+       
+        e.preventDefault();
+
+        var content = $(this).attr("href");
+        var sp = content.split("//");
+        var sn = sp[1].split("/");
+
+        pop.Loader('Loading...');
+
+        srv.CallServer('GET','json','/API/GetFollowerData','rf=json&usr='+encodeURIComponent(twid)+'&ct=10&nm='+sn[1],'Tweets_Followers');
+        
+    });
+    
+    $(document).on("click",".usertweettimeline", function (e){
+       
+       e.preventDefault();
+       
+       pop.Loader('Loading...');
+       pop.Content('');
+       
+       var url = $(this).attr("href");
+       var sn = url.split("/");
+       
+       srv.CallServer('GET','json','/API/GetUserTwitterTimeline','rf=json&usr='+encodeURIComponent(twid)+'&srch='+sn[3]+'&cnt=10','Tweets_BuildUserTimeline');
+       
+    });
+    
+    $(document).on('click',"#chartreset",function(){
+       
+       $('#charthandle').text(twuser);
+        
+        srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+encodeURIComponent(twid),'Charts_BuildChart');
+        
+        sc.To('#charthandle',500,10);
+        
+        $(this).fadeOut(1000,function(){
+           $(this).remove(); 
+        });
+       
+    });
+    
+    $(document).on('click','#checkfakes',function(){
+       
+/*        if ($('#checkform').length)
+       {
+           $('#checkform').remove();
+       } */
+       
+       //Loader('Checking For New Fake Followers','#spammers');
+       
+		pop.TinyLoader();	
+		
+       srv.CallServer('GET','json','/API/GetUpdateFakersList','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser,'Spam_UpdateFakersList',twid);
+       
+    });
+	
+	$('#searchblocked').bind('click',function(){
+		
+		pop.BuildPopup();
+		pop.Content('<p>Search Your Blocked Users<p><form><fieldset><input type="text" id="searchforblocked" /></fieldset></form><div id="blocksearchdata"></div>');
+		
+	});
+	
+	$(document).on('keyup','#searchforblocked',function(){
+		
+		var srch = $(this).val();
+		
+		srv.CallServer('POST','json','/API/PostBlockedSearch','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_ProcessFakerFind');
+		
+	});
+	
+	$(document).on('mouseup','#searchforblocked',function(){
+		
+		var srch = $(this).val();
+		
+		srv.CallServer('POST','json','/API/PostBlockedSearch','rf=json&usr='+encodeURIComponent(twid)+'&srch='+srch,'Spam_ProcessFakerFind');
+		
+	});
+	
+	$(document).on('click','#autoon',function(e){
+		
+		e.preventDefault();
+		
+		pop.BuildPopup();
+		
+		var div = $('<div><p>If you turn on auto-blocking it will cause the Fakers App to begin blocking your fake followers as we find '+
+						'them. You can search and unblock any follower at any time if you think we have got it wrong.</p>'+ 
+					'<p>In addition if you have a lot of fake followers &mdash; tens of thousands &mdash; it may take '+
+					'a number of days or even weeks before you notice a significant improvement in your scores. Your scores may also fluctuate '+ 
+					'during this period. <strong>Please confirm you wish to turn on auto-blocking</strong></p>'+
+					'<form><fieldset><input id="confirmautoon" value="Confirm" type="button"/></fieldset></form></div>');
+		
+		pop.Content(div);
+		
+	});
+	
+	$(document).on('click','#autooff',function(e){
+		
+		e.preventDefault();
+		
+		pop.TinyLoader();
+		
+		srv.CallServer('POST','json','/API/PostChangeAutoRemoveStatus','rf=json&usr='+encodeURIComponent(twid),'Spam_AutoBlockUpdate');
+		
+	});
+	
+	$(document).on('click','#confirmautoon',function(e){
+		
+		e.preventDefault();
+		
+		pop.TinyLoader();
+		
+		srv.CallServer('POST','json','/API/PostChangeAutoRemoveStatus','rf=json&usr='+encodeURIComponent(twid),'Spam_AutoBlockUpdate');
+		
+	});
+	
+	$(document).on('click','#gotopremium',function(e){
+		
+		e.preventDefault();
+		
+		window.location = '/Payments/Subscriptions?type=2';
+		
+	});
+	
+	if (type==1)
+	{
+		pop.BuildRightInfoBox();
+		
+		var p = $('<p><strong>Auto Block</strong></p><p>To Auto Block your Fake Followers and track up to 15 Friends upgrade to a Premium subscription.</p><form><fieldset><input type="button" id="gotopremium" value="Go Premium" /></fieldset></form>');
+		
+		pop.RightInfoContent(p);
+	}
+	
+    Begin();
+
+});

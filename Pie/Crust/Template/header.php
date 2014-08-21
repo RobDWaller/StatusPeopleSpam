@@ -42,16 +42,17 @@
 						<li><a href="" id="friendsearch"><span class="ico icon" data-tip="Search for Friends">s</span> Search</a></li>
 						<li><a href="/Fakers/Help"><span class="ico3 icon" data-tip="Help">!</span> Help</a></li>
 						<li><a href="http://statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
+						<li><a href="/Payments/Subscriptions"><span class="icon" data-tip="Purchase a Subscription">$</span> Subscriptions</a></li>	
 						<li><a href="/Fakers/Settings"><span class="ico2 icon" data-tip="Settings">9</span> Settings</a></li>
 						</ul>';	
 					}
 					else if ($logout == 1)
 					{
 						echo '<ul class="fakericons">
-						<li><a href="http://statuspeople.com/"><span class="ico icon" data-tip="Home">p</span> Home</a></li>
 						<li><a href="/Fakers/Scores"><span class="ico3 icon" data-tip="Fakers Dashboard">"</span> Dashboard</a></li>
 						<li><a href="/Fakers/Help"><span class="ico3 icon" data-tip="Help">!</span> Help</a></li>
 						<li><a href="http://statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
+						<li><a href="/Payments/Subscriptions"><span class="icon" data-tip="Purchase a Subscription">$</span> Subscriptions</a></li>
 						<li><a href="/Fakers/Settings"><span class="ico2 icon" data-tip="Settings">9</span> Settings</a></li>
 						</ul>';
 					}

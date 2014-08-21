@@ -199,6 +199,14 @@ class Payments extends Jelly
     {
         Generic::_IsLogin();
         
+		$count = PaymentRequests::CountUserDetails($_SESSION['userid']);
+		
+		if ($count==0)
+		{
+			header('Location:'.$this->routechutney->BuildUrl('/Payments/Details',$this->mod_rewrite));
+			die();
+		}
+		
         $userdetails = PaymentRequests::GetUserDetails($_SESSION['userid']);
         
 //        $this->errorschutney->DebugArray($userdetails);
@@ -259,7 +267,14 @@ class Payments extends Jelly
             
             $days = round($diff/86400,0,PHP_ROUND_HALF_UP);
             
-            $data['message'] .= Build::PageMessage('info',array('Your Fakers Dashboard Subscription will expire in '.$days.' day(s).'));
+			$message = 'Your Fakers Dashboard Subscription will expire in '.$days.' day(s).';
+			
+			if ($days < 0)
+			{
+				$message = 'Your Fakers Dashboard Subscription expired '.$days.' day(s) ago.';
+			}
+			
+            $data['message'] .= Build::PageMessage('info',array($message));
         }
         
         Sessions::UnsetSessions(array('message'));

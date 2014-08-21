@@ -36,8 +36,8 @@ class Fakers extends Jelly
 #					$_SESSION['primaryid'] = 31386162;
 					$_SESSION['userid'] = 198192466; /* Status People */
 					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 79181321;  
-#					$_SESSION['primaryid'] = 79181321;
+#					$_SESSION['userid'] = 14470803;  
+#					$_SESSION['primaryid'] = 14470803;
 #					$_SESSION['userid'] = 1919216960; /* Fakers App */
 #					$_SESSION['primaryid'] = 1919216960;
 						
@@ -315,7 +315,7 @@ class Fakers extends Jelly
                 $competitors = $this->dbbind->GetCompetitors($_SESSION['userid']);
 				//$fakes = $this->dbbind->GetFakes($userid,5);
 				//echo $userid;
-				//$this->errorschutney->PrintArray($competitors);
+				//$this->errorschutney->DebugArray($competitors);
 //            $this->errorschutney->DebugArray($fakes);
 
                 $data['competitors'] = $this->_BuildCompetitors($competitors);
@@ -1023,10 +1023,13 @@ class Fakers extends Jelly
             $_SESSION['returnurl'] = $_POST['ru'];
             $_SESSION['var1'] = $_POST['var1'];
 		
+			$urlAppend = "";
+		
 			if (isset($_POST['parentid']))
 			{
 				$_SESSION['parentid'] = Validation::UnobscureNumber($_POST['parentid'],SALT_ONE);
 				$_SESSION['childid'] = Validation::UnobscureNumber($_POST['childid'],SALT_ONE);
+				$urlAppend = "&force_login=true";
 			}
             
             $this->twitter = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
@@ -1045,7 +1048,7 @@ class Fakers extends Jelly
                 case 200:
                     /* Build authorize URL and redirect user to Twitter. */
                     $url = $this->twitter->getAuthorizeURL($token,FALSE);
-                    header('Location: ' . $url); 
+                    header('Location: ' . $url . $urlAppend); 
                     break;
                 default:
                     /* Show notification if something went wrong. */
