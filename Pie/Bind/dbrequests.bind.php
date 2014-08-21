@@ -399,7 +399,7 @@ class DBRequests extends DB
 	
         public function GetCompetitors($userid)
         {
-            $query = "SELECT c.userid, cs.twitterid, cs.screen_name, c.avatar, cs.spam, cs.potential, cs.checks, cs.followers, cs.created, c.updated, c.lastcheck
+            $query = "SELECT c.userid, cs.twitterid, cs.screen_name, c.avatar, cs.spam, cs.potential, cs.checks, cs.followers, cs.created, c.updated, c.lastcheck, c.live
                      	FROM spsp_checks AS c
                         JOIN spsp_check_scores AS cs ON c.twitterid = cs.twitterid
 			JOIN(	
@@ -437,7 +437,7 @@ class DBRequests extends DB
         
         public function GetScoresOverTime($twitterid,$limit)
         {
-            $query = "SELECT c0.spam, c0.potential, c0.checks, DATE_FORMAT(FROM_UNIXTIME(created),'%b %d') as date, c0.created 
+            $query = "SELECT c0.spam, c0.potential, c0.checks, DATE_FORMAT(FROM_UNIXTIME(created),'%b %d') as date, c0.created, c0.id 
                         FROM spsp_check_scores c0
 			JOIN (SELECT MAX(checks) AS chks
 				FROM spsp_check_scores
@@ -512,7 +512,7 @@ class DBRequests extends DB
 			
 			$params = array('twitterid'=>array($twitterid,'INT',0),
                             'screen_name'=>array($screen_name,'STR',140),
-                            'avatar'=>array($avatar,'INT',0));
+                            'avatar'=>array($avatar,'STR',255));
             
             $result = $this->UpdateRecord($query,$params);
             
@@ -717,6 +717,19 @@ class DBRequests extends DB
 			return $result;
 		}
         
+		public function GetCacheDate($userid)
+		{
+			$query = "SELECT created
+						FROM spsp_cache
+						WHERE userid = :userid";
+			
+			$params = array('userid'=>array($userid,'INT',0));
+			
+			$result = $this->SelectRecord($query,$params);
+			
+			return $result;
+		}
+		
 		public function AddCache($userid,$lang,$averages,$spam,$created)
 		{
 			$query = "INSERT INTO spsp_cache (userid,lang,averages,fakers,created)
@@ -747,6 +760,16 @@ class DBRequests extends DB
 						 	'created'=>array($created,'INT',0));
 			
 			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+	
+		public function DeleteCache()
+		{
+			$query = "DELETE FROM spsp_cache
+						WHERE created < ".strtotime('-1 Month');
+						
+			$result = $this->DeleteRecords($query);
 			
 			return $result;
 		}

@@ -17,10 +17,34 @@ footer
 				color:@baseColor5;
 			}
 			
+			ul
+			{
+				padding:0px;
+				margin:0px;
+				list-style:none;
+				
+				li
+				{	
+					font-size:@fs5;
+					line-height:@lh5;
+				
+					a
+					{
+						font-size:@fs5;
+						line-height:@lh5;
+					}
+				}
+			}
+			
 			&.right
 			{
-				text-align:right;
+				ul
+				{
+					float:right;
+					margin-left:30px;
+				}
 			}
+			
 		}
 	}
 }

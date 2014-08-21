@@ -176,6 +176,12 @@
 				text-align:center;
 			}
 			
+			#popupmessage
+			{
+				font-size:@fs3;
+				line-height:@lh3;
+			}
+			
 			#popupcontent
 			{
 				&.popupscroll
@@ -204,6 +210,31 @@
 					
 					li
 					{
+						&.microbutton
+						{
+							cursor:pointer;
+							display:block;
+							.border-func(0px,10px);
+							width:96%;
+							font-size:@fs3;
+							margin:0px;
+							background:@baseColor2;
+							color:@baseColor5;
+							font-size:@fs3;
+							font-family:@f2;
+							-webkit-appearance: none;
+							border-top:none !important;
+							margin:10px 0px !important;
+							padding:10px 2% !important;
+							text-align:center;
+							
+							&:hover
+							{
+								background:@baseColor4;
+								color:@baseColor2;
+							}
+						}
+					
 						&:nth-of-type(n+2)
 						{
 							border-top:1px dotted @baseColor3;

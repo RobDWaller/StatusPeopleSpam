@@ -31,7 +31,7 @@ class Cron extends Jelly
         { 
             $users = $this->dbbind->GetCheckers();
 			
-			$this->errorschutney->PrintArray($users);
+			//$this->errorschutney->PrintArray($users);
 			
 			//$children = $this->dbbind->GetAllChildren();
 			
@@ -47,7 +47,7 @@ class Cron extends Jelly
 				
 				$records = $this->dbbind->GetUserToCheck($u['userid']);
 				
-				//$this->errorschutney->PrintArray($records);
+				$this->errorschutney->PrintArray($records);
 				
 	            if (!empty($records))
 				{
@@ -60,27 +60,29 @@ class Cron extends Jelly
 						
 						$details = $this->dbbind->GetTwitterDetails($r['userid']);
 						
-						//$search = $this->validationchutney->StripNonAlphanumeric($r['screen_name']);
+						$search = Validation::StripNonAlphanumeric($r['screen_name']);
 				
-						$bio = $this->twitterbind->GetUserByID($details[2],$details[3],$r['userid']);
+						$bio = $this->twitterbind->GetUserByID($details[2],$details[3],$r['twitterid']);
 						//$bio = $this->twitterbind->GetUserByID($details[2],$details[3],171026460);
 						
 						
-						$countinfo = $this->dbbind->CountUserInfoRecords($r['userid']); 
+						$countinfo = $this->dbbind->CountUserInfoRecords($r['twitterid']); 
                     
 						//$this->errorschutney->PrintArray($countinfo);
 					
                         if ($countinfo>=1)
                         {
 							//$this->errorschutney->PrintArray($countinfo);
-							$this->dbbind->UpdateUserInfo($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
-							$this->dbbind->UpdateFakerCheck($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+							$upd1 = $this->dbbind->UpdateUserInfo($r['twitterid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+							
+							$this->errorschutney->PrintArray(array('Update1',$upd1,$bio['user']->profile_image_url));
 						}
 						
 						//$this->errorschutney->DebugArray($bio);
 						
+						$upd2 = $this->dbbind->UpdateFakerCheck($r['twitterid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
 						
-						$this->dbbind->UpdateFakerCheck($r['userid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+						$this->errorschutney->PrintArray(array('Update2',$upd2,$bio['user']->profile_image_url));
 						
 							$gethundreds = API::_GetHundreds($search,$bio,$details,10);
 							$hndrds = $gethundreds[0];
@@ -181,7 +183,7 @@ class Cron extends Jelly
 		//                        $rb = ($checks*100)-100;
 		//                        $rt = $checks*100;
 	
-								API::_UpdateCache($r['userid'],$langs,$avg,array($spam[0],$spam[1]));
+								API::_UpdateCache($r['twitterid'],$langs,$avg,array($spam[0],$spam[1]));
 								
 								if ($results['followers']>500)
 								{
