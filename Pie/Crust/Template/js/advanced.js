@@ -51,7 +51,8 @@ $(document).ready(function(){
         $('#GetScoresForms').remove();
 
         Build();
-        Loader('Getting Faker Scores','#scoresholder');
+        //Loader('Getting Faker Scores','#scoresholder');
+		pop.TinyLoader();
 
 //        GetScores(twid,twuser,1);
 
@@ -81,7 +82,8 @@ $(document).ready(function(){
         {
 
             Build();
-            Loader('Getting Faker Scores','#scoresholder');
+            //Loader('Getting Faker Scores','#scoresholder');
+			pop.TinyLoader();
 			
 			$('#handle').text(usersearch);
 
@@ -102,7 +104,8 @@ $(document).ready(function(){
         e.preventDefault();
 
         Build();
-        Loader('Getting Faker Scores','#scoresholder');
+        //Loader('Getting Faker Scores','#scoresholder');
+		pop.TinyLoader();
 
         $('#handle').text(twuser);
         $('#searchquery').val('');

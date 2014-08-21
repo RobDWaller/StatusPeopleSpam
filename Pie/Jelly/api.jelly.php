@@ -1211,7 +1211,7 @@ class API extends Jelly
         {
             $scores = $this->dbbind->GetScoresOverTime($user,20);
             
-//            $this->errorschutney->DebugArray($scores);
+            //$this->errorschutney->DebugArray($scores);
             
             if ($scores)
             {
@@ -2862,7 +2862,12 @@ class API extends Jelly
 		
 		if ($count)
 		{
-			$this->dbbind->UpdateCache($uid,$langs,$avg,$spam,time());	
+			$check = $this->dbbind->GetCacheDate($uid);
+			
+			if ($check[0]<strtotime('-15 Days'))
+			{
+				$this->dbbind->UpdateCache($uid,$langs,$avg,$spam,time());
+			}
 		}
 		else
 		{

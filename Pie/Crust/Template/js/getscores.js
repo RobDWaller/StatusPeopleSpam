@@ -49,8 +49,9 @@ $(document).ready(function(){
         $('#GetScoresForms').remove();
         
         Build();
-        Loader();
-        
+        //Loader();
+        pop.TinyLoader();
+		
 //        GetScores(twid,twuser,1);
 		var srchs = parseInt($.cookie('searches'));
         srv.CallServer('GET','json','/API/GetSpamScores','rf=json&usr='+encodeURIComponent(twid)+'&srch='+twuser+'&srchs='+srchs,'Spam_ProcessSpamData',1);
@@ -73,7 +74,8 @@ $(document).ready(function(){
 			if (sl > 0)
 			{
 				Build();
-				Loader();
+				//Loader();
+				pop.TinyLoader();
 				
 				$('#handle').text(usersearch);
 	
@@ -98,8 +100,9 @@ $(document).ready(function(){
         e.preventDefault();
         
         Build();
-        Loader();
-        
+        //Loader();
+        pop.TinyLoader();
+		
         $('#handle').text(twuser);
         $('#searchquery').val('');
         $('#searchquery').attr('placeholder','Twitter username...');

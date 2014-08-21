@@ -62,19 +62,19 @@ $(document).ready(function(){
 		
 	});
 	
-	$(document).on('click','#gopremium',function(e){
+	// $(document).on('click','#gopremium',function(e){
 		
-		e.preventDefault();
+		// e.preventDefault();
 		
-		var months = $('#Period').val();
-       	var currency = $('#Currency').val();
-		var type = 2;
+		// var months = $('#Period').val();
+       	// var currency = $('#Currency').val();
+		// var type = 2;
 		
-		$('#Type').val(2);
+		// $('#Type').val(2);
        
-       	pay.RecalculateCart(currency,months,type);
+       	// pay.RecalculateCart(currency,months,type);
 		
-	});
+	// });
 	
 	if (subtype == 2)
 	{
@@ -88,6 +88,6 @@ $(document).ready(function(){
 	}
 	
 	pop.BuildRightInfoBox();
-	pop.RightInfoContent($('<p><strong>Auto Block</strong></p><p>Go Premium to turn on Auto Faker Blocking and track up to 15 Friends.</p><form><fieldset><input type="button" id="gopremium" value="Go Premium"/></fieldset></form>'));
+	pop.RightInfoContent($('<p><strong>Auto Block</strong></p><p>Go Premium to turn on Auto Faker Blocking and track up to 15 Friends.</p><form method="get" action="/Payments/Subscriptions?type=2"><fieldset><input type="button" id="gopremium" value="Go Premium"/></fieldset></form>'));
     
 });

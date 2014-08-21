@@ -208,6 +208,9 @@ function Charts()
         {
             $('#'+data[0].id).html('<p>No Data Returned</p>');
         }
+		
+		var pop = new Popup();
+		pop.RemoveTinyLoader();
        
     }
 }
@@ -888,9 +891,12 @@ function Spam()
 			div.appendTo('#scoresholder');
         }
         
-        $('#loader').hide('slow').remove();
+        //$('#loader').hide('slow').remove();
         
         $('#searchsubmit').removeAttr('disabled');
+		
+		var pop = new Popup();
+		pop.RemoveTinyLoader();
         
     }
     
@@ -975,9 +981,12 @@ function Spam()
 			div.appendTo('#scoresholder');
         }
         
-        $('#loader').hide('slow').remove();
+        //$('#loader').hide('slow').remove();
         
         $('#searchsubmit').removeAttr('disabled');
+		
+		var pop = new Popup();
+		pop.RemoveTinyLoader();
         
     }
     
@@ -1123,7 +1132,10 @@ function Spam()
 			div.appendTo('#scoresholder');
         }
         
-        $('#loader').hide('slow').remove();
+        //$('#loader').hide('slow').remove();
+		
+		var pop = new Popup();
+		pop.RemoveTinyLoader();
     }
     
     this.ProcessSpamDataFirstTime = function(result,usr)
@@ -1208,7 +1220,10 @@ function Spam()
 			div.appendTo('#scoresholder');
         }
         
-        $('#loader').hide('slow').remove();
+        //$('#loader').hide('slow').remove();
+		
+		var pop = new Popup();
+		pop.RemoveTinyLoader();
         
     }
     
@@ -1762,23 +1777,27 @@ function Spam()
 		if (result.code == 201)
 		{
 			var span;
+			var span2;
 			
 			if (result.data==1)
 			{
 				ms.Build('success',['Auto blocking has been turned on.'],'.header');
-				
-				span = $(' <span class="green">On <span class="ico">;</span></span> <span id="autooff" class="microbutton pointer">Turn Off</span>');
+				span = $('<span class="green">On <span class="ico">;</span></span>');
+				span2 = $('<span id="autooff" class="microbutton pointer">Turn Off</span>');
 			}
 			else
 			{
 				ms.Build('success',['Auto blocking has been turned off.'],'.header');
-				span = $('<span class="red">Off <span class="ico" style="font-size:20px;">9</span></span> <span id="autoon" class="microbutton pointer">Turn On</span>');
+				span = $('<span class="red">Off <span class="ico" style="font-size:20px;">9</span></span>');
+				span2 = $('<span id="autoon" class="microbutton pointer">Turn On</span>');
 			}
 			
 			var h2 = $('<h2>Auto Block Fakes </h2>');
 			span.appendTo(h2);
-			$('#autoblock.two h2').remove();
-			h2.appendTo('#autoblock.two');
+			$('#autoblock.one h2 + span').remove();
+			$('#autoblock.one h2').remove();
+			h2.appendTo('#autoblock.one');
+			span2.appendTo('#autoblock.one');
 		}
 		else
 		{

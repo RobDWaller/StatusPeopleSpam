@@ -12,6 +12,7 @@ $(document).ready(function(){
 
     function BuildChart()
     {
+		pop.TinyLoader();
        	srv.CallServer('GET','json','/API/GetSpamScoresOverTime','rf=json&usr='+encodeURIComponent(twid2),'Charts_BuildChart',[{'id':'chart','type':'line','multi':true,'size':'large','xreverse':true,'backgroundcolor':'#fefefe','colors':['#FE1B2A', '#fe7d1d', '#2AFE1B']}]);
     }
 	
@@ -124,6 +125,8 @@ $(document).ready(function(){
         var id = inp1.val();
         var inp2 = pr.children('.sc');
         var nm = inp2.val();
+		
+		pop.TinyLoader();
         
         $('#charthandle').text(nm);
         
