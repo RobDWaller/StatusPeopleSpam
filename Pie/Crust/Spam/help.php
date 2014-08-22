@@ -13,7 +13,7 @@
 					</p>
 					<p>
 						<!--<iframe src="https://docs.google.com/presentation/d/11Is8QKzG4M0kmUntU2U1dyY_BdglcdayxpJBZHUGgNY/embed?start=false&loop=false&delayms=120000" frameborder="0" width="900" height="540" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" class="help"></iframe>-->
-						<iframe src="https://docs.google.com/presentation/d/1YQ61MG4PJcUnBywmDDGOP8B3eOO9c_85blOY9NeLvSA/embed?start=false&loop=false&delayms=3000" frameborder="0" width="900" height="540" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+						<iframe src="https://docs.google.com/presentation/d/1YQ61MG4PJcUnBywmDDGOP8B3eOO9c_85blOY9NeLvSA/embed?start=false&loop=false&delayms=3000" frameborder="0" width="900" height="540" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" class="help"></iframe>
 					</p>
 				</div>
 			</div>
