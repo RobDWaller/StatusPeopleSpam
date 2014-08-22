@@ -78,14 +78,18 @@
 				</div>
 				<div class="connect">
 					<?php
-					if ($logout == 1 || $logout == 2)
-					{
-						/*echo $menu;*/	
-					}
-					else
-					{
+					// if ($logout == 1)
+					// {
+						// /*echo $menu;*/	
+					// }
+					// elseif ($logout!=1&&$logout!=2)
+					// {
 						echo '<ul><li class="accountform">'.$accountform.'</li></ul>';
-					}	
+					// }
+					// elseif ($_SESSION['primaryid']!=$_SESSION['userid'])
+					// {
+						// echo '<ul><li class="accountform">'.$accountform.'</li></ul>';
+					// }
 					?>
 				</div>
 				<div class="selectMenu">

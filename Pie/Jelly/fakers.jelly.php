@@ -902,7 +902,7 @@ class Fakers extends Jelly
 				}
 				else
 				{
-					$_SESSION['type'] = 1;
+					$_SESSION['type'] = 2;
 				}
 				
 				$user = $this->twitterbind->GetUserByID($token,$secret,$userid);
@@ -1341,7 +1341,7 @@ class Fakers extends Jelly
 			
 			//$this->errorschutney->DebugArray($children);
 			
-			if (!empty($children)&&$_SESSION['type']>=3)
+			if (!empty($children)&&($_SESSION['type']>=3)||($parentid!=$userid))
 			{
 				$parent = $this->dbbind->GetUserInfo($parentid);
 				

@@ -6,6 +6,7 @@
 				<li class="bannertext bree"><a href="/" class="whitelink nounderline">Subscriptions</a></li>
 			</ul>
 		</div>
+		<?php if ($_SESSION['primaryid'] == $_SESSION['userid']) { ?>
 		<div class="one content table">
 			<h2>Subscription Types</h2>
 				<table id="subscriptiontypes">
@@ -106,6 +107,11 @@
 					<a href="http://statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a>
 				</small>
 		</div>
+		<?php } else { ?>
+			<div class="one content">
+				<p>You cannot purchase a Subscription for a Sub Account. Please connect to this account directly if you wish to purchase a subscription for it.</p>
+			</div>
+		<?php } ?>
 	</div>
 <script src="/Pie/Crust/Template/minify/js/payments.min.js"></script>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>
