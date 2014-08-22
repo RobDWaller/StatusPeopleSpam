@@ -50,6 +50,11 @@ class Payments extends Jelly
             
             Sessions::UnsetSessions(array('message','email','title','firstname','lastname'));
             
+			if ($_SESSION['type']>=1)
+			{
+				$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+			}
+			
             $this->glaze->view('Payments/details.php',$data);
         } 
         else

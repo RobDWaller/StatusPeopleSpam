@@ -34,12 +34,12 @@ class Fakers extends Jelly
                 {
 #                 	$_SESSION['userid'] = 31386162; /* RobDWaller */
 #					$_SESSION['primaryid'] = 31386162;
-					$_SESSION['userid'] = 198192466; /* Status People */
-					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 14470803;  
-#					$_SESSION['primaryid'] = 14470803;
-#					$_SESSION['userid'] = 1919216960; /* Fakers App */
-#					$_SESSION['primaryid'] = 1919216960;
+#					$_SESSION['userid'] = 198192466; /* Status People */
+#					$_SESSION['primaryid'] = 198192466;
+#					$_SESSION['userid'] = 39365101;  
+#					$_SESSION['primaryid'] = 39365101;
+					$_SESSION['userid'] = 1919216960; /* Fakers App */
+					$_SESSION['primaryid'] = 1919216960;
 						
                     if (isset($_SESSION['message']))
                     {
@@ -894,7 +894,7 @@ class Fakers extends Jelly
 				}
 				else
 				{
-					$_SESSION['type'] = 1;
+					$_SESSION['type'] = 2;
 				}
 				
 				$user = $this->twitterbind->GetUserByID($token,$secret,$userid);
@@ -1333,7 +1333,7 @@ class Fakers extends Jelly
 			
 			//$this->errorschutney->DebugArray($children);
 			
-			if (!empty($children)&&$_SESSION['type']>=3)
+			if (!empty($children)&&($_SESSION['type']>=3)||($parentid!=$userid))
 			{
 				$parent = $this->dbbind->GetUserInfo($parentid);
 				
