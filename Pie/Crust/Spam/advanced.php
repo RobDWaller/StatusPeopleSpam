@@ -16,6 +16,7 @@
 				</div>
 			</div>
 			<div class="one top bottom center" id="SearchForm">
+				<small><a href="/<?=$twitterhandle;?>">View Your Faker Page</a></small>	
 				<h2>Search for friend's or business rival's and add them to your own fakers list</h2>
 				<form action="/Fakers/GetScores" method="post" id="searchform">
 					<fieldset>

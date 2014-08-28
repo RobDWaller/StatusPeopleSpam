@@ -18,9 +18,11 @@
 				</div>
 			</div>
 			<div class="one center">
-				<h2>
-					Followers: <?=$followers;?> | Score Date: <?=$date;?>
+				<h2 class="showuser">
+					<img src="<?=$avatar;?>" /> @<?=$screen_name;?><br/>
+					Followers: <?=$followers;?><br/>
 				</h2>
+				<small><?=$date;?></small>
 			</div>
 		</div>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

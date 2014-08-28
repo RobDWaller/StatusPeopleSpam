@@ -197,6 +197,7 @@ class Cron extends Jelly
 								if ($results['checks']>=($cks-1))
 								{
 									$this->dbbind->AddCheckScore($bio['user']->id,$bio['user']->screen_name,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
+									$this->dbbind->UpdateSpamDetails($bio['user']->id,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
 									$update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
 								}
 								else

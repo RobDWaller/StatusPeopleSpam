@@ -34,12 +34,12 @@ class Fakers extends Jelly
                 {
 #                 	$_SESSION['userid'] = 31386162; /* RobDWaller */
 #					$_SESSION['primaryid'] = 31386162;
-#					$_SESSION['userid'] = 198192466; /* Status People */
-#					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 39365101;  
-#					$_SESSION['primaryid'] = 39365101;
-					$_SESSION['userid'] = 1919216960; /* Fakers App */
-					$_SESSION['primaryid'] = 1919216960;
+					$_SESSION['userid'] = 198192466; /* Status People */
+					$_SESSION['primaryid'] = 198192466;
+#					$_SESSION['userid'] = 39068542;  
+#					$_SESSION['primaryid'] = 39068542;
+#					$_SESSION['userid'] = 1919216960; /* Fakers App */
+#					$_SESSION['primaryid'] = 1919216960;
 						
                     if (isset($_SESSION['message']))
                     {
@@ -352,15 +352,32 @@ class Fakers extends Jelly
 			//$this->errorschutney->DebugArray($result);
 			if ($result->code == 201)
 			{
+				//$this->errorschutney->DebugArray($_SESSION);
+			
+				$data['title'] = '@'.$result->data->screen_name.' | Faker Page';
+			
 				$data['screen_name'] = $result->data->screen_name;
 				$data['fake'] = $result->data->fake;
 				$data['inactive'] = $result->data->inactive;
 				$data['good'] = $result->data->good;
-				$data['followers'] = $result->data->followers;
-				$data['date'] = $result->data->date;
+				$data['followers'] = number_format($result->data->followers);
+				$data['date'] = date('M jS, Y',$result->data->timestamp);
+				$data['avatar'] = $result->data->avatar;
 				
 				$data['logout'] = 2;
+				
+				if ($_SESSION['type']==1)
+				{
+					$data['logout'] = 1;
+				}
+				else if ($_SESSION['type']>=2)
+				{
+					$data['logout'] = 0;
+				}
+				
 				$data['menu'] = self::_BuildMenu();
+				
+				$data['accountform'] = self::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 				
 				$this->glaze->view('Spam/showuser.php',$data);
 			}
@@ -513,7 +530,7 @@ class Fakers extends Jelly
 				$data['homelink'] = $this->routechutney->HREF('/Fakers/DeepDiveAdminScores',$this->mod_rewrite);
 				$data['title'] = 'Deep Dive Admin Scores';
 				
-				$dives = $this->deepdivebind->GetAllDiveScores();
+				$dives = DeepdiveRequests::GetAllDiveScores();
 				
 				//$this->errorschutney->DebugArray($dives);
 				
