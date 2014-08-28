@@ -14,6 +14,7 @@
 				</form>
 			</div>
 			<div class="connect one center top bottom" id="SearchForm">
+				<small><a href="/<?=$twitterhandle;?>">View Your Faker Page</a></small>
 				<h3>How Many Fake Followers Do Your Friends Have?</h3>
 				<form action="/Fakers/GetScores" method="post" id="searchform">
 				<fieldset><input type="text" name="name" id="searchquery" placeholder="Twitter username..." /></fieldset>

@@ -204,7 +204,7 @@ class API extends Jelly
                     if (isset($spamrecords[7])&&$spamrecords[7]>0)
                     {
                         $this->dbbind->UpdateSpamDetails($uid,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
-                    
+						
                         $countinfo = $this->dbbind->CountUserInfoRecords($uid); 
                     
                         if ($countinfo==0)
@@ -220,7 +220,8 @@ class API extends Jelly
                     else 
                     {
                         $this->dbbind->AddSpamDetails($uid,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time(),time());
-                    
+						APIRequests::AddScore($uid,$bio['user']->screen_name,$bio['user']->profile_image_url,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time(),1,1,time());
+						
                         $countinfo = $this->dbbind->CountUserInfoRecords($uid); 
                     
                         if ($countinfo==0)
@@ -517,10 +518,10 @@ class API extends Jelly
             
             $Days1 = strtotime('-1 Day');
             
-//            if ($spamrecords[7]<$Days1)
-//            {    
-            if ($true)
-            {
+           if ($spamrecords[7]<$Days1)
+           {    
+            // if ($true)
+            // {
             
 				$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 				$hndrds = $gethundreds[0];
@@ -2346,15 +2347,15 @@ class API extends Jelly
 				$result = APIRequests::GetScore($screen_name);	
 				//$this->errorschutney->DebugArray($result);
 				
-				$results['screen_name'] = $result[2];
-				$results['avatar'] = $result[3];
-				$results['fake'] = round(($result[4]/$result[7])*100);
-				$results['inactive'] = round(($result[5]/$result[7])*100);
+				$results['screen_name'] = $result[1];
+				$results['avatar'] = $result[2];
+				$results['fake'] = round(($result[3]/$result[5])*100);
+				$results['inactive'] = round(($result[4]/$result[5])*100);
 				$results['good'] = 100-($results['fake']+$results['inactive']);
-				$results['followers'] = $result[8];
+				$results['followers'] = $result[6];
 				$results['deepdive'] = ($result[9]==1?'No':'Yes');
-				$results['timestamp'] = $result[11]; 
-				$results['date'] = date('Y/m/d H:i',$result[11]);
+				$results['timestamp'] = $result[7]; 
+				$results['date'] = date('Y/m/d H:i',$result[7]);
 				
 				$this->_APISuccess(201, 'Request Successful, Twitter User Data Found.', $results);
 			}
