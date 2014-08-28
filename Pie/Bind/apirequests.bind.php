@@ -6,7 +6,7 @@ class APIRequests Extends DBAPI
 	public function CheckForScore($twitterid)
 	{
 		$query = "SELECT COUNT(*)
-					FROM stpsa_scores
+					FROM stpsa_spam_scores
 					WHERE twitterid = :twitterid AND live = 1";
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0));
@@ -19,7 +19,7 @@ class APIRequests Extends DBAPI
 	public function CheckForScreenNameScore($screen_name)
 	{
 		$query = "SELECT COUNT(*)
-					FROM stpsa_scores
+					FROM stpsa_spam_scores
 					WHERE screen_name = :screen_name AND live = 1";
 		
 		$params = array('screen_name'=>array($screen_name,'STR',140));
@@ -32,7 +32,7 @@ class APIRequests Extends DBAPI
 	public function CheckScoreAndDate($twitterid,$score_date)
 	{
 		$query = "SELECT COUNT(*)
-					FROM stpsa_scores
+					FROM stpsa_spam_scores
 					WHERE twitterid = :twitterid AND score_date = :score_date AND live = 1";
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0),
@@ -46,7 +46,7 @@ class APIRequests Extends DBAPI
 	public function GetScore($screen_name)
 	{
 		$query = "SELECT *
-					FROM stpsa_scores
+					FROM stpsa_spam_scores
 					WHERE screen_name = :screen_name AND live = 1";
 		
 		$params = array('screen_name'=>array($screen_name,'STR',140));
@@ -56,20 +56,20 @@ class APIRequests Extends DBAPI
 		return $result;
 	}
 	
-	public function AddScore($twitterid,$screen_name,$avatar,$good,$inactive,$fake,$checks,$followers,$type,$score_date,$created)
+	public function AddScore($twitterid,$screen_name,$avatar,$spam,$potential,$checks,$followers,$score_date,$live,$type,$created)
 	{
-		$query = "INSERT INTO stpsa_scores (twitterid,screen_name,avatar,good,inactive,fake,checks,followers,type,score_date,created)
-					VALUES (:twitterid,:screen_name,:avatar,:good,:inactive,:fake,:checks,:followers,:type,:score_date,:created)";
+		$query = "INSERT INTO stpsa_spam_scores (twitterid,screen_name,avatar,spam,potential,checks,followers,score_date,live,type,created)
+					VALUES (:twitterid,:screen_name,:avatar,:spam,:potential,:checks,:followers,:score_date,:live,:type,:created)";
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0),
 					   	'screen_name'=>array($screen_name,'STR',140),
 						'avatar'=>array($avatar,'INT',255),
-					   	'good'=>array($good,'INT',0),
-					   	'inactive'=>array($inactive,'INT',0),
-					   	'fake'=>array($fake,'INT',0),
-						'checks'=>array($checks,'INT',0),
+					   	'spam'=>array($spam,'INT',0),
+					   	'potential'=>array($potential,'INT',0),
+					   	'checks'=>array($checks,'INT',0),
 						'followers'=>array($followers,'INT',0),
 						'type'=>array($type,'INT',0),
+						'live'=>array($live,'INT',0),
 					   	'score_date'=>array($score_date,'INT',0),
 					   	'created'=>array($created,'INT',0));
 		
@@ -78,14 +78,13 @@ class APIRequests Extends DBAPI
 		return $result;
 	}
 	
-	public function UpdateScore($twitterid,$screen_name,$avatar,$good,$inactive,$fake,$checks,$followers,$type,$score_date,$created)
+	public function UpdateScore($twitterid,$screen_name,$avatar,$spam,$potential,$checks,$followers,$score_date,$type)
 	{
 		$query = "UPDATE stpsa_scores
 					SET screen_name = :screen_name,
 					avatar = :avatar,
-					good = :good,
-					inactive = :inactive,
-					fake = :fake,
+					spam = :spam,
+					potential = :potential,
 					checks = :checks,
 					followers = :followers,
 					type = :type,
@@ -95,15 +94,14 @@ class APIRequests Extends DBAPI
 		$params = array('twitterid'=>array($twitterid,'INT',0),
 						'screen_name'=>array($screen_name,'STR',140),
 						'avatar'=>array($avatar,'STR',255),
-					   	'good'=>array($good,'INT',0),
-					   	'inactive'=>array($inactive,'INT',0),
-					   	'fake'=>array($fake,'INT',0),
-						'checks'=>array($checks,'INT',0),
+					   	'spam'=>array($spam,'INT',0),
+					   	'potential'=>array($potential,'INT',0),
+					   	'checks'=>array($checks,'INT',0),
 						'followers'=>array($followers,'INT',0),
 						'type'=>array($type,'INT',0),
 					   	'score_date'=>array($score_date,'INT',0));
 		
-		$result = self::InsertRecord($query,$params);
+		$result = self::UpdateRecord($query,$params);
 		
 		return $result;
 	}
