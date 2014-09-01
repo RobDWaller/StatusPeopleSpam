@@ -44,23 +44,30 @@
 				text-align:left;
 				padding-left:70px;
 				
-				&:first-line
+				a
 				{
-					color:@baseColor2;
-				}
-				
-				img
-				{
-					position:absolute;
-					top:0px;
-					left:0px;
-					width:60px !important;
-					height:60px !important;
+					text-decoration:none;
+					color:@baseColor1;
+					
+					span
+					{
+						color:@baseColor2;
+					}
+					
+					img
+					{
+						position:absolute;
+						top:0px;
+						left:0px;
+						width:60px !important;
+						height:60px !important;
+					}
+										
 				}
 				
 				& + small{
 					color:@baseColor1;
-				}	
+				}
 			}
 			
 			&#autoblock
@@ -183,6 +190,46 @@
 		.three
 		{
 			.grid(280px,10px,20px,left);
+			overflow:hidden;
+			background:@baseColor5;
+			
+			a{
+				&.pageLink
+				{
+					display:block;
+					font-size:@fs3;
+					line-height:@lh2;
+					font-family:@f2;
+					margin:10px 0px;
+					text-decoration:none;
+					color:@baseColor2;
+					padding:10px;
+					
+					img
+					{
+						float:left;
+						width:30px !important;
+						height:30px !important;
+						margin-right:10px;
+					}
+					
+					small
+					{
+						color:@baseColor1;
+						
+						span
+						{
+							color:@red;
+							padding-left:20px;
+						}
+					}
+					
+					&:hover
+					{
+						background:@baseColor4;
+					}
+				}
+			}
 		}
 		
 		.four

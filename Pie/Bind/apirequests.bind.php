@@ -56,6 +56,18 @@ class APIRequests Extends DBAPI
 		return $result;
 	}
 	
+	public function GetTopScores($limit)
+	{
+		$query = "select * 
+				from stpsa_spam_scores 
+				order by followers desc 
+				limit 0,".$limit;
+				
+		$result = self::SelectRecords($query);
+		
+		return $result;
+	}
+	
 	public function AddScore($twitterid,$screen_name,$avatar,$spam,$potential,$checks,$followers,$score_date,$live,$type,$created)
 	{
 		$query = "INSERT INTO stpsa_spam_scores (twitterid,screen_name,avatar,spam,potential,checks,followers,score_date,live,type,created)
@@ -80,7 +92,7 @@ class APIRequests Extends DBAPI
 	
 	public function UpdateScore($twitterid,$screen_name,$avatar,$spam,$potential,$checks,$followers,$score_date,$type)
 	{
-		$query = "UPDATE stpsa_scores
+		$query = "UPDATE stpsa_spam_scores
 					SET screen_name = :screen_name,
 					avatar = :avatar,
 					spam = :spam,
@@ -88,7 +100,7 @@ class APIRequests Extends DBAPI
 					checks = :checks,
 					followers = :followers,
 					type = :type,
-					score_date = :score_date,
+					score_date = :score_date
 					WHERE twitterid = :twitterid AND live = 1";
 		
 		$params = array('twitterid'=>array($twitterid,'INT',0),
@@ -100,6 +112,8 @@ class APIRequests Extends DBAPI
 						'followers'=>array($followers,'INT',0),
 						'type'=>array($type,'INT',0),
 					   	'score_date'=>array($score_date,'INT',0));
+		
+		//Errors::DebugArray($params);
 		
 		$result = self::UpdateRecord($query,$params);
 		
