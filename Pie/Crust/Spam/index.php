@@ -27,7 +27,22 @@
 			</div>
 			<div class="one"><h2>Fakers List</h2></div>
 			<?=$spamrecords;?>
-			<div class="one"><p class="sm1"><a href="/Fakers/Wall">See more...</a></p></div>
+			<div class="one"><a href="/Fakers/Wall">View More...</a></div>
+			<div class="one">
+				<h2>Popular Pages</h2>
+			</div>
+			<?php foreach ($topScores as $tS) { ?>
+				<div class="three">
+					<a href="/<?=$tS['screen_name']?>" class="pageLink">
+						<img src="<?=$tS['avatar']?>" />
+						@<?=$tS['screen_name']?><br/>
+						<small>Followers: <?=number_format($tS['followers']);?> <span><?=round(($tS['spam']/$tS['checks'])*100);?>% Fake</span></small>
+					</a>
+				</div>
+			<?php } ?>
+			<div class="one">
+				<a href="/Fakers/Celebs">View More...</a>
+			</div>
 		</div>
 <script>
 	$(document).ready(function(){
