@@ -33,7 +33,6 @@ class Fakers extends Jelly
 
 #                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
 #                {
-
 #                 	$_SESSION['userid'] = 31386162; /* RobDWaller */
 #					$_SESSION['primaryid'] = 31386162;
 #					$_SESSION['userid'] = 198192466; /* Status People */
@@ -55,7 +54,7 @@ class Fakers extends Jelly
                     $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);	
                     $data['title'] = 'Home : Fakers App from StatusPeople.com';
 
-                    $spamrecords = $this->dbbind->GetLatestSpamRecords(3);
+                    $spamrecords = $this->dbbind->GetFakersWall(3);
 
                     //$this->errorschutney->DebugArray($spamrecords);
 					$data['menu'] = $this->_BuildMenu();
@@ -64,8 +63,9 @@ class Fakers extends Jelly
 					
 					//Sessions::UnsetSessions(array('message'));
 
-					session_destroy();
-			
+					session_destroy();					
+					$data['topScores'] = APIRequests::GetTopScores(6);
+
                     $this->glaze->view('Spam/index.php',$data);
 #                }
 #                else
@@ -374,18 +374,21 @@ class Fakers extends Jelly
 				
 				$data['logout'] = 2;
 				
-				if ($_SESSION['type']==1)
+				if (isset($_SESSION['type'])&&($_SESSION['type']==0||$_SESSION['type']==1))
 				{
 					$data['logout'] = 1;
 				}
 				else if ($_SESSION['type']>=2)
 				{
 					$data['logout'] = 0;
+					$data['accountform'] = self::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 				}
 				
 				$data['menu'] = self::_BuildMenu();
 				
-				$data['accountform'] = self::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+				$data['topScores'] = APIRequests::GetTopScores(6);
+				
+				//$this->errorschutney->DebugArray($data['topScores']);
 				
 				$this->glaze->view('Spam/showuser.php',$data);
 			}
@@ -398,6 +401,31 @@ class Fakers extends Jelly
 				$data['logout'] = 2;
 				$this->glaze->view('error.php',$data);
 			}
+		}
+	
+		public function Celebs()
+		{
+			$data['title'] = 'Celebrity Accounts: Fakers App From StatusPeople.com';
+			
+			$data['logout'] = 2;
+			
+			if (isset($_SESSION['type'])&&($_SESSION['type']==0||$_SESSION['type']==1))
+			{
+				$data['logout'] = 1;
+			}
+			else if ($_SESSION['type']>=2)
+			{
+				$data['logout'] = 0;
+				$data['accountform'] = self::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+			}
+			
+			$data['menu'] = self::_BuildMenu();
+			
+			$data['topScores'] = APIRequests::GetTopScores(300);
+			
+			//$this->errorschutney->DebugArray($data['topScores']);
+			
+			$this->glaze->view('Spam/topaccounts.php',$data);
 		}
 	
 		public function Settings()
@@ -726,7 +754,7 @@ class Fakers extends Jelly
 				}
 			}
 			
-            $spamrecords = $this->dbbind->GetLatestSpamRecords(51);
+            $spamrecords = $this->dbbind->GetFakersWall(99);
             
             $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);  
 			
@@ -1455,22 +1483,10 @@ class Fakers extends Jelly
                 $spam = round(($r['spam']/$r['checks'])*100,0);
                 $potential = round(($r['potential']/$r['checks'])*100,0);
                 
-                if ($i==$k)
-                {
-                    $output .= '<div class="row">';
-                    $k+=3;
-                }
-                
-                $output .= '<div class="three'.($i<($k-1)?' a':'').'">';
-                $output .= '<span class="spamImg"><img src="'.$r['avatar'].'" height="28" width="28" alt="'.$r['screen_name'].'" /></span>';
-				$output .= '<span class="spamScore"> <span class="red">'.$spam.'% Fake</span></span>';
-                $output .= '<a href="http://twitter.com/'.$r['screen_name'].'" target="_blank" class="spamName">@'.$r['screen_name'].'</a>';
-				$output .= '</div>';
-                
-                if ($i==($k-1))
-                {
-                    $output .= '</div>';
-                }
+                $output .= '<div class="three">';
+                $output .= '<a href="/'.$r['screen_name'].'" class="pageLink"><img src="'.$r['avatar'].'" alt="'.$r['screen_name'].'" /> @'.$r['screen_name'].'<br/>';
+				$output .= '<small>Followers: '.number_format($r['followers']).'<span>'.$spam.'% Fake</span></small>';
+                $output .= '</div>';
                 
                 $i++;
             }
@@ -1600,6 +1616,7 @@ class Fakers extends Jelly
 					}
 					else
 					{
+						$_SESSION['type'] = 0;
 						$message = Build::PageMessage('alert',array('You need to purchase a new <a href="'.$this->routechutney->HREF('/Payments/Details',$this->mod_rewrite).'">subscription</a> to continue using the Fakers Dashboard.'));
 					}
 				}

@@ -83,6 +83,7 @@ class DBRequests extends DB
                         FROM spsp_spam_scores AS sc 
                         JOIN spsp_user_info AS ui ON sc.twitterid = ui.twitterid
 						WHERE sc.updated > ".$time."
+						AND sc.followers > 250
 						ORDER BY (sc.spam/sc.checks) DESC, sc.spam DESC, sc.updated DESC
                         LIMIT 0,:limit";
             
@@ -93,6 +94,21 @@ class DBRequests extends DB
             return $result;
             
         }
+		
+		public function GetFakersWall($limit)
+		{
+			$query = "SELECT sc.screen_name, sc.avatar, sc.spam, sc.potential, sc.checks, sc.followers, sc.twitterid
+                        FROM spsp_fakers_wall AS sc 
+						GROUP BY sc.twitterid
+                        ORDER BY (sc.spam/sc.checks) DESC, sc.spam DESC, sc.updated DESC
+						LIMIT 0,:limit";
+            
+            $params = array('limit'=>array($limit,'INT',0));
+            
+            $result = $this->SelectRecords($query,$params);
+            
+            return $result;
+		}
 	
 		public function GetSpamScoreDetails()
 		{
@@ -1131,6 +1147,57 @@ class DBRequests extends DB
 			return $result;
 		}
 	
+		public function GetProcessors()
+		{
+			$query = "SELECT * 
+					FROM spsp_queue_processors
+					ORDER BY last_use ASC
+					LIMIT 0,5";
+					
+			$result = $this->SelectRecords($query);
+
+			return $result;
+		}
+		
+		public function GetUserInQueue()
+		{
+			$query = "SELECT * 
+					FROM spsp_queue
+					WHERE live = 1
+					ORDER BY created DESC
+					LIMIT 0,1";
+					
+			$result = $this->SelectRecords($query);
+			
+			return $result;
+		}
+		
+		public function UpdateProcessorTime($twitterid,$time)
+		{
+			$query = "UPDATE spsp_queue_processors
+					SET last_use = :time
+					WHERE twitterid = :twitterid";
+					
+			$params = array('time'=>array($time,'INT',0),
+							'twitterid'=>array($twitterid,'INT',0));
+							
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;
+		}
+		
+		public function UpdateUserQueue($twitterid)
+		{
+			$query = "UPDATE spsp_queue
+						SET live = 0
+						WHERE twitterid = :twitterid";
+						
+			$params = array('twitterid'=>array($twitterid,'INT',0));
+							
+			$result = $this->UpdateRecord($query,$params);
+			
+			return $result;			
+		}
 }
 
 ?>
