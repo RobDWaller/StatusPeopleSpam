@@ -134,8 +134,13 @@ class API extends Jelly
                 if (!empty($hndrds))
                 {
 
-					$chcks = $this->_GetChecks($h,$hndrds,$followers);
-
+					$gCh = $this->_GetChecks($h,$hndrds,$followers);
+					
+					//$this->errorschutney->DebugArray($gCh);
+					
+					$chcks = $gCh['checkData'];
+					$checks = $gCh['checks'];
+					
                     $c = 0;
                     $sc = 0;
                     $p = 0;
@@ -351,7 +356,10 @@ class API extends Jelly
             if (!empty($hndrds))
             {
 		
-				$chcks = $this->_GetChecks($h,$hndrds,$followers);
+				//$chcks = $this->_GetChecks($h,$hndrds,$followers);
+				$gCh = $this->_GetChecks($h,$hndrds,$followers);
+				$chcks = $gCh['checkData'];
+				$checks = $gCh['checks'];
     
 				$c = 0;
                 $sc = 0;
@@ -518,10 +526,9 @@ class API extends Jelly
             
             $Days1 = strtotime('-1 Day');
             
-           if ($spamrecords[7]<$Days1)
-           {    
-            // if ($true)
-            // {
+			if ($spamrecords[7]<$Days1)
+            //if ($true)
+            {
             
 				$gethundreds = $this->_GetHundreds($search,$bio,$details,7);
 				$hndrds = $gethundreds[0];
@@ -531,7 +538,11 @@ class API extends Jelly
                 if (!empty($hndrds))
                 {
 
-					$chcks = $this->_GetChecks($h,$hndrds,$followers);
+					//$chcks = $this->_GetChecks($h,$hndrds,$followers);
+					$gCh = $this->_GetChecks($h,$hndrds,$followers);
+					$chcks = $gCh['checkData'];
+					$checks = $gCh['checks'];
+					
 					$c = 0;
                     $sc = 0;
                     $p = 0;
@@ -646,7 +657,11 @@ class API extends Jelly
             if (!empty($hndrds))
             {
 
-				$chcks = $this->_GetChecks($h,$hndrds,$followers);
+				//$chcks = $this->_GetChecks($h,$hndrds,$followers);
+				$gCh = $this->_GetChecks($h,$hndrds,$followers);
+				$chcks = $gCh['checkData'];
+				$checks = $gCh['checks'];
+				
                 $c = 0;
                 $sc = 0;
                 $p = 0;
@@ -1198,7 +1213,7 @@ class API extends Jelly
 			$z++;
 		}
 		
-		return $chcks;
+		return array('checks'=>$checks,'checkData'=>$chcks);
 	}
 	
     public function GetSpamScoresOverTime($vars)
@@ -2350,7 +2365,7 @@ class API extends Jelly
 				$results['screen_name'] = $result[1];
 				$results['avatar'] = $result[2];
 				$results['fake'] = ($result[5]==0?'0':round(($result[3]/$result[5])*100));
-				$results['inactive'] = round(($result[4]/$result[5])*100);
+				$results['inactive'] = ($result[5]==0?'0':round(($result[4]/$result[5])*100));
 				$results['good'] = 100-($results['fake']+$results['inactive']);
 				$results['followers'] = $result[6];
 				$results['deepdive'] = ($result[9]==1?'No':'Yes');
