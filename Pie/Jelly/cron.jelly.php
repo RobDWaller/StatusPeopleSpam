@@ -270,7 +270,7 @@ class Cron extends Jelly
         {
 			$users = $this->dbbind->GetProcessors();
 			
-			//$this->errorschutney->DebugArray($users);
+			$this->errorschutney->PrintArray($users);
 			
 			foreach ($users as $u)
 			{
@@ -278,7 +278,7 @@ class Cron extends Jelly
 				
 				$records = $this->dbbind->GetUserInQueue();
 				
-				//$this->errorschutney->DebugArray($records);
+				$this->errorschutney->PrintArray($records);
 				
 	            if (!empty($records))
 				{
@@ -404,7 +404,9 @@ class Cron extends Jelly
 								{
 									$cks = $results['followers'];
 								}
-	
+								
+								$this->errorschutney->PrintArray($results);
+								
 								if ($results['checks']>=($cks-1))
 								{
 									$countSpamRecords = $this->dbbind->CountSpamRecords($bio['user']->id);
@@ -422,13 +424,12 @@ class Cron extends Jelly
 										APIRequests::AddScore($bio['user']->id,$bio['user']->screen_name,$bio['user']->profile_image_url,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time(),1,1,time());	
 									}
 									
-									$this->dbbind->UpdateUserQueue($bio['user']->id);
 								}
 								else
 								{
 									$this->dbbind->AddSpamError(print_r($bio,true),print_r($results,true),1,time());
 								}
-	
+								
 								$s = 0;
 	
 		//                        $this->errorschutney->PrintArray($spam);
@@ -445,6 +446,8 @@ class Cron extends Jelly
 						unset($results);
 						unset($langs);
 						unset($avg);
+						
+						$this->dbbind->UpdateUserQueue($r['twitterid']);
 					}
 				}
 			}
