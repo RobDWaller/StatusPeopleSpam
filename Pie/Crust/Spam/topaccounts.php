@@ -11,7 +11,7 @@
 					<a href="/<?=$tS['screen_name']?>" class="pageLink">
 						<img src="<?=$tS['avatar']?>" />
 						@<?=$tS['screen_name']?><br/>
-						<small>Followers: <?=number_format($tS['followers']);?> <span><?=round(($tS['spam']/$tS['checks'])*100);?>% Fake</span></small>
+						<small>Followers: <?=number_format($tS['followers']);?> <span><?=($tS['checks']==0?'0':round(($tS['spam']/$tS['checks'])*100));?>% Fake</span></small>
 					</a>
 				</div>
 			<?php } ?>
