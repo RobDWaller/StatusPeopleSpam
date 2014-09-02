@@ -59,7 +59,7 @@
 					else if ($logout == 2)
 					{
 						echo '<ul class="fakericons">
-						<li><a href="http://statuspeople.com/"><span class="ico icon" data-tip="Home">p</span> Home</a></li>
+						<li><a href="http://fakers.statuspeople.com/"><span class="ico icon" data-tip="Home">p</span> Home</a></li>
 						<li><a href="/Fakers/Help"><span class="ico3 icon" data-tip="Help">!</span> Help</a></li>
 						<li><a href="http://statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
 						<li><a href="http://blog.statuspeople.com"><span class="ico3 icon" data-tip="Blog">%</span> Blog</a></li>

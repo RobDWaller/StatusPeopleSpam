@@ -2349,7 +2349,7 @@ class API extends Jelly
 				
 				$results['screen_name'] = $result[1];
 				$results['avatar'] = $result[2];
-				$results['fake'] = round(($result[3]/$result[5])*100);
+				$results['fake'] = ($result[5]==0?'0':round(($result[3]/$result[5])*100));
 				$results['inactive'] = round(($result[4]/$result[5])*100);
 				$results['good'] = 100-($results['fake']+$results['inactive']);
 				$results['followers'] = $result[6];
