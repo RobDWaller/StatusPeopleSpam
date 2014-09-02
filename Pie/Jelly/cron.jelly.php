@@ -92,7 +92,10 @@ class Cron extends Jelly
 							if (!empty($hndrds))
 							{
 								
-								$chcks = API::_GetChecks($h,$hndrds,$followers);
+								//$chcks = API::_GetChecks($h,$hndrds,$followers);
+								$gCh = API::_GetChecks($h,$hndrds,$followers);
+								$chcks = $gCh['checkData'];
+								$checks = $gCh['checks'];
 								
 								$c = 0;
 								$sc = 0;
@@ -315,7 +318,10 @@ class Cron extends Jelly
 							if (!empty($hndrds))
 							{
 								
-								$chcks = API::_GetChecks($h,$hndrds,$followers);
+								//$chcks = API::_GetChecks($h,$hndrds,$followers);
+								$gCh = API::_GetChecks($h,$hndrds,$followers);
+								$chcks = $gCh['checkData'];
+								$checks = $gCh['checks'];
 								
 								$c = 0;
 								$sc = 0;
