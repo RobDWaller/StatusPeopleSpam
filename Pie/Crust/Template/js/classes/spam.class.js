@@ -1538,7 +1538,7 @@ function Spam()
             $.each(result.data,function(i,f){
                 
                 var li = $('<li/>');
-                li.html('<input type="hidden" value="'+f.screen_name+'" class="sc" /><input type="hidden" value="'+f.twitterid+'" class="ti"/><img src="'+f.avatar+'" width="48px" height="48px" /> '+f.screen_name+'<small><a href="#details" class="details">Details</a> | <a href="#block" class="unblock">Unblock</a>');
+                li.html('<input type="hidden" value="'+f.screen_name+'" class="sc" /><input type="hidden" value="'+f.twitterid+'" class="ti"/><img src="'+f.avatar+'" width="48px" height="48px" /> <span>'+f.screen_name+'</span><small><a href="#details" class="details">Details</a> | <a href="#block" class="unblock">Unblock</a>');
                 li.appendTo(ul);
                 
             });
@@ -1759,7 +1759,7 @@ function Spam()
 			$.each(result.data,function(i,f){
                 
                 var li = $('<li/>');
-                li.html('<input type="hidden" value="'+f.screen_name+'" class="sc" /><input type="hidden" value="'+f.twitterid+'" class="ti"/><img src="'+f.avatar+'" width="48px" height="48px" /> '+f.screen_name+'<small><a href="#details" class="details">Details</a> | <a href="#block" class="unblock">Unblock</a>');
+                li.html('<input type="hidden" value="'+f.screen_name+'" class="sc" /><input type="hidden" value="'+f.twitterid+'" class="ti"/><img src="'+f.avatar+'" width="48px" height="48px" /> <span>'+f.screen_name+'</span><small><a href="#details" class="details">Details</a> | <a href="#block" class="unblock">Unblock</a>');
                 li.appendTo(ul);
                 
             });
@@ -2123,7 +2123,7 @@ function Tweets()
             
             $.each(result.data,function(i,t){
                 var tweet = tw.BuildTweet(t);
-                tweet.prependTo(ul);
+                tweet.appendTo(ul);
             });
             
             pop.Content(ul,'popupscroll');

@@ -245,7 +245,7 @@ $(document).ready(function(){
 	$('#searchblocked').bind('click',function(){
 		
 		pop.BuildPopup();
-		pop.Content('<p>Search Your Blocked Users<p><form><fieldset><input type="text" id="searchforblocked" /></fieldset></form><div id="blocksearchdata"></div>');
+		pop.Content('<p>Search Your Blocked Users<p><form><fieldset><input type="text" id="searchforblocked" /></fieldset></form><div id="blocksearchdata"></div>','popupscroll');
 		
 	});
 	
