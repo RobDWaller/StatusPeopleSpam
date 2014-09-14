@@ -372,7 +372,7 @@ class API extends Jelly
                         $fllwrs = false;
                         $fcnt = 0;
 
-                        while(!$fllwrs)
+                        /*while(!$fllwrs)
                         {
                             if ($fcnt < 3)
                             {
@@ -437,7 +437,43 @@ class API extends Jelly
                                 }
                                 $c++;
                             }
-                        }
+                        }*/
+						
+						$followerdetails = $this->_GetFollowerDetails($details,$hndrds,$ch);
+		
+						if ($followerdetails['code'] == 200)
+						{
+							
+							foreach ($followerdetails['data'] as $follower)
+							{	
+								//$this->errorschutney->PrintArray($follower);
+							
+								$faker = $this->_GetFakerStatus($follower);
+								
+								// if ($faker['status']==1)
+								// {
+									// $this->errorschutney->PrintArray($faker);
+								// }
+								
+								if ($faker['status']==1)
+								{
+									$sc++;
+									$spam[] = $faker['follower'];
+								}
+								elseif ($faker['status']==2)
+								{
+									$p++;
+									//$this->errorschutney->PrintArray($faker);
+								}
+								
+								$c++;
+							}
+							
+							$langs = $this->_GetLanguageDetails($followerdetails['data'],$langs);
+							
+							$avg = $this->_GetAverages($followerdetails['data'],$avg);
+						
+						}
                     }
                 }
 
@@ -819,6 +855,11 @@ class API extends Jelly
 				$ffratio = 21;
 			}
 		
+			if ($follower['friends']<50)
+			{
+				$ffratio = 21;
+			}
+		
 			//$this->errorschutney->PrintArray($ffratio);	
 		
 			if ($ffratio < 20)
@@ -829,6 +870,11 @@ class API extends Jelly
 					//$this->errorschutney->PrintArray($follower);
 				}
 				elseif ($ffratio<=2)
+				{
+					$status = 1;
+					//$this->errorschutney->PrintArray($follower);
+				}
+				elseif ($follower['friends']>=1000&&$follower['followers']<=100)
 				{
 					$status = 1;
 					//$this->errorschutney->PrintArray($follower);
