@@ -267,6 +267,233 @@ class Cron extends Jelly
 //        }
     }
     
+	public function UpdateAutoRemoves()
+    {
+		//if (true)
+		if ($_POST['ch'] == $this->cronhash)
+        {
+			$records = $users = $this->dbbind->GetAutoRemoveAccounts(5,strtotime('-2 Hours'));
+			
+			$this->errorschutney->PrintArray($users);
+			
+			//$this->dbbind->UpdateCheckerTime($u['userid'],time());
+				
+			//$this->errorschutney->DebugArray($records);
+			
+			if (!empty($records))
+			{
+				//$this->errorschutney->DebugArray($records);
+				
+				foreach ($records as $r)
+				{
+					$this->dbbind->UpdateLastCheckTime($r['twitterid'],$r['screen_name'],time());
+					
+					$spam = array();
+					
+					$details = $this->dbbind->GetTwitterDetails($r['twitterid']);
+					
+					$search = Validation::StripNonAlphanumeric($r['screen_name']);
+			
+					$bio = $this->twitterbind->GetUserByID($details[2],$details[3],$r['twitterid']);
+					//$bio = $this->twitterbind->GetUserByID($details[2],$details[3],171026460);
+					
+					
+					$countinfo = $this->dbbind->CountUserInfoRecords($r['twitterid']); 
+				
+					//$this->errorschutney->PrintArray($countinfo);
+				
+					if ($countinfo>=1)
+					{
+						//$this->errorschutney->PrintArray($countinfo);
+						$upd1 = $this->dbbind->UpdateUserInfo($r['twitterid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+						
+						$this->errorschutney->PrintArray(array('Update1',$upd1,$bio['user']->profile_image_url));
+					}
+					
+					//$this->errorschutney->DebugArray($bio);
+					
+					$upd2 = $this->dbbind->UpdateFakerCheck($r['twitterid'],$bio['user']->screen_name,$bio['user']->profile_image_url);
+					
+					$this->errorschutney->PrintArray(array('Update2',$upd2,$bio['user']->profile_image_url));
+					
+						$gethundreds = API::_GetHundreds($search,$bio,$details,10);
+						$hndrds = $gethundreds[0];
+						$h = $gethundreds[1];
+						$followers = $gethundreds[2];
+
+						if (!empty($hndrds))
+						{
+							
+							//$chcks = API::_GetChecks($h,$hndrds,$followers);
+							$gCh = API::_GetChecks($h,$hndrds,$followers);
+							$chcks = $gCh['checkData'];
+							$checks = $gCh['checks'];
+							
+							$c = 0;
+							$sc = 0;
+							$p = 0;
+
+							foreach ($chcks as $ch)
+							{
+								if (!empty($hndrds[$ch]))
+								{
+									$fllwrs = false;
+									$fcnt = 0;
+
+									while(!$fllwrs)
+									{
+										if ($fcnt < 3)
+										{
+											$followerdetails = $this->twitterbind->GetFollowersListByArray($details[2],$details[3],$hndrds[$ch],100);
+
+											if ($followerdetails['code'] == 200)
+											{
+												$fllwrs = true;
+											}
+											else if ($followerdetails['code'] == 502)
+											{
+												if ($fcnt==2)
+												{
+													$to = 'rdwaller1984@googlemail.com';
+													$subject = 'StatusPeople Failed Fakers Cache -- Twitter Data Process Issue';
+													$message = '<p>Dear Rob,<p><p>Twitter is currently struggling to process data so we are unable to cache data.</p><p>Thanks, StatusPeople</p>';
+													$headers['from'] = 'StatusPeople <info@statuspeople.com>';
+													$headers['reply'] = 'info@statuspeople.com';
+													$headers['return'] = 'info@statuspeople.com';
+
+													Email::SendEmail($to,$subject,$message,$headers);
+												}
+											}
+
+//                                            echo $fcnt;
+
+											$fcnt++;
+										}
+										else
+										{
+											$fllwrs = true;
+										}
+
+									}
+
+									if ($followerdetails['code'] == 200)
+									{
+
+		//                                $this->errorschutney->PrintArray($followerdetails);
+
+										foreach ($followerdetails['data'] as $follower)
+										{
+
+											$faker = API::_GetFakerStatus($follower);
+									
+											if ($faker['status']==1)
+											{
+												$sc++;
+												$spam[] = $faker['follower'];
+											}
+											elseif ($faker['status']==2)
+											{
+												$p++;
+											}
+											
+											$c++;
+										}
+										
+										
+										$langs = API::_GetLanguageDetails($followerdetails['data'],$langs);
+								
+										$avg = API::_GetAverages($followerdetails['data'],$avg);
+										
+									}
+								}
+							}
+
+							$results['followers']=$followers;
+							$results['checks']=$c;
+							$results['potential']=$p;
+							$results['spam']=$sc;
+
+							$this->errorschutney->PrintArray($results);
+							$langs = API::_ReorderLanguages($langs);
+	//                        $rb = ($checks*100)-100;
+	//                        $rt = $checks*100;
+
+							API::_UpdateCache($r['twitterid'],$langs,$avg,array($spam[0],$spam[1]));
+							
+							if ($results['followers']>500)
+							{
+								$cks = $checks*100;
+							}
+							else
+							{
+								$cks = $results['followers'];
+							}
+
+							if ($results['checks']>=($cks-1))
+							{
+								$this->dbbind->AddCheckScore($bio['user']->id,$bio['user']->screen_name,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
+								$this->dbbind->UpdateSpamDetails($bio['user']->id,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time());
+								$update = $this->dbbind->UpdateUsersToCheckTime($r['twitterid'],$r['screen_name'],time());
+							}
+							else
+							{
+#                                $to = 'rdwaller1984@googlemail.com';
+#                                $subject = 'StatusPeople Failed Fakers Cache';
+#                                $message = '<p>Dear Rob,<p><p>This is a missed fakers cache score...</p><pre>'.print_r($bio,true)..'</pre><p>Thanks, StatusPeople</p>';
+#                                $headers['from'] = 'StatusPeople <info@statuspeople.com>';
+#                                $headers['reply'] = 'info@statuspeople.com';
+#                                $headers['return'] = 'info@statuspeople.com';
+#
+#                                Email::SendEmail($to,$subject,$message,$headers);
+								$this->dbbind->AddSpamError(print_r($bio,true),print_r($results,true),1,time());
+							}
+
+							$s = 0;
+
+	//                        $this->errorschutney->PrintArray($spam);
+
+							$insertstring = '';
+
+							foreach ($spam as $spm)
+							{
+								if (!$r['autoremove'])
+								{
+									if ($s < 1000)
+									{
+										$insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
+									}
+									$s++;
+								}
+								else
+								{
+									$insertstring .= '('.$bio['user']->id.','.$spm['id'].',"'.$spm['screen_name'].'","'.$spm['image'].'",'.time().'),';
+								}
+							}
+
+							$is = substr($insertstring,0,-1);
+
+	//                        $this->errorschutney->PrintArray($is);
+
+							$this->dbbind->AddFakes($is);
+
+						//}
+				   
+					}
+					
+					//$this->errorchutney->DebugArray($results);
+					
+					unset($spam);
+					unset($chcks);
+					unset($hndrds);
+					unset($fids);
+					unset($results);
+					unset($langs);
+					unset($avg);
+				}
+			}
+		}
+	}
+	
 	public function UpdateFakerQueue()
 	{
 		if ($_POST['ch'] == $this->cronhash)
