@@ -34,10 +34,10 @@ class Fakers extends Jelly
                 {
 #                	$_SESSION['userid'] = 31386162; /* RobDWaller */
 #					$_SESSION['primaryid'] = 31386162;
-					$_SESSION['userid'] = 198192466; /* Status People */
-					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 15159127;  
-#					$_SESSION['primaryid'] = 15159127;
+#					$_SESSION['userid'] = 198192466; /* Status People */
+#					$_SESSION['primaryid'] = 198192466;
+					$_SESSION['userid'] = 15159127;  
+					$_SESSION['primaryid'] = 15159127;
 #					$_SESSION['userid'] = 1919216960; /* Fakers App */
 #					$_SESSION['primaryid'] = 1919216960;
 						
