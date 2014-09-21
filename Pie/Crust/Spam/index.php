@@ -11,7 +11,7 @@
 					<h2>Find out how many fake followers you and your friends have</h2>
 					<div class="connect show">
 							<form action="/Fakers/AuthenticateTwitter" method="post" id="connectform">
-								<input type="hidden" name="ru" value="http://fakers.statuspeople.com/Fakers/TwitterSuccess" />
+								<input type="hidden" name="ru" value="https://fakers.statuspeople.com/Fakers/TwitterSuccess" />
 								<img src="/Pie/Crust/Template/img/twitter-bird-light-bgs.png" alt="Twitter Connect" />
 								<input type="submit" value="Connect to Twitter" />
 							</form>
@@ -22,7 +22,7 @@
 				<small>
 					<a href="/Fakers/Terms/" target="_blank">Terms</a> | 
 					<a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | 
-					<a href="http://statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a>
+					<a href="//statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a>
 				</small>
 			</div>
 			<div class="one"><h2>Fakers List</h2></div>

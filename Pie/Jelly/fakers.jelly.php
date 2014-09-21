@@ -1484,7 +1484,7 @@ class Fakers extends Jelly
                 $potential = round(($r['potential']/$r['checks'])*100,0);
                 
                 $output .= '<div class="three">';
-                $output .= '<a href="/'.$r['screen_name'].'" class="pageLink"><img src="'.$r['avatar'].'" alt="'.$r['screen_name'].'" /> @'.$r['screen_name'].'<br/>';
+                $output .= '<a href="/'.$r['screen_name'].'" class="pageLink"><img src="'.str_replace('http:','https:',$r['avatar']).'" alt="'.$r['screen_name'].'" /> @'.$r['screen_name'].'<br/>';
 				$output .= '<small>Followers: '.number_format($r['followers']).'<span>'.$spam.'% Fake</span></small>';
                 $output .= '</div>';
                 
@@ -1515,7 +1515,7 @@ class Fakers extends Jelly
                 
                 $output .= '<div class="three'.($i<($k-1)?' a':'').'">';
                 $output .= '<img src="'.$r['avatar'].'" height="28px" width="28px" />';
-                $output .= '<span class="spamscore"><a href="http://twitter.com/'.$r['screen_name'].'" target="_blank">'.$r['screen_name'].':</a> <span class="green">'.$spam.'% Fake</span></span>';
+                $output .= '<span class="spamscore"><a href="https://twitter.com/'.$r['screen_name'].'" target="_blank">'.$r['screen_name'].':</a> <span class="green">'.$spam.'% Fake</span></span>';
                 $output .= '</div>';
                 
                 if ($i==($k-1))
@@ -1572,7 +1572,7 @@ class Fakers extends Jelly
                     $good = (100-($fake+$inactive));
                     
                     $output .= '<tr>';
-					$output .= '<td><a href="http://twitter.com/'.$c['screen_name'].'" target="_blank" date-Up="'.$c['updated'].'"><img src="'.$c['avatar'].'" width="36px" height="36px" /></a></td>';
+					$output .= '<td><a href="https://twitter.com/'.$c['screen_name'].'" target="_blank" date-Up="'.$c['updated'].'"><img src="'.$c['avatar'].'" width="36px" height="36px" /></a></td>';
                     $output .= '<td><span class="blue details pointer" data-sc="'.$c['screen_name'].'">'.$c['screen_name'].'</span></td>';
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
@@ -1650,8 +1650,8 @@ class Fakers extends Jelly
 	
 		public function _BuildMenu()
 		{
-			$menu = '<ul><li><a href="http://statuspeople.com"><span class="ico3">&</span> Website</a></li>
-			<li><a href="http://blog.statuspeople.com"><span class="ico3">%</span> Blog</a></li></ul>';
+			$menu = '<ul><li><a href="https://statuspeople.com"><span class="ico3">&</span> Website</a></li>
+			<li><a href="https://blog.statuspeople.com"><span class="ico3">%</span> Blog</a></li></ul>';
 		
 			return $menu;
 		}
