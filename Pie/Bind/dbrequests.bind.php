@@ -648,6 +648,24 @@ class DBRequests extends DB
             return $result;
         }
         
+		public function GetAutoRemoveAccounts($limit,$time)
+		{
+			$query = "SELECT *
+                    FROM spsp_checks AS c
+                    WHERE c.autoremove = 1
+					AND lastcheck < :time
+                    GROUP BY c.userid
+                    ORDER BY c.lastcheck ASC
+                    LIMIT 0,:limit";
+            
+			$params = array('time'=>array($time,'INT',0),
+                            'limit'=>array($limit,'INT',0));
+			
+            $result = $this->SelectRecords($query,$params);
+            
+            return $result;
+		}
+		
 		public function GetAutoRemoveStatus($twid)
 		{
 			$query = "SELECT autoremove

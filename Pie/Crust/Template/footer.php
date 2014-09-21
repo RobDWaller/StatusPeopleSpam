@@ -2,7 +2,7 @@
 				<div class="footer">
 					<div class="two">
 						<ul>
-							<li>&copy; <?php echo date('Y'); ?> StatusPeople.com. Built by <a href="http://twitter.com/statuspeople" target="_blank" class="whitelink">@StatusPeople</a></li>
+							<li>&copy; <?php echo date('Y'); ?> StatusPeople.com. Built by <a href="//twitter.com/statuspeople" target="_blank" class="whitelink">@StatusPeople</a></li>
 						</ul>
 					</div> 
 					<div class="two right">
@@ -27,9 +27,9 @@
 							<?php } ?>
 						</ul>
 						<ul>
-							<li><a href="http://twitter.com/statuspeople" target="_blank" class="whitelink">Twitter</a></li>
-							<li><a href="http://www.facebook.com/pages/StatusPeople/206864836039961" target="_blank" class="whitelink">Facebook</a></li>
-							<li><a href="http://statuspeople.com" target="_blank">StatusPeople.com</a></li>
+							<li><a href="//twitter.com/statuspeople" target="_blank" class="whitelink">Twitter</a></li>
+							<li><a href="//www.facebook.com/pages/StatusPeople/206864836039961" target="_blank" class="whitelink">Facebook</a></li>
+							<li><a href="//statuspeople.com" target="_blank">StatusPeople.com</a></li>
 						</ul>
 					</div>
 				</div>

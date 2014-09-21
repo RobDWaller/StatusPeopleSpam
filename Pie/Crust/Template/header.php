@@ -15,13 +15,13 @@
 	<link rel="icon" type="image/png" href="/Pie/Crust/Template/img/ico.png">
     <!--<link rel="shortcut icon" href="/Pie/Crust/Template/favicon.ico">
     <link rel="apple-touch-icon" href="/Pie/Crust/Template/apple-touch-icon.png"> -->
-	<link href="http://blog.statuspeople.com/Posts/RSS" rel="alternate" title="StatusPeople Blog" type="application/rss+xml">
+	<link href="//blog.statuspeople.com/Posts/RSS" rel="alternate" title="StatusPeople Blog" type="application/rss+xml">
  
     <link rel="stylesheet" href="/Pie/Crust/Template/minify/css/style.css"> 
     <!--<link rel="stylesheet" href="/Pie/Crust/Template/css/tablets.css?v=2">-->
 	<!--<link rel="stylesheet" id="sptwstyle" href="/Pie/Crust/SocialMedia/css/default.css" />--> 
     <script src="/Pie/Crust/Template/js/libs/modernizr-1.7.min.js"></script> 
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="/Pie/Crust/Template/js/highcharts/js/highcharts.js"></script>
 	<script src="/Pie/Crust/Template/js/libs/jquery.cookie.js"></script>
 </head> 
@@ -41,7 +41,7 @@
 						<li><a href="/Fakers/Followers"><span class="ico icon" data-tip="Follower Analytics">t</span> Analytics</a></li>
 						<li><a href="" id="friendsearch"><span class="ico icon" data-tip="Search for Friends">s</span> Search</a></li>
 						<li><a href="/Fakers/Help"><span class="ico3 icon" data-tip="Help">!</span> Help</a></li>
-						<li><a href="http://statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
+						<li><a href="//statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
 						<li><a href="/Payments/Subscriptions"><span class="icon" data-tip="Purchase a Subscription">$</span> Subscriptions</a></li>	
 						<li><a href="/Fakers/Settings"><span class="ico2 icon" data-tip="Settings">9</span> Settings</a></li>
 						</ul>';	
@@ -51,7 +51,7 @@
 						echo '<ul class="fakericons">
 						<li><a href="/Fakers/Scores"><span class="ico3 icon" data-tip="Fakers Dashboard">"</span> Dashboard</a></li>
 						<li><a href="/Fakers/Help"><span class="ico3 icon" data-tip="Help">!</span> Help</a></li>
-						<li><a href="http://statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
+						<li><a href="//statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
 						<li><a href="/Payments/Subscriptions"><span class="icon" data-tip="Purchase a Subscription">$</span> Subscriptions</a></li>
 						<li><a href="/Fakers/Settings"><span class="ico2 icon" data-tip="Settings">9</span> Settings</a></li>
 						</ul>';
@@ -59,10 +59,10 @@
 					else if ($logout == 2)
 					{
 						echo '<ul class="fakericons">
-						<li><a href="http://fakers.statuspeople.com/"><span class="ico icon" data-tip="Home">p</span> Home</a></li>
+						<li><a href="//fakers.statuspeople.com/"><span class="ico icon" data-tip="Home">p</span> Home</a></li>
 						<li><a href="/Fakers/Help"><span class="ico3 icon" data-tip="Help">!</span> Help</a></li>
-						<li><a href="http://statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
-						<li><a href="http://blog.statuspeople.com"><span class="ico3 icon" data-tip="Blog">%</span> Blog</a></li>
+						<li><a href="//statuspeople.com/Pages/Training" target="_blank"><span class="ico3 icon" data-tip="Training">)</span> Training</a></li>
+						<li><a href="//blog.statuspeople.com"><span class="ico3 icon" data-tip="Blog">%</span> Blog</a></li>
 						</ul>';
 					}
 					?>
