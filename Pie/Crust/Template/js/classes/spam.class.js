@@ -556,7 +556,7 @@ function Popup()
         if (!$('#tinyloader').length)
         {
             var div1 = $('<div id="loaderfade"/>');
-            var div2 = $('<div id="tinyloader"><h2>Loading...</h2><img src="http://fakers.statuspeople.com/Pie/Crust/Template/img/287.gif" /></div>');
+            var div2 = $('<div id="tinyloader"><h2>Loading...</h2><img src="https://fakers.statuspeople.com/Pie/Crust/Template/img/287.gif" /></div>');
 
             div2.appendTo(div1);
 
@@ -606,7 +606,7 @@ function Popup()
 		var div = $('<div id="infobox"><a href="http://twitter.com/statuspeople" class="icon" data-tip="Follow Us" id="infotwitter" target="_blank">+</a>'+
 					'<a href="http://facebook.com/StatusPeople" class="icon" data-tip="Like Our Facebook Page" id="infofacebook" target="_blank">,</a>'+
 					'<a href="mailto:info@statuspeople.com" class="icon" data-tip="Email Us" id="infoemail" target="_blank">%</a>'+
-					'<a href="http://blog.statuspeople.com/Posts/RSS" class="icon" data-tip="Subscribe to our Blog" id="infofeed" target="_blank">/</a></div>');
+					'<a href="https://blog.statuspeople.com/Posts/RSS" class="icon" data-tip="Subscribe to our Blog" id="infofeed" target="_blank">/</a></div>');
 		
 		div.appendTo('body');
 	}

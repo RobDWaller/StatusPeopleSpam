@@ -30,6 +30,7 @@ class Fakers extends Jelly
         
         public function Index($vars)
         {
+<<<<<<< HEAD
 
 #                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
 #                {
@@ -1366,7 +1367,7 @@ class Fakers extends Jelly
 							$button = 'Disconnect';
 						}
 						
-						$output .= '<tr><td><img class="connect" src="'.$s['avatar'].'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.Validation::ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.Validation::ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
+						$output .= '<tr><td><img class="connect" src="'.str_replace('http:','https:',$s['avatar']).'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.Validation::ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.Validation::ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
 					}
 				}
 				
@@ -1390,7 +1391,7 @@ class Fakers extends Jelly
 			{
 				$parent = $this->dbbind->GetUserInfo($parentid);
 				
-				$imagestring = '<img src="'.$parent[3].'" height="30" width="30" />';
+				$imagestring = '<img src="'.str_replace('http:','https:',$parent[3]).'" height="30" width="30" />';
 				
 				$form = '<form id="changeaccountform" action="/Fakers/SwitchAccount" method="post">';
 				$form .= '<select name="account" id="account" class="accountselection icon" data-tip="Change Account">';
@@ -1402,7 +1403,7 @@ class Fakers extends Jelly
 					
 					if ($ch['twitterid']==$userid)
 					{
-						$imagestring = '<img src="'.$ch['avatar'].'" height="30" width="30" />';
+						$imagestring = '<img src="'.str_replace('http:','https:',$ch['avatar']).'" height="30" width="30" />';
 					}
 				}
 					
@@ -1416,7 +1417,7 @@ class Fakers extends Jelly
 			else
 			{
 				$parent = $this->dbbind->GetUserInfo($parentid);
-				$imagestring = '<img src="'.$parent[3].'" height="30" width="30" /><div id="accountname">'.$parent[2].'</div>';
+				$imagestring = '<img src="'.str_replace('http:','https:',$parent[3]).'" height="30" width="30" /><div id="accountname">'.$parent[2].'</div>';
 				$output = $imagestring;
 			}
 			
@@ -1540,7 +1541,7 @@ class Fakers extends Jelly
                 
                 foreach ($fakes as $f)
                 {
-					$output .= '<li><input type="hidden" value="'.$f['screen_name'].'" class="sc" /><input type="hidden" value="'.$f['twitterid'].'" class="ti"/><img src="'.$f['avatar'].'" width="48px" height="48px" /> <span>'.$f['screen_name'].'</span><small><a href="#details" class="details">Details</a> | '.($type==1?'<a href="#block" class="block">Block</a> | <a href="#spam" class="notspam">Not Spam</a>':'<a href="#unblock" class="unblock">Unblock</a>').'</small></li>';
+					$output .= '<li><input type="hidden" value="'.$f['screen_name'].'" class="sc" /><input type="hidden" value="'.$f['twitterid'].'" class="ti"/><img src="'.str_replace('http:','https:',$f['avatar']).'" width="48px" height="48px" /> <span>'.$f['screen_name'].'</span><small><a href="#details" class="details">Details</a> | '.($type==1?'<a href="#block" class="block">Block</a> | <a href="#spam" class="notspam">Not Spam</a>':'<a href="#unblock" class="unblock">Unblock</a>').'</small></li>';
                 }
                 
                 $output .= '</ul>';
@@ -1572,7 +1573,7 @@ class Fakers extends Jelly
                     $good = (100-($fake+$inactive));
                     
                     $output .= '<tr>';
-					$output .= '<td><a href="https://twitter.com/'.$c['screen_name'].'" target="_blank" date-Up="'.$c['updated'].'"><img src="'.$c['avatar'].'" width="36px" height="36px" /></a></td>';
+					$output .= '<td><a href="https://twitter.com/'.$c['screen_name'].'" target="_blank" date-Up="'.$c['updated'].'"><img src="'.str_replace('http:','https:',$c['avatar']).'" width="36px" height="36px" /></a></td>';
                     $output .= '<td><span class="blue details pointer" data-sc="'.$c['screen_name'].'">'.$c['screen_name'].'</span></td>';
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';

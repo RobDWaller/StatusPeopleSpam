@@ -38,7 +38,7 @@
 				<h4>I would like to gain API access to the scores</h4>
 				<p>To gain API access to our scores please purchase an <a href="/Payments/Subscriptions?type=3">Agency Subscription</a>.</p>
 				<h4>I would like to contact you</h4>
-				<p>Tweet us at <a href="http://twitter.com/statuspeople" target="_blank">@StatusPeople</a> or email us at info@statuspeople.com</p>
+				<p>Tweet us at <a href="//twitter.com/statuspeople" target="_blank">@StatusPeople</a> or email us at info@statuspeople.com</p>
 			</div>
 		</div>
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>
