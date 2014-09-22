@@ -11,7 +11,7 @@
 					<h2>What is Fake Follower Check?</h2>
 					<p>Fake Follower Check does what it says. It checks your Twitter followers to see if they are real or fake. Or in other words, it checks to see how many spam accounts are following you. And the great thing about it is you can check your friends and 'enemies' too...</p>
 					<h2>Why did you create it?</h2>
-					<p>After reading the Kernel Mag's posts on the subject of <a href="http://www.kernelmag.com/yiannopoulos/2736/ive-been-mazied/" target="_blank">fake followers</a> (Link no longer exists sadly) we thought it would be a nice idea to create a tool that allows you to check how many fake followers you and your friends have.</p>
+					<p>After reading the Kernel Mag's posts on the subject of <a href="//www.kernelmag.com/yiannopoulos/2736/ive-been-mazied/" target="_blank">fake followers</a> (Link no longer exists sadly) we thought it would be a nice idea to create a tool that allows you to check how many fake followers you and your friends have.</p>
 					<h2>How does it work?</h2>
 					<p>We take a sample of your follower data. Up to 1,000 records depending on how 'popular' you are and assess them against a number of simple spam criteria.</p>
 					<p>On a very basic level spam accounts tend to have few or no followers and few or no tweets. But in contrast they tend to follow a lot of other accounts.</p> 

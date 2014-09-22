@@ -43,7 +43,7 @@ define('__DBMAIN_NAME','statuspeople');
 // Twitter
 define('CONSUMER_KEY', 'A9vtXuvPwNyJxeHpseu1tQ');
 define('CONSUMER_SECRET', 'ukWQ1161TnClejQHhjEO7p4clb5yZkKSBTqG6Nt95YU');
-define('OAUTH_CALLBACK', 'http://fakers.statuspeople.com/Fakers/TwitterCallback');
+define('OAUTH_CALLBACK', 'https://fakers.statuspeople.com/Fakers/TwitterCallback');
 
 // PayPal
 

@@ -63,7 +63,7 @@
 			<div class="two a center"><a href="/Pie/Crust/Template/img/fakers_dboard_1.png" target="_blank"><img src="/Pie/Crust/Template/img/fakers_dboard_1.png" width="300px" height="318px" style="float:none; border:1px solid #fefefe;" /></a></div>
 			<div class="two center"><a href="/Pie/Crust/Template/img/fakers_dboard_2.png" target="_blank"><img src="/Pie/Crust/Template/img/fakers_dboard_2.png" width="300px" height="318px" style="float:none; border:1px solid #fefefe;" /></a></div>
 			<div class="one center">
-				<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="http://statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>
+				<small><a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | <a href="//statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a> | <a href="/Fakers/Reset">I'm having problems accessing data</a></small>
 			</div>
 		</div>
 <img src="/Pie/Crust/Template/img/287.gif" style="display:none;" />

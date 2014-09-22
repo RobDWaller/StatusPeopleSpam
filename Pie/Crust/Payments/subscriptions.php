@@ -104,7 +104,7 @@
 			<small>
 					<a href="/Fakers/Terms/" target="_blank">Terms</a> | 
 					<a href="/Fakers/FindOutMore/" target="_blank">Find out more...</a> | 
-					<a href="http://statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a>
+					<a href="//statuspeople.com/Pages/Training" target="_blank">Learn More, Join Our Training Webinars</a>
 				</small>
 		</div>
 		<?php } else { ?>

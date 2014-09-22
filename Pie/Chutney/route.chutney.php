@@ -44,13 +44,13 @@ class Route
 		if ($mod_rewrite)
 		{
 
-			$result = 'http://'.$_SERVER['SERVER_NAME'].$url;			
+			$result = 'https://'.$_SERVER['SERVER_NAME'].$url;			
 			
 		}
 		else
 		{
 			
-			$result = 'http://'.$_SERVER['SERVER_NAME'].'/index.php'.$url;	
+			$result = 'https://'.$_SERVER['SERVER_NAME'].'/index.php'.$url;	
 			
 		}
 		
