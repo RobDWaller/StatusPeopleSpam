@@ -30,7 +30,6 @@ class Fakers extends Jelly
         
         public function Index($vars)
         {
-<<<<<<< HEAD
 
 #                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
 #                {
