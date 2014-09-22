@@ -9,7 +9,7 @@
 			<?php foreach ($topScores as $c => $tS) { ?>
 				<div class="three<?php echo ($c<3?' content':''); ?>">
 					<a href="/<?=$tS['screen_name']?>" class="pageLink">
-						<img src="<?=$tS['avatar']?>" />
+						<img src="<?=str_replace('http:','https:',$tS['avatar']);?>" />
 						@<?=$tS['screen_name']?><br/>
 						<small>Followers: <?=number_format($tS['followers']);?> <span><?=($tS['checks']==0?'0':round(($tS['spam']/$tS['checks'])*100));?>% Fake</span></small>
 					</a>
