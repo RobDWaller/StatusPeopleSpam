@@ -370,7 +370,7 @@ class Fakers extends Jelly
 				$data['good'] = $result->data->good;
 				$data['followers'] = number_format($result->data->followers);
 				$data['date'] = date('M jS, Y',$result->data->timestamp);
-				$data['avatar'] = $result->data->avatar;
+				$data['avatar'] = str_replace('http:','https:',$result->data->avatar);
 				
 				$data['logout'] = 2;
 				
