@@ -2433,16 +2433,11 @@ class API extends Jelly
 	
 	public function PostAddDive()
 	{
-		//$userid = 1919216960;
-		$userid = 198192466;
-		//$userid = 545309711;
-		//$userid = 31386162;
-		//$userid = 633786383;
-		//$userid = 96269828;
-		//$userid = 1101473544;
-		//$userid = 18746024;
+		//$userid = 1919216960; /* Fakers App */
+		$userid = 198192466; /* StatusPeople */
+		//$userid = 31386162; /* RobDWaller */
 		
-		$user = 'KylieMinogue';
+		$user = 'OwenJones84';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		

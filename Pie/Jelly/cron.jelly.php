@@ -1202,6 +1202,7 @@ class Cron extends Jelly
 		{
 		
 			ini_set('memory_limit', '-1');
+			ini_set('max_execution_time', 3500);
 			
 			$dives = DeepdiveRequests::GetFinishedDives();
 			
@@ -1225,11 +1226,14 @@ class Cron extends Jelly
 					
 					$fols = json_decode($fllwrs['followers']);
 					
+					//$this->errorschutney->PrintArray($fols);
+
 					if (!empty($fols->data))
 					{
 						foreach ($fols->data as $fl)
 						{
-							//$this->errorschutney->PrintArray($fl);	
+							$this->errorschutney->PrintArray($c);
+							$this->errorschutney->PrintArray($fl->screen_name);	
 							
 							foreach ($fl as $k => $f)
 							{
@@ -1264,7 +1268,7 @@ class Cron extends Jelly
 				$results['spam']=$sc;
 				$created = time();
 				
-				$this->errorschutney->PrintArray($results);
+				//$this->errorschutney->PrintArray($results);
 				
 				$count = DeepdiveRequests::CountScores($d['twitterid']);
 				

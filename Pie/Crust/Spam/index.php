@@ -44,10 +44,10 @@
 				<a href="/Fakers/Celebs">View More...</a>
 			</div>
 		</div>
-<script>
+<!--<script>
 	$(document).ready(function(){
 		var srv = new Server();
 		srv.CallServer('GET','json','/API/GetEventbriteData','rf=json','Spam_EventbriteData');
 	});
-</script>
+</script>-->
 <?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>

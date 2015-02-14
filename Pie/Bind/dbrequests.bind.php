@@ -724,6 +724,39 @@ class DBRequests extends DB
 			
 			return $result;
 		}
+
+        public function GetLogins($start,$limit)
+        {
+            $query = "SELECT * 
+                        FROM spsp_logins
+                        ORDER BY created DESC
+                        LIMIT :start,:limit";
+
+            $params = array('start'=>array($start,'INT',0),
+                            'limit'=>array($limit,'INT',0));
+
+            $result = $this->SelectRecords($query,$params);
+
+            return $result;
+        }
+
+        public function GetPurchaseLogins($start,$limit)
+        {
+            $query = "select l.*,p.created,from_unixtime(p.created) 
+                        from spsp_purchases as p 
+                        join spsp_logins as l 
+                        on p.userid = l.twitterid 
+                        group by l.ipaddress 
+                        order by p.created desc 
+                        limit :start,:limit";
+
+            $params = array('start'=>array($start,'INT',0),
+                            'limit'=>array($limit,'INT',0));
+
+            $result = $this->SelectRecords($query,$params);
+
+            return $result;
+        }
 	
 		public function CountCache($userid)
 		{

@@ -32,15 +32,15 @@ class Fakers extends Jelly
         {
                 if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
                 {
-                	$_SESSION['userid'] = 31386162; /* RobDWaller */
-					$_SESSION['primaryid'] = 31386162;
+#                	$_SESSION['userid'] = 31386162; /* RobDWaller */
+#					$_SESSION['primaryid'] = 31386162;
 #					$_SESSION['userid'] = 198192466; /* Status People */
 #					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 15159127;  
-#					$_SESSION['primaryid'] = 15159127;
+					$_SESSION['userid'] = 21388977;  
+					$_SESSION['primaryid'] = 21388977;
 #					$_SESSION['userid'] = 1919216960; /* Fakers App */
 #					$_SESSION['primaryid'] = 1919216960;
-						
+				
                     if (isset($_SESSION['message']))
                     {
                         $data['message'] = $_SESSION['message'];
@@ -555,7 +555,7 @@ class Fakers extends Jelly
 	
 		public function DeepDiveAdminScores($vars)
 		{
-			if ($vars['p']='yhd763jei')
+			if ($vars['p']=='yhd763jei')
 			{
 				$data['homelink'] = $this->routechutney->HREF('/Fakers/DeepDiveAdminScores',$this->mod_rewrite);
 				$data['title'] = 'Deep Dive Admin Scores';
@@ -1667,6 +1667,24 @@ class Fakers extends Jelly
 		{
 			$this->errorschutney->PrintArray($_SERVER['REQUEST_URI']);
 			$this->errorschutney->DebugArray($_SERVER);
+		}
+
+		public function IPTest()
+		{
+			$logins = $this->dbbind->GetPurchaseLogins(0,20);
+
+			$this->errorschutney->PrintArray($logins);
+
+			$this->curlbind = new CurlRequests();
+
+			foreach ($logins as $k => $v) {
+
+				$ip = $v['ipaddress'];
+
+				$result = $this->curlbind->GetJSON('http://api.hostip.info/get_json.php?ip='.$ip.'&position=true');
+
+				$this->errorschutney->PrintArray($result);
+			}
 		}
 	
 }
