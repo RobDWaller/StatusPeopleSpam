@@ -9,10 +9,7 @@ use Services\Routes\Loader;
 class Jelly
 {
 	protected $loader;
-	protected $glaze;
 	protected $mod_rewrite;
-	protected $twitterbind;
-	protected $routechutney;
 	protected $errorschutney;
 
 	function __construct()
@@ -20,12 +17,7 @@ class Jelly
 		
 		// This kicks everything off, if you wish to initiate a new pork (model) on load add it here (Also see mix.php).
 		$this->loader = new Loader();
-		$this->glaze = new Glaze();
-		//Bind
-		$this->dbbind = new DBRequests();
-		$this->twitterbind = new TwitterRequests();
 		//Chutney
-		$this->routechutney = new Route();
 		$this->errorschutney = new Errors();
 		$this->mod_rewrite = true;
 		//This sets your default error handler

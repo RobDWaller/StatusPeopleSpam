@@ -1,6 +1,8 @@
 <?php
 
-class API extends Jelly
+use Controllers\AbstractController;
+
+class API extends AbstractController
 {
     
     # Header #

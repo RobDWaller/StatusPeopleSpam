@@ -1,16 +1,11 @@
 <?php
 
-/*
- * property DBRequests $dbbind 
- */
+use Controllers\AbstractController;
 
-class Fakers extends Jelly
+class Fakers extends AbstractController
 {
 
 	# Header #
-
-	public $twitter;
-	public $facebook;
 
 	function __construct()
 	{

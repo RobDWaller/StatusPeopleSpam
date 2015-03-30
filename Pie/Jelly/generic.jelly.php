@@ -1,6 +1,8 @@
 <?php
 
-class Generic extends Jelly
+use Controllers\AbstractController;
+
+class Generic extends AbstractController
 {
 	
 	public function Index()

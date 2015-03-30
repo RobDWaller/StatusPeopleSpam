@@ -1,6 +1,8 @@
 <?php
 
-class Payments extends Jelly
+use Controllers\AbstractController;
+
+class Payments extends AbstractController
 {
     
     public function Details()
