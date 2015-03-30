@@ -2437,7 +2437,7 @@ class API extends Jelly
 		$userid = 198192466; /* StatusPeople */
 		//$userid = 31386162; /* RobDWaller */
 		
-		$user = 'OwenJones84';
+		$user = 'lionsgatemovies';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		

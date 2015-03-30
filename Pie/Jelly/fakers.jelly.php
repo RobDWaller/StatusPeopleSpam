@@ -22,7 +22,7 @@ class Fakers extends Jelly
 		
 		# End Twitter #
 		
-		Jelly::__construct();
+		parent::__construct();
 		
 	}
 
@@ -36,8 +36,8 @@ class Fakers extends Jelly
 #					$_SESSION['primaryid'] = 31386162;
 #					$_SESSION['userid'] = 198192466; /* Status People */
 #					$_SESSION['primaryid'] = 198192466;
-					$_SESSION['userid'] = 21388977;  
-					$_SESSION['primaryid'] = 21388977;
+					$_SESSION['userid'] = 44337193;  
+					$_SESSION['primaryid'] = 44337193;
 #					$_SESSION['userid'] = 1919216960; /* Fakers App */
 #					$_SESSION['primaryid'] = 1919216960;
 				
@@ -348,9 +348,8 @@ class Fakers extends Jelly
 			//die('Hello World!!');
 			
 			//$this->errorschutney->PrintArray($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
-			
 			$result = CurlRequests::GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
-		
+			
 			//$this->errorschutney->DebugArray($result);
 			if ($result->code == 201)
 			{

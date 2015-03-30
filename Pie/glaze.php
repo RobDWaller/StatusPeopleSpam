@@ -14,6 +14,7 @@ class Glaze {
 		
 		require_once('Crust/' . $file);
 		
+		die();
 	}	
 	
 }

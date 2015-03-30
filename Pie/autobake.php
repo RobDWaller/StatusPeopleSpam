@@ -14,8 +14,8 @@ function autoLoader($class)
 		'/Pie/Jelly/',
 		'/Pie/Pork/',
 		'/Pie/Bind/',
-                '/Pie/Chutney/'
-		);
+        '/Pie/Chutney/'
+	);
 	
 	// Array of class filename types that exist within the framework
 	
@@ -24,8 +24,8 @@ function autoLoader($class)
 		'%s.jelly.php',
 		'%s.pork.php',
 		'%s.bind.php',
-                '%s.chutney.php'
-		);
+        '%s.chutney.php'
+	);
 	
 	// Loop through the directories and filenames to find the relevant class file
 	
@@ -37,7 +37,7 @@ function autoLoader($class)
 		{
 			
 			$path = __SITE_PATH.$directory.sprintf($file, strtolower($class));
-			
+			$path2 = __SITE_PATH.$directory.sprintf($file,str_replace('\\','/',$class));
                         //echo $path.'<br/>';
                         
 			/*echo '<p>'.$path.'</p>';*/
@@ -48,6 +48,11 @@ function autoLoader($class)
 				require_once($path);	
 				
 			}
+			else if (file_exists($path2))
+			{
+				require_once($path2);
+			}
+
 			
 		}
 		
