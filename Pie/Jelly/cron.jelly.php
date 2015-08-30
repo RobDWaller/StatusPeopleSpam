@@ -1,6 +1,8 @@
 <?php
 
-class Cron extends Jelly
+use Controllers\AbstractController;
+
+class Cron extends AbstractController
 {
     
     private $cronhash = '42c3fe3bb11e9014479a36f8faeff2469c8433178c99829f62f7f83d9d7d11eb';
@@ -26,8 +28,8 @@ class Cron extends Jelly
     
     public function UpdateFakersCheck()
     {
-		//if (true)
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
         { 
             $users = $this->dbbind->GetCheckers();
 			
@@ -269,8 +271,8 @@ class Cron extends Jelly
     
 	public function UpdateAutoRemoves()
     {
-		//if (true)
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
         {
 			$records = $users = $this->dbbind->GetAutoRemoveAccounts(5,strtotime('-2 Hours'));
 			
@@ -496,7 +498,8 @@ class Cron extends Jelly
 	
 	public function UpdateFakerQueue()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
         {
 			$users = $this->dbbind->GetProcessors();
 			
@@ -704,8 +707,8 @@ class Cron extends Jelly
 	
     public function AutoRemoveSpam()
     {
-		//if (true)
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
             
             $users = $this->dbbind->GetAutoSpamUsers();
@@ -749,7 +752,8 @@ class Cron extends Jelly
     
 	public function SendSubscriptionReminder()
 	{
- 		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+ 		//if ($_POST['ch'] == $this->cronhash)
         {
 			$emails = PaymentRequests::GetEmailList();
 			
@@ -875,7 +879,8 @@ class Cron extends Jelly
 	
 	public function GetDeepDiveFollowerIDs()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			$divers = DeepdiveRequests::GetDivers();
@@ -1065,7 +1070,8 @@ class Cron extends Jelly
 	
 	public function GetDeepDiveFollowers()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			$divers = DeepdiveRequests::GetDivers();
@@ -1197,14 +1203,16 @@ class Cron extends Jelly
 	
 	public function GenerateDeepDiveScore()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			ini_set('memory_limit', '-1');
+			ini_set('max_execution_time', 3500);
 			
 			$dives = DeepdiveRequests::GetFinishedDives();
 			
-			$this->errorschutney->PrintArray($dives);
+			//$this->errorschutney->PrintArray($dives);
 			
 			foreach ($dives as $d)
 			{
@@ -1224,11 +1232,14 @@ class Cron extends Jelly
 					
 					$fols = json_decode($fllwrs['followers']);
 					
+					//$this->errorschutney->PrintArray($fols);
+
 					if (!empty($fols->data))
 					{
 						foreach ($fols->data as $fl)
 						{
-							//$this->errorschutney->PrintArray($fl);	
+							//$this->errorschutney->PrintArray($c);
+							//$this->errorschutney->PrintArray($fl->screen_name);	
 							
 							foreach ($fl as $k => $f)
 							{
@@ -1263,18 +1274,18 @@ class Cron extends Jelly
 				$results['spam']=$sc;
 				$created = time();
 				
-				$this->errorschutney->PrintArray($results);
+				//$this->errorschutney->PrintArray($results);
 				
-				$count = DeepdiveRequests::CountScores($d['twitterid']);
+				//$count = DeepdiveRequests::CountScores($d['twitterid']);
 				
-				if ($count==0)
-				{
-					DeepdiveRequests::AddScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
-				}
-				else
-				{
-					DeepdiveRequests::UpdateScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
-				}
+				//if ($count==0)
+				//{
+					DeepdiveRequests::AddScore($d['id'],$d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
+				//}
+				//else
+				//{
+					//DeepdiveRequests::UpdateScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
+				//}
 				
 				//$this->errorschutney->PrintArray(memory_get_usage());
 				//$this->errorschutney->PrintArray(memory_get_peak_usage());
@@ -1287,7 +1298,8 @@ class Cron extends Jelly
 	
 	public function UpdateAPIScores()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			$scores = $this->dbbind->GetSpamScoreDetails();

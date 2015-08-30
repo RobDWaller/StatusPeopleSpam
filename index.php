@@ -6,7 +6,6 @@
 and replaces it with the PCJ framework, or Pork, Crust, Jelly. */
 
 //session_start();
-
 require_once('Pie/mix.php');
 
 ?>

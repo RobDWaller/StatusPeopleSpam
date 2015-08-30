@@ -9,7 +9,10 @@
 						<ul>
 							<li><a href="/Fakers/FindOutMore/">Find Out More</a></li>
 							<li><a href="/Fakers/Terms/">Terms</a></li>
-							<?php if ($logout != 2) { ?>
+							<?php
+								$logout = isset($logout)?$logout:false; 
+								if ($logout != 2) { 
+							?>
 							<li><a href="/Fakers/Reset">Reset Twitter</a></li>
 							<?php } ?>
 						</ul>

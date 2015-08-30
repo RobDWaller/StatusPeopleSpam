@@ -7,8 +7,16 @@ may wish to pass through. */
 
 //namespace PorkPie\Chutney;
 
+use Services\Routes\Loader;
+
 class Route
 {
+	// protected $loader;
+
+	// public function __construct()
+	// {
+	// 	$this->loader = new Loader;
+	// }
 
 	// BuildUrl will generate the relevant ULR for header functions and other similar uses.
 
@@ -29,7 +37,7 @@ class Route
 			$result = '/index.php'.$url;	
 			
 		}
-		
+
 		return $result;
 	
 	}
@@ -54,6 +62,14 @@ class Route
 			
 		}
 		
+		$loader = new Loader;
+
+		if ($loader->isTest())
+		{
+			$result = 'http://localhost'.$url;			
+		}
+		
+
 		return $result;
 		
 	}
@@ -121,9 +137,8 @@ class Route
 	public function CheckForClass($class)
 	{
 		
-		$result = file_exists(__SITE_PATH.'/Pie/Jelly/'.strtolower($class).'.jelly.php'); 
-		
-		return $result;
+		return file_exists(__SITE_PATH.'/Pie/Jelly/'.strtolower($class).'.jelly.php')
+				|| file_exists(__SITE_PATH.'/Pie/Controllers/'.$class.'.php'); 
 		
 	}
 

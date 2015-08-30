@@ -8,7 +8,7 @@
 			</div>
 			<div class="one">
 				<div class="content">
-						<?=$scores;?>
+						<?=isset($scores)?$scores:false;?>
 						<!--<input type="hidden" id="firsttime" value="1" />-->
 						<div class="connect" id="GetScoresForms">
 							<p><form action="/Fakers/GetScores" method="post" id="myscoreform"><input type="hidden" name="name" value="<?=$twitterhandle;?>" /><input type="submit" value="Get Faker Scores" /></form></p>

@@ -1,0 +1,8 @@
+{
+	"require": {
+		"anahkiasen/html-object" : "v1.4.2",
+		"hashids/hashids" : "v1.0.5",
+		"respect/validation" : "v0.8.3",
+		"swiftmailer/swiftmailer" : "v5.4.0"
+	}
+}
