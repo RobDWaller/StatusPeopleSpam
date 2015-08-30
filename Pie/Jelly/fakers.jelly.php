@@ -34,32 +34,9 @@ class Fakers extends AbstractController
         
         public function Index()
         {
-<<<<<<< HEAD
-
-#                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
-#                {
-#                 	$_SESSION['userid'] = 31386162; /* RobDWaller */
-#					$_SESSION['primaryid'] = 31386162;
-#					$_SESSION['userid'] = 198192466; /* Status People */
-#					$_SESSION['primaryid'] = 198192466;
-#					$_SESSION['userid'] = 39068542;  
-#					$_SESSION['primaryid'] = 39068542;
-#					$_SESSION['userid'] = 1919216960; /* Fakers App */
-#					$_SESSION['primaryid'] = 1919216960;
-						
-                    if (isset($_SESSION['message']))
-                    {
-                        $data['message'] = $_SESSION['message'];
-                    }
-                    elseif ($vars[0]==1) 
-                    {
-                        $data['message'] = Build::PageMessage('alert',array('Please connect to you Twitter account to make use of this service.'));
-                    }
-=======
         	if ($this->loader->notLive()) {
     			$this->redirect->to('/Test/Loader');
             }
->>>>>>> test
 
             if (isset($_SESSION['message']))
             {
@@ -75,21 +52,6 @@ class Fakers extends AbstractController
 
             $spamrecords = $this->dbbind->GetFakersWall(3);
 
-<<<<<<< HEAD
-					session_destroy();					
-					$data['topScores'] = APIRequests::GetTopScores(6);
-
-                    $this->glaze->view('Spam/index.php',$data);
-#                }
-#                else
-#                {
-#					$data["logout"] = 2;
-#					$data['menu'] = $this->_BuildMenu();
-#                    $data['logout'] = 2;
-#					session_destroy();
-#                    $this->glaze->view('Spam/maintenance.php',$data);
-#                }
-=======
             $data['menu'] = $this->_BuildMenu();
             $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);    
 			$data['logout'] = 2;
@@ -101,8 +63,6 @@ class Fakers extends AbstractController
 			$data['topScores'] = $this->api->GetTopScores(6);
 	
             $this->glaze->view('Spam/index.php',$data);
->>>>>>> test
-
         }
 
 		/*public function IcoTest()
