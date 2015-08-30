@@ -30,8 +30,9 @@ function autoLoader($class)
 	// Loop through the directories and filenames to find the relevant class file
 	
         //print_r($directories);
-        
-	foreach ($directories as $directory)
+	require_once('vendor/autoload.php');
+
+    foreach ($directories as $directory)
 	{
 		foreach ($filenames as $file)
 		{

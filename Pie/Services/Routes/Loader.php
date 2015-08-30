@@ -1,17 +1,30 @@
 <?php namespace Services\Routes;
 
+use Services\Config\Loader as Config;
+use Services\Fakers\Lists;
+
 class Loader
 {
 	protected $routes;
+	protected $glaze;
+	protected $config;
+	protected $api;
 	protected $classes;
 	protected $variables;
 	protected $class;
 	protected $method;
+	protected $modRewrite = true;
+	protected $lists;
 
 	public function __construct()
 	{
 		$this->routes = new \Route();
 		$this->glaze = new \Glaze();
+		$this->config = new Config;
+		$this->api = new \APIRequests;
+		$this->build = new \Build();
+		//$this->fakers = new \Fakers();
+		$this->lists = new Lists();
 	}
 	
 	public function getClass()
@@ -57,14 +70,15 @@ class Loader
 
 		if ($mod_rewrite)
 		{
-			$this->class = $clss_1;
-			$this->method = $clss_2;	
+			$this->class = isset($clss_1) ? $clss_1 : false;
+			$this->method = isset($clss_2) ? $clss_2 : false;	
 		}
 		else
 		{
 			$this->class = $clss_2;
 			$this->method = $clss_3;				
 		}
+
 	}
 
 	public function validClass($class)
@@ -77,8 +91,14 @@ class Loader
 		return isset($method)||!empty($method);
 	}
 
-	public function launch($class,$method,$vars)
+	public function launch($class, $method, $vars)
 	{
+		if ($this->isNew($class)) {
+			$class = 'Controllers\\'.$class;
+		}
+
+		$this->isBlackList($class);
+		
 		$newClass = new $class;
 
 		if ($this->routes->CheckForMethod($newClass,$method)) {
@@ -86,9 +106,13 @@ class Loader
 			$newClass->$method($vars);
 
 		}
-		else {
-			$this->fail();
-		}
+				
+		$this->fail();
+	}
+
+	public function isNew($class)
+	{
+		return file_exists(__SITE_PATH.'/Pie/Controllers/'.$class.'.php');
 	}
 
 	public function isPrivate($method)
@@ -96,11 +120,18 @@ class Loader
 		return $this->routes->IsPrivateFunction($method);
 	}
 
+	protected function isBlackList($class)
+	{
+		if ($this->config->get('blacklist.' . $class)) {
+			$this->fail();
+		}
+	}
+
 	public function screenNamePage($class)
 	{
 		$class = str_replace('@','',$class);
 
-		$count = \APIRequests::CheckForScreenNameScore($class);
+		$count = $this->api->CheckForScreenNameScore($class);
 
 		if ($count > 0) {
 			$fakers = new \Fakers();
@@ -114,11 +145,26 @@ class Loader
 	public function fail()
 	{
 		$data['title'] = 'Status People &mdash; Page Not Found.';
-        $data['homelink'] = $this->routes->HREF('/Fakers',$this->mod_rewrite);
-        $data['message'] = \Build::PageMessage('alert',array('This page does not exist.'));
-        $data['menu'] = \Fakers::_BuildMenu();
+        $data['homelink'] = $this->routes->HREF('/Fakers', $this->modRewrite);
+        $data['message'] = $this->build->PageMessage('alert',array('This page does not exist.'));
+        $data['menu'] = $this->lists->menu();
 		$data['logout'] = 2;
-		$this->glaze->view('error.php',$data);
+		$this->glaze->view('error.php', $data);
+	}
+
+	public function notLive()
+	{
+		return $this->isTest() || $this->isDown();
+	}
+
+	public function isTest()
+	{
+		return gethostname() == $this->config->get('app.test');
+	}
+
+	public function isDown()
+	{
+		return $this->config->get('app.down');
 	}
 
 }

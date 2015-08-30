@@ -1,9 +1,14 @@
 <?php
 
 use Controllers\AbstractController;
+use Services\Routes\Loader;
+use Services\Routes\Redirector;
+use Services\Authentication\Session;
 
 class Fakers extends AbstractController
 {
+	protected $loader;
+	protected $redirect;
 
 	# Header #
 
@@ -18,61 +23,49 @@ class Fakers extends AbstractController
 		# End Twitter #
 		
 		parent::__construct();
-		
+
+		$this->loader = new Loader;
+		$this->redirect = new Redirector;
+		$this->api = new \APIRequests;
+		$this->session = new Session;
 	}
 
 	# End Header #
         
-        public function Index($vars)
+        public function Index()
         {
-                if ($vars['q']=='pl9903HHGwwi21230pdsaslMl4323123ksas')
-                {
-#                	$_SESSION['userid'] = 31386162; /* RobDWaller */
-#					$_SESSION['primaryid'] = 31386162;
-#					$_SESSION['userid'] = 198192466; /* Status People */
-#					$_SESSION['primaryid'] = 198192466;
-					$_SESSION['userid'] = 44337193;  
-					$_SESSION['primaryid'] = 44337193;
-#					$_SESSION['userid'] = 1919216960; /* Fakers App */
-#					$_SESSION['primaryid'] = 1919216960;
-				
-                    if (isset($_SESSION['message']))
-                    {
-                        $data['message'] = $_SESSION['message'];
-                    }
-                    elseif ($vars[0]==1) 
-                    {
-                        $data['message'] = Build::PageMessage('alert',array('Please connect to you Twitter account to make use of this service.'));
-                    }
+        	if ($this->loader->notLive()) {
+    			$this->redirect->to('/Test/Loader');
+            }
 
-                    $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);	
-                    $data['title'] = 'Home : Fakers App from StatusPeople.com';
+            if (isset($_SESSION['message']))
+            {
+                $data['message'] = $_SESSION['message'];
+            }
+            elseif ($vars[0]==1) 
+            {
+                $data['message'] = $this->build->PageMessage('alert',array('Please connect to you Twitter account to make use of this service.'));
+            }
 
-                    $spamrecords = $this->dbbind->GetFakersWall(3);
+            $data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);	
+            $data['title'] = 'Home : Fakers App from StatusPeople.com';
 
-                    //$this->errorschutney->DebugArray($spamrecords);
-					$data['menu'] = $this->_BuildMenu();
-                    $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);    
-					$data['logout'] = 2;
-					
-					//Sessions::UnsetSessions(array('message'));
+            $spamrecords = $this->dbbind->GetFakersWall(3);
 
-					//session_destroy();
-					
-					$data['topScores'] = APIRequests::GetTopScores(6);
+            $data['menu'] = $this->_BuildMenu();
+            $data['spamrecords'] = $this->_BuildSpamRecords($spamrecords);    
+			$data['logout'] = 2;
 			
-                    $this->glaze->view('Spam/index.php',$data);
-                }
-                else
-                {
-					$data['menu'] = $this->_BuildMenu();
-                    $data['logout'] = 2;
-					session_destroy();
-                    $this->glaze->view('Spam/maintenance.php',$data);
-                }
+			$this->sessions->UnsetSessions(array('message'));
+
+			session_destroy();
+			
+			$data['topScores'] = $this->api->GetTopScores(6);
+	
+            $this->glaze->view('Spam/index.php',$data);
 
         }
-        
+
 		/*public function IcoTest()
 		{
 			$data['text'] = '<p class="ico">\|zxcvbnm,./<>?asdfghjkl;\'#:@~qwertyuiop[]{}`1234567890-=!"£$%^&*()_+</p>';
@@ -84,7 +77,7 @@ class Fakers extends AbstractController
 	
         public function Scores($vars)
         {
-            	Generic::_IsLogin();
+            	$this->auth->isLogin();
                
                 $validity = $this->_CheckValidity($_SESSION['userid']);
 				
@@ -117,12 +110,12 @@ class Fakers extends AbstractController
                 
 					if ($verify['code']!=200)
 					{
-						$data['message'] = Build::PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
+						$data['message'] = $this->build->PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
 					}
 					
                     $data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
                     $data['title'] = 'Fakers Dasboard : Fakers App from StatusPeople.com';
-					$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+					$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 
                     $fields = array('email'=>array('Email','Text','',$_SESSION['email']),
                                 'title'=>array('Title','Title','',$_SESSION['title']),
@@ -130,7 +123,7 @@ class Fakers extends AbstractController
                                 'lastname'=>array('Last Name','Text','',$_SESSION['lastname']),
                                 'submit'=>array('Proceed','Submit')); 
 
-                    $data['form'] = Forms::FormBuilder('detailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
+                    $data['form'] = $this->forms->FormBuilder('detailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
 
                     $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($data["twitterid"]),$this->mod_rewrite);
 					
@@ -141,7 +134,7 @@ class Fakers extends AbstractController
                     else 
                     {
 
-                        $bio = CurlRequests::GetJSON($url);
+                        $bio = $this->curl->GetJSON($url);
 
 						//$this->errorschutney->DebugArray($bio);
 						
@@ -159,7 +152,7 @@ class Fakers extends AbstractController
 					$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);
 					$data['menu'] = '&nbsp;';
 
-                    Sessions::UnsetSessions(array('message'));
+                    $this->sessions->UnsetSessions(array('message'));
 					
 					//$this->errorschutney->DebugArray($data);
 					
@@ -175,7 +168,7 @@ class Fakers extends AbstractController
         public function Dashboard($vars)
         {
             
-            Generic::_IsLogin();
+            $this->auth->isLogin();
             
             $validity = $this->_CheckValidity($_SESSION['userid']);
 			
@@ -184,7 +177,7 @@ class Fakers extends AbstractController
             if ($validity[0])
             {
 
-                $userid = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+                $userid = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION["userid"]);
                 
@@ -196,17 +189,15 @@ class Fakers extends AbstractController
                 
 				if ($verify['code']!=200)
 				{
-					$data['message'] = Build::PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
+					$data['message'] = $this->build->PageMessage('failure',array('Your Twitter credentials have expired, please <a href="/Fakers/Reset">reset them now</a>.'));
 				}
 				
                 $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
-				//$this->errorschutney->PrintArray($url);
+				//$this->errorschutney->DebugArray($url);
 				
-				$bio = CurlRequests::GetJSON($url);
+				$bio = $this->curl->GetJSON($url);
                 
-				//$this->errorschutney->DebugArray($bio);
-
                 $data['twitterhandle'] = $bio->data->screenname;
 
                 $count = $this->dbbind->CheckForFakerCheck($_SESSION['userid'],$_SESSION['userid']);
@@ -269,14 +260,14 @@ class Fakers extends AbstractController
         
 		public function Followers()
 		{
-			Generic::_IsLogin();
+			$this->auth->isLogin();
             
             $validity = $this->_CheckValidity($_SESSION['userid']);
 
             if ($validity[0])
             {
-				$userid = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
-				$userid2 = Validation::ObscureNumber($_SESSION['userid'],SALT_TWO);
+				$userid = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$userid2 = $this->validation->ObscureNumber($_SESSION['userid'],SALT_TWO);
 
                 $details = $this->dbbind->GetTwitterDetails($_SESSION['userid']);
                 
@@ -286,7 +277,7 @@ class Fakers extends AbstractController
                 
                 $url = $this->routechutney->HREF('/API/GetTwitterBio?rf=json&twid='.urlencode($userid),$this->mod_rewrite);
 
-                $bio = CurlRequests::GetJSON($url);
+                $bio = $this->curl->GetJSON($url);
                 
 //                $this->errorschutney->DebugArray($bio);
 
@@ -343,10 +334,10 @@ class Fakers extends AbstractController
 			//die('Hello World!!');
 			
 			//$this->errorschutney->PrintArray($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
-			$result = CurlRequests::GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
+			$result = $this->curl->GetJSON($this->routechutney->HREF('/API/GetAPIScore?rf=json&ky=78cef6c5a5869e827ec2dd1396f1e66b413e6cdc656dcffdacf058897c5469f3&sc='.$screen_name,$this->mod_rewrite));
 			
 			//$this->errorschutney->DebugArray($result);
-			if ($result->code == 201)
+			if (isset($result->code) && $result->code == 201)
 			{
 				//$this->errorschutney->DebugArray($_SESSION);
 			
@@ -374,7 +365,7 @@ class Fakers extends AbstractController
 				
 				$data['menu'] = self::_BuildMenu();
 				
-				$data['topScores'] = APIRequests::GetTopScores(6);
+				$data['topScores'] = $this->api->GetTopScores(6);
 				
 				//$this->errorschutney->DebugArray($data['topScores']);
 				
@@ -384,7 +375,7 @@ class Fakers extends AbstractController
 			{
 				$data['title'] = 'Status People &mdash; Page Not Found.';
 				$data['homelink'] = $this->routechutney->HREF('/User/Signup',$this->mod_rewrite);
-				$data['message'] = Build::PageMessage('alert',array('Very sorry, but the page you were looking for could not be located.'));
+				$data['message'] = $this->build->PageMessage('alert',array('Very sorry, but the page you were looking for could not be located.'));
 				$data['menu'] = self::_BuildMenu();
 				$data['logout'] = 2;
 				$this->glaze->view('error.php',$data);
@@ -409,7 +400,7 @@ class Fakers extends AbstractController
 			
 			$data['menu'] = self::_BuildMenu();
 			
-			$data['topScores'] = APIRequests::GetTopScores(300);
+			$data['topScores'] = $this->api->GetTopScores(300);
 			
 			//$this->errorschutney->DebugArray($data['topScores']);
 			
@@ -420,7 +411,7 @@ class Fakers extends AbstractController
 		{
 			//$this->errorschutney->DebugArray($_SESSION);
 			
-			Generic::_IsLogin();
+			$this->auth->isLogin();
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
@@ -435,12 +426,12 @@ class Fakers extends AbstractController
 				$data['message'] = $_SESSION['message'];
 			}
 			
-			Sessions::UnsetSessions(array('message'));
+			$this->sessions->UnsetSessions(array('message'));
 			
 			$data['homelink'] = $this->routechutney->HREF('/Fakers',$this->mod_rewrite);
 			$data['title'] = 'Settings : Fakers App from StatusPeople.com';
 			
-			$details = PaymentRequests::GetUserDetails($_SESSION['userid']);
+			$details = $this->payments->GetUserDetails($_SESSION['userid']);
 			
 			//$this->errorschutney->DebugArray($details);
 			
@@ -450,7 +441,7 @@ class Fakers extends AbstractController
 							'lastname'=>array('Last Name','Text','',$details[5]),
 							'submit'=>array('Update','Submit')); 
 			
-			$data['form'] = Forms::FormBuilder('yourdetailsform',$this->routechutney->BuildUrl('/Payments/UpdateDetails',$this->mod_rewrite),$fields);
+			$data['form'] = $this->forms->FormBuilder('yourdetailsform',$this->routechutney->BuildUrl('/Payments/UpdateDetails',$this->mod_rewrite),$fields);
 			
 			$competitors = $this->dbbind->GetCompetitors($_SESSION['userid']);
 			
@@ -458,21 +449,21 @@ class Fakers extends AbstractController
 			
 			$data['accounts'] = $this->_BuildSubAccounts($competitors);
 			
-			$check = APIRequests::CheckForUsersKey($_SESSION['userid']);
+			$check = $this->api->CheckForUsersKey($_SESSION['userid']);
 			
 			//$this->errorschutney->DebugArray($check);
 			
 			if ($check>0)
 			{
-				$key = APIRequests::GetUsersKey($_SESSION['userid']);
+				$key = $this->api->GetUsersKey($_SESSION['userid']);
 				
 				$data['apikey'] = $key[1];
 			}
 			else
 			{
-				$apikey = $hash = Validation::HashString(time().$_SESSION['userid'].rand(0,9999));
+				$apikey = $hash = $this->validation->HashString(time().$_SESSION['userid'].rand(0,9999));
 				
-				APIRequests::AddKey($_SESSION['userid'],$hash,time());
+				$this->api->AddKey($_SESSION['userid'],$hash,time());
 				
 				$data['apikey'] = $apikey;
 			}
@@ -483,32 +474,32 @@ class Fakers extends AbstractController
 			}
 			
 			$data['type'] = $_SESSION['type'];
-			$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
-			$data['nosettings'] = $_SESSION['nosettings'];
+			$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
+			$data['nosettings'] = $this->session->get('nosettings');
 			
 			$this->glaze->view('Spam/settings.php',$data);	
 		}
 	
 		public function ResetAPI()
 		{
-			Generic::_IsLogin();
+			$this->auth->isLogin();
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
 			if ($validity[0])
             {
-				$hash = Validation::HashString(time().$_SESSION['userid'].rand(0,9999));
+				$hash = $this->validation->HashString(time().$_SESSION['userid'].rand(0,9999));
 				
-				$update = APIRequests::ResetKey($_SESSION['userid'],$hash);
+				$update = $this->api->ResetKey($_SESSION['userid'],$hash);
 				
 				if ($update > 0)
 				{
-					$_SESSION['message'] = Build::PageMessage('success',array('API Key reset successfully.'));
+					$_SESSION['message'] = $this->build->PageMessage('success',array('API Key reset successfully.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 				else
 				{
-					$_SESSION['message'] = Build::PageMessage('failure',array('Failed to Reset API key, please contact info@statuspeople.com.'));
+					$_SESSION['message'] = $this->build->PageMessage('failure',array('Failed to Reset API key, please contact info@statuspeople.com.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
                 	die();	
 				}
@@ -547,33 +538,33 @@ class Fakers extends AbstractController
 			}
 		}
 	
-		public function DeepDiveAdminScores($vars)
-		{
-			if ($vars['p']=='yhd763jei')
-			{
-				$data['homelink'] = $this->routechutney->HREF('/Fakers/DeepDiveAdminScores',$this->mod_rewrite);
-				$data['title'] = 'Deep Dive Admin Scores';
+		// public function DeepDiveAdminScores($vars)
+		// {
+		// 	if ($vars['p']=='yhd763jei')
+		// 	{
+		// 		$data['homelink'] = $this->routechutney->HREF('/Fakers/DeepDiveAdminScores',$this->mod_rewrite);
+		// 		$data['title'] = 'Deep Dive Admin Scores';
 				
-				$dives = DeepdiveRequests::GetAllDiveScores();
+		// 		$dives = DeepdiveRequests::GetAllDiveScores();
 				
-				//$this->errorschutney->DebugArray($dives);
+		// 		//$this->errorschutney->DebugArray($dives);
 				
-				$data['dives'] = $this->_BuildDiveScores($dives);
+		// 		$data['dives'] = $this->_BuildDiveScores($dives);
 				
-				$this->glaze->view('Spam/diveadmin.php',$data);
-			}
-		}
+		// 		$this->glaze->view('Spam/diveadmin.php',$data);
+		// 	}
+		// }
 	
         public function Reset()
         {
-            Generic::_IsLogin();
+            $this->auth->isLogin();
             
             if (isset($_SESSION['message']))
             {
                 $data['message'] = $_SESSION['message'];
             }
             
-			Sessions::UnsetSessions(array('message'));
+			$this->sessions->UnsetSessions(array('message'));
 			
 			if ($_SESSION['type']>=1)
 			{
@@ -602,7 +593,7 @@ class Fakers extends AbstractController
 
         public function ResetConnectionDetails()
         {
-            Generic::_IsLogin();
+            $this->auth->isLogin();
             
             $userid = $_SESSION['userid'];
             
@@ -610,13 +601,13 @@ class Fakers extends AbstractController
             
             if ($reset)
             {
-                $_SESSION['message'] = Build::PageMessage('success',array('Connection Details Reset Successfully. Please now reconnect to the Fakers App.'));
+                $_SESSION['message'] = $this->build->PageMessage('success',array('Connection Details Reset Successfully. Please now reconnect to the Fakers App.'));
                 
                 header('Location:'.$this->routechutney->BuildUrl('/',$this->dbbind));
             }
             else
             {
-                $_SESSION['message'] = Build::PageMessage('failure',array('Failed to reset connection details. Please contact info@statuspeople.com'));
+                $_SESSION['message'] = $this->build->PageMessage('failure',array('Failed to reset connection details. Please contact info@statuspeople.com'));
                 
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers/Reset',$this->dbbind));
             }
@@ -629,7 +620,7 @@ class Fakers extends AbstractController
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
@@ -663,7 +654,7 @@ class Fakers extends AbstractController
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			if (!$validity[0])
@@ -695,7 +686,7 @@ class Fakers extends AbstractController
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			if (!$validity[0])
@@ -727,7 +718,7 @@ class Fakers extends AbstractController
 			
 			if (!empty($_SESSION['userid']))
 			{
-				$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+				$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 			}
 			
 			if (!$validity[0])
@@ -773,13 +764,13 @@ class Fakers extends AbstractController
 		{
 			$data['email'] = $vars['e'];
 			
-			$valid = Validation::ValidateEmail($data['email']);
+			$valid = $this->validation->ValidateEmail($data['email']);
 			
 			//$this->errorschutney->DebugArray($valid);
 			
 			if (!$valid[0])
 			{
-				$data['message'] = Build::PageMessage('failure',array("This is not a valid email address. Please check the address and try again."));
+				$data['message'] = $this->build->PageMessage('failure',array("This is not a valid email address. Please check the address and try again."));
 			}
 			else
 			{
@@ -791,16 +782,16 @@ class Fakers extends AbstractController
 					
 					if ($unsubscribe>0)
 					{
-						$data['message'] = Build::PageMessage('success',array("Your email has been successfully unsubscribed. We're sorry to see you go."));
+						$data['message'] = $this->build->PageMessage('success',array("Your email has been successfully unsubscribed. We're sorry to see you go."));
 					}
 					else
 					{
-						$data['message'] = Build::PageMessage('failure',array("There was an error! We failed to unsubscribe your email address, please contact info@statuspeople.com."));
+						$data['message'] = $this->build->PageMessage('failure',array("There was an error! We failed to unsubscribe your email address, please contact info@statuspeople.com."));
 					}
 				}
 				else
 				{
-					$data['message'] = Build::PageMessage('alert',array("This email address has either already been unsubscribed or does not exist within our systems."));
+					$data['message'] = $this->build->PageMessage('alert',array("This email address has either already been unsubscribed or does not exist within our systems."));
 				}
 			}
 			
@@ -825,14 +816,14 @@ class Fakers extends AbstractController
         public function GetScores()
         {
             
-            Generic::_IsLogin();
+            $this->auth->isLogin();
             
             $userid = $_SESSION['userid'];
             $search = $_POST['name'];
 
             $url = $this->routechutney->HREF('/API/GetSpamScores?rf=json&usr='.$userid.'&srch='.$search,$this->mod_rewrite);
             
-            $scores = CurlRequests::GetJSON($url);
+            $scores = $this->curl->GetJSON($url);
        
             //$this->errorschutney->DebugArray($scores);
             
@@ -857,14 +848,14 @@ class Fakers extends AbstractController
 	
 		public function DisconnectAccount()
 		{
-			Generic::_IsLogin();
+			$this->auth->isLogin();
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
 			if ($validity[0])
             {
-				$parentid = Validation::UnobscureNumber($_POST['parentid'],SALT_ONE);
-				$childid = Validation::UnobscureNumber($_POST['childid'],SALT_ONE);
+				$parentid = $this->validation->UnobscureNumber($_POST['parentid'],SALT_ONE);
+				$childid = $this->validation->UnobscureNumber($_POST['childid'],SALT_ONE);
 				
 				$exists = $this->dbbind->CheckForParent($parentid,$childid);
 				
@@ -874,20 +865,20 @@ class Fakers extends AbstractController
 					
 					if ($delete > 0)
 					{
-						$_SESSION['message'] = Build::PageMessage('success',array("Accounts disconnected successfully."));
+						$_SESSION['message'] = $this->build->PageMessage('success',array("Accounts disconnected successfully."));
 						header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 						die();	
 					}
 					else
 					{
-						$_SESSION['message'] = Build::PageMessage('failure',array("Failed to disconnect accounts. Please try again or contact info@statuspeople.com."));
+						$_SESSION['message'] = $this->build->PageMessage('failure',array("Failed to disconnect accounts. Please try again or contact info@statuspeople.com."));
 						header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 						die();
 					}
 				}
 				else
 				{
-					$_SESSION['message'] = Build::PageMessage('failure',array("These accounts are already disconnected."));
+					$_SESSION['message'] = $this->build->PageMessage('failure',array("These accounts are already disconnected."));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
                 	die();
 				}
@@ -901,17 +892,17 @@ class Fakers extends AbstractController
 	
 		public function SwitchAccount()
 		{
-			Generic::_IsLogin();
+			$this->auth->isLogin();
 			
 			$validity = $this->_CheckValidity($_SESSION['userid']);
 			
 			if ($validity[0])
             {
 				
-				$_SESSION['userid'] = Validation::UnobscureNumber($_POST['account'],SALT_ONE);
-				$userid = Validation::UnobscureNumber($_POST['account'],SALT_ONE);
+				$_SESSION['userid'] = $this->validation->UnobscureNumber($_POST['account'],SALT_ONE);
+				$userid = $this->validation->UnobscureNumber($_POST['account'],SALT_ONE);
 				
-				$count = PaymentRequests::CountValidRecords($_SESSION['userid']);
+				$count = $this->payments->CountValidRecords($_SESSION['userid']);
 				
 				$_SESSION['nosettings'] = 1;
 				//$this->errorschutney->PrintArray($count);
@@ -923,7 +914,7 @@ class Fakers extends AbstractController
 				
 				if ($count)
 				{
-					$validdate = PaymentRequests::GetValidDate($userid);
+					$validdate = $this->payments->GetValidDate($userid);
 					
 					//$this->errorschutney->DebugArray($validdate);
 					
@@ -938,10 +929,10 @@ class Fakers extends AbstractController
 					$_SESSION['type'] = 2;
 				}
 				
-				$user = $this->twitterbind->GetUserByID($token,$secret,$userid);
-				
-				//$this->errorschutney->DebugArray($user);
-				
+				$details = $this->dbbind->GetTwitterDetails($userid);
+
+				$user = $this->twitterbind->GetUserByID($details[2],$details[3],$userid);
+
 				if ($user['code'] == 200)
 				{
 					$bio = $user['user'];
@@ -973,18 +964,18 @@ class Fakers extends AbstractController
             if ($_SESSION['rsp'] == 400)
             {
                 $_SESSION['Twitter'] = 1;
-                $data['message'] = Build::PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
+                $data['message'] = $this->build->PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
             }
             elseif ($_SESSION['rsp'] == 200)
             {
 
-                $userid = Validation::UnobscureNumber($_SESSION['ui'],SALT_ONE);
+                $userid = $this->validation->UnobscureNumber($_SESSION['ui'],SALT_ONE);
                 $token = $_SESSION['oat'];
                 $secret = $_SESSION['oas'];
                 $where = $_SESSION['var1'];
                 
-                $_SESSION['userid'] = Validation::UnobscureNumber($_SESSION['ui'],SALT_ONE);
+                $_SESSION['userid'] = $this->validation->UnobscureNumber($_SESSION['ui'],SALT_ONE);
                 $_SESSION['token'] = $_SESSION['oat'];
                 $_SESSION['secret'] = $_SESSION['oas'];
 
@@ -993,7 +984,7 @@ class Fakers extends AbstractController
 
 				$ok = false;
 				
-				$valid = Validation::ValidateInteger($userid,'Twitter ID');
+				$valid = $this->validation->ValidateInteger($userid,'Twitter ID');
 				
 				if ($valid[0])
 				{
@@ -1034,26 +1025,26 @@ class Fakers extends AbstractController
                 
                 //$result = 1;
                 
-                Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas'));
+                $this->sessions->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas'));
                 
                 if ($ok)
                 {
 					$ip = $_SERVER["REMOTE_ADDR"];
-                    //$_SESSION['message'] = Build::PageMessage('success',array('Twitter successfully authenticated.'));
+                    //$_SESSION['message'] = $this->build->PageMessage('success',array('Twitter successfully authenticated.'));
                     $this->dbbind->AddLogin($userid,$ip,time());
 					Generic::_LastPage();
                     header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
                 }
                 else
                 {
-                    $_SESSION['message'] = Build::PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
+                    $_SESSION['message'] = $this->build->PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
                     header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
                 }
             }
 			else
 			{
 				$_SESSION['Twitter'] = 1;
-                $data['message'] = Build::PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
+                $data['message'] = $this->build->PageMessage('failure',array("There was an error authenticating with Twitter. Please try again, if this problem persists contact info@statuspeople.com."));
                 header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
 			}
 	} */
@@ -1068,8 +1059,8 @@ class Fakers extends AbstractController
 		
 			if (isset($_POST['parentid']))
 			{
-				$_SESSION['parentid'] = Validation::UnobscureNumber($_POST['parentid'],SALT_ONE);
-				$_SESSION['childid'] = Validation::UnobscureNumber($_POST['childid'],SALT_ONE);
+				$_SESSION['parentid'] = $this->validation->UnobscureNumber($_POST['parentid'],SALT_ONE);
+				$_SESSION['childid'] = $this->validation->UnobscureNumber($_POST['childid'],SALT_ONE);
 				$urlAppend = "&force_login=true";
 			}
             
@@ -1093,7 +1084,7 @@ class Fakers extends AbstractController
                     break;
                 default:
                     /* Show notification if something went wrong. */
-//                                    $_SESSION['message'] = Build::ErrorMessages(array('Could not connect to Twitter. Refresh the page or try again later.'));
+//                                    $_SESSION['message'] = $this->build->ErrorMessages(array('Could not connect to Twitter. Refresh the page or try again later.'));
 //                                    $redirect = $this->routechutney->BuildUrl('/User/Account',$this->mod_rewrite);
 //                                    header('Location:'.$redirect);
                       $this->ClearTwitterSessions();
@@ -1121,7 +1112,7 @@ class Fakers extends AbstractController
 
 		/* Remove no longer needed request tokens */
 		
-		Sessions::UnsetSessions(array('oauth_token','oauth_token_secrect'));
+		$this->sessions->UnsetSessions(array('oauth_token','oauth_token_secrect'));
 
 		/* If HTTP response is 200 continue otherwise send to connect page to retry */
 		if (200 == $this->twitter->http_code) {
@@ -1138,7 +1129,7 @@ class Fakers extends AbstractController
 			} */
 			
 /* 			$_SESSION['status'] = 'verified';
-			$_SESSION['ui'] = Validation::ObscureNumber($access_token['user_id'],SALT_ONE);
+			$_SESSION['ui'] = $this->validation->ObscureNumber($access_token['user_id'],SALT_ONE);
 			$_SESSION['oat'] = $access_token['oauth_token'];
 			$_SESSION['oas'] = $access_token['oauth_token_secret'];
 			$_SESSION['rsp'] = 200; */
@@ -1231,7 +1222,7 @@ class Fakers extends AbstractController
 					{
 						$addparent = $this->dbbind->AddParent($_SESSION['parentid'],$_SESSION['childid'],time());
 						
-						Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
+						$this->sessions->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
 						
 						//$this->errorschutney->DebugArray($addparent);
 						
@@ -1243,45 +1234,45 @@ class Fakers extends AbstractController
 							}
 							else
 							{
-								$_SESSION['message'] = Build::PageMessage('failure',array("Failed to connect to sub-account. Please try again, if this problem persists contact info@statuspeople.com."));
+								$_SESSION['message'] = $this->build->PageMessage('failure',array("Failed to connect to sub-account. Please try again, if this problem persists contact info@statuspeople.com."));
 								header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 							}
 						}
 						else
 						{
-							$_SESSION['message'] = Build::PageMessage('failure',array("Process failed. Please contact info@statuspeople.com."));
+							$_SESSION['message'] = $this->build->PageMessage('failure',array("Process failed. Please contact info@statuspeople.com."));
 							header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 						}
 					}
 					else
 					{
-						$_SESSION['message'] = Build::PageMessage('alert',array("These accounts are already connected."));
+						$_SESSION['message'] = $this->build->PageMessage('alert',array("These accounts are already connected."));
 						header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 					}
 				}
 				else
 				{
-					Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
+					$this->sessions->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
 					
-					$_SESSION['message'] = Build::PageMessage('alert',array("You connected to the wrong account. Please try again..."));
+					$_SESSION['message'] = $this->build->PageMessage('alert',array("You connected to the wrong account. Please try again..."));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 			}
 			else
 			{
-				Sessions::UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
+				$this->sessions->UnsetSessions(array('returnurl','var1','oauth_token_secret','ui','oat','oas','parentid','childid'));
             
 				if ($ok)
 				{
-					$ip = $_SERVER["REMOTE_ADDR"];
-					//$_SESSION['message'] = Build::PageMessage('success',array('Twitter successfully authenticated.'));
+					$ip = $this->server->get("REMOTE_ADDR");
+					//$_SESSION['message'] = $this->build->PageMessage('success',array('Twitter successfully authenticated.'));
 					$this->dbbind->AddLogin($userid,$ip,time());
 					//Generic::_LastPage();
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Scores',$this->mod_rewrite));   
 				}
 				else
 				{
-					$_SESSION['message'] = Build::PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
+					$_SESSION['message'] = $this->build->PageMessage('failure',array("There was an error with the Twitter authentication process. Please try again, if this problem persists contact info@statuspeople.com."));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers',$this->mod_rewrite));
 				}
 			}
@@ -1289,7 +1280,7 @@ class Fakers extends AbstractController
 		else 
 		{
 			/* Save HTTP status for error dialog on connnect page.*/
-			$_SESSION['message'] = Build::PageMessage('failure',array('Failed to connect to Twitter please try again.'));
+			$_SESSION['message'] = $this->build->PageMessage('failure',array('Failed to connect to Twitter please try again.'));
 			$redirect = $this->routechutney->BuildUrl('/Fakers/ClearTwitterSessions',$this->mod_rewrite);
 			header('Location:'.$redirect);
 		}
@@ -1299,33 +1290,33 @@ class Fakers extends AbstractController
 	public function ClearTwitterSessions()
 	{
 		
-                Sessions::UnsetSessions(array('status','oauth_token','oauth_token_secret','access_token','oauth_status'));
+                $this->sessions->UnsetSessions(array('status','oauth_token','oauth_token_secret','access_token','oauth_status'));
 
                 header('Location:'.$_SESSION['returnurl'].'?rsp=400');
 		
 	}
 		
-		protected function _BuildDiveScores($scores)
-		{
-			if (!empty($scores))
-			{
-				$output = '<table>';
-				$output .= '<tr><th>Screen Name</th><th>Fake</th><th>Inactive</th><th>Good</th><th>Checks</th><th>Followers</th></tr>';
+		// protected function _BuildDiveScores($scores)
+		// {
+		// 	if (!empty($scores))
+		// 	{
+		// 		$output = '<table>';
+		// 		$output .= '<tr><th>Screen Name</th><th>Fake</th><th>Inactive</th><th>Good</th><th>Checks</th><th>Followers</th></tr>';
 				
-				foreach ($scores as $s)
-				{
-					$fake = round(($s['spam']/$s['checks'])*100);
-					$inactive = round(($s['potential']/$s['checks'])*100);
-					$good = 100-($fake+$inactive);
+		// 		foreach ($scores as $s)
+		// 		{
+		// 			$fake = round(($s['spam']/$s['checks'])*100);
+		// 			$inactive = round(($s['potential']/$s['checks'])*100);
+		// 			$good = 100-($fake+$inactive);
 					
-					$output .= '<tr><td>'.$s['screen_name'].'</td><td class="red"><strong>'.$fake.'%</strong></td><td class="orange"><strong>'.$inactive.'%</strong></td><td class="green"><strong>'.$good.'%</strong></td><td>'.number_format($s['checks']).'</td><td>'.number_format($s['followers']).'</td></tr>';
-				}
+		// 			$output .= '<tr><td>'.$s['screen_name'].'</td><td class="red"><strong>'.$fake.'%</strong></td><td class="orange"><strong>'.$inactive.'%</strong></td><td class="green"><strong>'.$good.'%</strong></td><td>'.number_format($s['checks']).'</td><td>'.number_format($s['followers']).'</td></tr>';
+		// 		}
 				
-				$output .= '</table>';
-			}
+		// 		$output .= '</table>';
+		// 	}
 			
-			return $output;
-		}
+		// 	return $output;
+		// }
 	
 		protected function _BuildSubAccounts($scores)
 		{
@@ -1354,7 +1345,7 @@ class Fakers extends AbstractController
 							$button = 'Disconnect';
 						}
 						
-						$output .= '<tr><td><img class="connect" src="'.str_replace('http:','https:',$s['avatar']).'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.Validation::ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.Validation::ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
+						$output .= '<tr><td><img class="connect" src="'.str_replace('http:','https:',$s['avatar']).'" height="48px" width="48px" /></td><td><p class="sf2 sp2 blue">'.$s['screen_name'].'</p></td><td><form method="post" action="'.$this->routechutney->HREF($url,$this->mod_rewrite).'"><input type="hidden" name="parentid" value="'.$this->validation->ObscureNumber($s['userid'],SALT_ONE).'" /><input type="hidden" name="childid" value="'.$this->validation->ObscureNumber($s['twitterid'],SALT_ONE).'" /><fieldset><input type="submit" value="'.$button.'"/></fieldset></form></td></tr>';
 					}
 				}
 				
@@ -1382,11 +1373,11 @@ class Fakers extends AbstractController
 				
 				$form = '<form id="changeaccountform" action="/Fakers/SwitchAccount" method="post">';
 				$form .= '<select name="account" id="account" class="accountselection icon" data-tip="Change Account">';
-				$form .= '<option value="'.Validation::ObscureNumber($parentid,SALT_ONE).'"'.($parentid==$userid?' SELECTED':'').'>'.$parent[2].'</option>';
+				$form .= '<option value="'.$this->validation->ObscureNumber($parentid,SALT_ONE).'"'.($parentid==$userid?' SELECTED':'').'>'.$parent[2].'</option>';
 					
 				foreach ($children as $ch)
 				{
-					$form .= '<option value="'.Validation::ObscureNumber($ch['twitterid'],SALT_ONE).'"'.($ch['twitterid']==$userid?' SELECTED':'').'>'.$ch['screen_name'].'</option>';
+					$form .= '<option value="'.$this->validation->ObscureNumber($ch['twitterid'],SALT_ONE).'"'.($ch['twitterid']==$userid?' SELECTED':'').'>'.$ch['screen_name'].'</option>';
 					
 					if ($ch['twitterid']==$userid)
 					{
@@ -1565,8 +1556,8 @@ class Fakers extends AbstractController
                     $output .= '<td><span class="red">Fake: '.$fake.'%</span></td>';
                     $output .= '<td><span class="orange">Inactive: '.$inactive.'%</span></td>';
                     $output .= '<td><span class="green">Good: '.$good.'%</span></td>';
-                    $output .= '<td><input type="hidden" value="'.Validation::ObscureNumber($c['twitterid'],SALT_TWO).'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
-                    $output .= '<td><input type="hidden" value="'.Validation::ObscureNumber($c['twitterid'],SALT_TWO).'"/><span class="delete icon" data-tip="Remove">X</span></td>';
+                    $output .= '<td><input type="hidden" value="'.$this->validation->ObscureNumber($c['twitterid'],SALT_TWO).'" class="ti"/><input type="hidden" value="'.$c['screen_name'].'" class="sc"/><span class="chart icon" data-tip="View on chart"><img src="/Pie/Crust/Template/img/Reports.png" height="24px" width="22px"/></span></td>';
+                    $output .= '<td><input type="hidden" value="'.$this->validation->ObscureNumber($c['twitterid'],SALT_TWO).'"/><span class="delete icon" data-tip="Remove">X</span></td>';
                     $output .= '</tr>';
                 }
                 
@@ -1582,18 +1573,18 @@ class Fakers extends AbstractController
         
         public function _CheckValidity($userid)
         {
+        	$message = '';
+
 			if ($_SESSION['type']==0)
 			{
 				$valid = false;
-				$message = '';
-				
-				$count = PaymentRequests::CountValidRecords($userid);
+				$count = $this->payments->CountValidRecords($userid);
 				
 				//$this->errorschutney->PrintArray($count);
 				
 				if ($count)
 				{
-					$validdate = PaymentRequests::GetValidDate($userid);
+					$validdate = $this->payments->GetValidDate($userid);
 					
 					//$this->errorschutney->DebugArray($validdate);
 					
@@ -1605,7 +1596,7 @@ class Fakers extends AbstractController
 					else
 					{
 						$_SESSION['type'] = 0;
-						$message = Build::PageMessage('alert',array('You need to purchase a new <a href="'.$this->routechutney->HREF('/Payments/Details',$this->mod_rewrite).'">subscription</a> to continue using the Fakers Dashboard.'));
+						$message = $this->build->PageMessage('alert',array('You need to purchase a new <a href="'.$this->routechutney->HREF('/Payments/Details',$this->mod_rewrite).'">subscription</a> to continue using the Fakers Dashboard.'));
 					}
 				}
 			}
@@ -1659,8 +1650,8 @@ class Fakers extends AbstractController
         
 		public function Server()
 		{
-			$this->errorschutney->PrintArray($_SERVER['REQUEST_URI']);
-			$this->errorschutney->DebugArray($_SERVER);
+			$this->errorschutney->PrintArray($this->server->get('REQUEST_URI'));
+			$this->errorschutney->DebugArray($this->server->all());
 		}
 
 		public function IPTest()

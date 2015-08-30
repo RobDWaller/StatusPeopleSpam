@@ -8,7 +8,7 @@
 			</div>			
 			<div class="one">
 				<div class="content center">
-						<?=$scores;?>
+						<?=isset($scores)?$scores:false;?>
 						<input type="hidden" id="twitterhandle" value="<?=$twitterhandle;?>" />
 						<input type="hidden" id="twitterid" value="<?=$twitterid;?>" />
 						<input type="hidden" id="twitterid2" value="<?=$twitterid2;?>" />

@@ -39,7 +39,7 @@ class DBAPI
 		
 		try {
 			
-                    if (!$this->dbh)
+                    if (!isset($this->dbh))
                     {
                         $this->dbh = new PDO("mysql:host=".__DBAPI_HOSTNAME.";dbname=".__DBAPI_NAME, __DBAPI_USERNAME, __DBAPI_PASSWORD);
                     }

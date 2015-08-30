@@ -17,8 +17,8 @@ class API extends AbstractController
     function __construct() {
         parent::__construct();
         
-        $httporigin = $_SERVER['HTTP_ORIGIN'];
-        $allowed = array('http://tools.statuspeople.com','http://test.statuspeople.com','http://hometest.statuspeople.com','http://www.statuspeople.com','http://statuspeople.com');
+        $httporigin = $this->server->get('HTTP_ORIGIN');
+        $allowed = array('http://localhost','http://tools.statuspeople.com','http://test.statuspeople.com','http://hometest.statuspeople.com','http://www.statuspeople.com','http://statuspeople.com');
         
         if (in_array($httporigin,$allowed))
         {        
@@ -28,6 +28,9 @@ class API extends AbstractController
 		$this->Salt1 = SALT_ONE;
 		$this->Salt2 = SALT_TWO;
 		
+        $this->twitterhelper = new \TwitterHelper;
+        $this->json = new \JSON;
+
 		ini_set('max_execution_time', 300);
     }
     
@@ -37,9 +40,8 @@ class API extends AbstractController
     
     public function GetTwitterBio($vars)
     {
-        
         $this->ResponseFormat = $vars['rf'];
-        $twid = Validation::UnobscureNumber(urldecode($vars['twid']),$this->Salt1);
+        $twid = $this->validation->UnobscureNumber(urldecode($vars['twid']),$this->Salt1);
         
 //        $this->ResponseFormat = 'json';
 //        $twid = '31386162';
@@ -60,7 +62,7 @@ class API extends AbstractController
             
 			if ($user['code']==200)
 			{
-           		$bio = TwitterHelper::ProcessTwitterBio($user['user']);
+           		$bio = $this->twitterhelper->ProcessTwitterBio($user['user']);
             
             //$this->_APISuccess(201,'Request Successful',$bio);
             
@@ -89,7 +91,7 @@ class API extends AbstractController
 	{
 		
         $this->ResponseFormat = $vars['rf'];
-		$user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+		$user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
 		//$user = $vars['usr'];
         $search = $vars['srch'];
 		$searches = $vars['srchs'];
@@ -102,7 +104,7 @@ class API extends AbstractController
             
 			//$this->errorschutney->PrintArray($details);
             
-            $search = Validation::StripNonAlphanumeric($search);
+            $search = $this->validation->StripNonAlphanumeric($search);
             
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
             
@@ -333,7 +335,7 @@ class API extends AbstractController
 	public function GetUpdateFakersList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -344,7 +346,7 @@ class API extends AbstractController
                     
             $details = $this->dbbind->GetTwitterDetails($user);
 
-            $search = Validation::StripNonAlphanumeric($search);
+            $search = $this->validation->StripNonAlphanumeric($search);
 
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
 
@@ -550,7 +552,7 @@ class API extends AbstractController
             
             //$this->errorschutney->PrintArray($details);
             
-            $search = Validation::StripNonAlphanumeric($search);
+            $search = $this->validation->StripNonAlphanumeric($search);
             
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
             
@@ -683,7 +685,7 @@ class API extends AbstractController
         {
             $details = $this->dbbind->GetTwitterDetails($user);
                     
-            $search = Validation::StripNonAlphanumeric($search);
+            $search = $this->validation->StripNonAlphanumeric($search);
 
             $bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
 			
@@ -806,7 +808,7 @@ class API extends AbstractController
 	public function GetCacheData($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
         
 		$this->_CheckForResponseFormat();
         
@@ -998,7 +1000,7 @@ class API extends AbstractController
 	
 	public function _GetLanguageDetails($followers,$langs)
 	{
-		$languages = Validation::LanguageList();
+		$languages = $this->validation->LanguageList();
 		
 		//$this->errorschutney->DebugArray($languages);
 		
@@ -1267,7 +1269,7 @@ class API extends AbstractController
     public function GetSpamScoresOverTime($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt2);
         
         $this->_CheckForResponseFormat();
         
@@ -1320,7 +1322,7 @@ class API extends AbstractController
                         $data['Good'][$i] = array('count'=>$good,'date'=>$dt);
                     }
                     
-                    if (is_array($scores[$k+1]))
+                    if (isset($scores[$k+1]) && is_array($scores[$k+1]))
                     {
                         //$this->errorschutney->PrintArray($scores[$k+1]);
                         $k++;
@@ -1345,7 +1347,7 @@ class API extends AbstractController
     public function GetCachedSpamScore($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1389,7 +1391,7 @@ class API extends AbstractController
 	public function PostBlockedSearch()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
         $search = $_POST['srch'];
 		
         $this->_CheckForResponseFormat();
@@ -1416,7 +1418,7 @@ class API extends AbstractController
 	public function GetUserDetailsCount($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1442,7 +1444,7 @@ class API extends AbstractController
 	public function PostAddUserDetails()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
 		$email = $_POST['em'];
 		$title = $_POST['tt'];
 		$fname = $_POST['fn'];
@@ -1450,10 +1452,10 @@ class API extends AbstractController
         
         $this->_CheckForResponseFormat();
 		
-		$valid[] = Validation::ValidateEmail($email);
-		$valid[] = Validation::ValidateString($title,'Title'); 
-		$valid[] = Validation::ValidateString($fname,'First Name'); 
-		$valid[] = Validation::ValidateString($lname,'Last Name'); 
+		$valid[] = $this->validation->ValidateEmail($email);
+		$valid[] = $this->validation->ValidateString($title,'Title'); 
+		$valid[] = $this->validation->ValidateString($fname,'First Name'); 
+		$valid[] = $this->validation->ValidateString($lname,'Last Name'); 
 		
 		$isvalid = true;
 		$messages = array();
@@ -1521,7 +1523,7 @@ class API extends AbstractController
     public function GetCompetitorCount($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1548,7 +1550,7 @@ class API extends AbstractController
     public function GetCompetitorList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1564,10 +1566,10 @@ class API extends AbstractController
             {
 				foreach ($competitors as $k => $cmp)
 				{
-					$competitors[$k]['userid'] = Validation::ObscureNumber($cmp['userid'],$this->Salt2);
-					$competitors[$k][0] = Validation::ObscureNumber($cmp['userid'],$this->Salt2);
-					$competitors[$k]['twitterid'] = Validation::ObscureNumber($cmp['twitterid'],$this->Salt2);
-					$competitors[$k][1] = Validation::ObscureNumber($cmp['twitterid'],$this->Salt2);
+					$competitors[$k]['userid'] = $this->validation->ObscureNumber($cmp['userid'],$this->Salt2);
+					$competitors[$k][0] = $this->validation->ObscureNumber($cmp['userid'],$this->Salt2);
+					$competitors[$k]['twitterid'] = $this->validation->ObscureNumber($cmp['twitterid'],$this->Salt2);
+					$competitors[$k][1] = $this->validation->ObscureNumber($cmp['twitterid'],$this->Salt2);
 				}
 				
                 $this->_APISuccess(201, 'Data returned successfully.',$competitors);
@@ -1582,7 +1584,7 @@ class API extends AbstractController
     public function GetTwitterUserData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         
         $this->_CheckForResponseFormat();
@@ -1597,7 +1599,7 @@ class API extends AbstractController
             
             if ($user['code'] == 200)
             {
-                $userdata = TwitterHelper::ProcessUserDetails($user['user']);
+                $userdata = $this->twitterhelper->ProcessUserDetails($user['user']);
                 
 //                $this->errorschutney->DebugArray($userdata);
                 
@@ -1623,7 +1625,7 @@ class API extends AbstractController
     public function GetFollowerData($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $count = $vars['ct'];
         $name = $vars['nm'];
         
@@ -1639,7 +1641,7 @@ class API extends AbstractController
             
             if ($followers)
             {
-                $data = TwitterHelper::ProcessUsersDetails($followers);
+                $data = $this->twitterhelper->ProcessUsersDetails($followers);
                 
 //                $this->errorschutney->DebugArray($data);
                 
@@ -1660,7 +1662,7 @@ class API extends AbstractController
     public function GetUserTwitterTimeline($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         $search = $vars['srch'];
         $count = $vars['cnt'];
         
@@ -1681,7 +1683,7 @@ class API extends AbstractController
             }
             else
             {
-//                $timeline = TwitterHelper::ProcessTimelineData($tweets,'Europe/London');
+//                $timeline = $this->twitterhelper->ProcessTimelineData($tweets,'Europe/London');
                 $this->_APISuccess(201,'Request Successful',$tweets);
             }
                 
@@ -1737,7 +1739,7 @@ class API extends AbstractController
     public function GetSpamList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1763,7 +1765,7 @@ class API extends AbstractController
 	public function GetBlockedList($vars)
     {
         $this->ResponseFormat = $vars['rf'];
-        $user = Validation::UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
         
         $this->_CheckForResponseFormat();
         
@@ -1789,7 +1791,7 @@ class API extends AbstractController
     public function PostTweet()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
         $tweet = urldecode($_POST['txt']);
         
         $this->_CheckForResponseFormat();
@@ -1833,7 +1835,7 @@ class API extends AbstractController
     public function PostAddFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
         $search = $_POST['srch'];
         $spam = $_POST['sp'];
         $potential = $_POST['pt'];
@@ -1873,7 +1875,7 @@ class API extends AbstractController
 			{
 				$details = $this->dbbind->GetTwitterDetails($user);
 	
-				$search = Validation::StripNonAlphanumeric($search);
+				$search = $this->validation->StripNonAlphanumeric($search);
 				
 				$bio = $this->twitterbind->GetUserByScreenName($details[2],$details[3],$search);
 				
@@ -1930,8 +1932,8 @@ class API extends AbstractController
     public function PostDeleteFaker()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
-        $twid = Validation::UnobscureNumber($_POST['twid'],$this->Salt2);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
+        $twid = $this->validation->UnobscureNumber($_POST['twid'],$this->Salt2);
         
         $this->_CheckForResponseFormat();
         
@@ -1964,7 +1966,7 @@ class API extends AbstractController
     public function PostBlockSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -2005,7 +2007,7 @@ class API extends AbstractController
 	public function PostUnBlockSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -2039,7 +2041,7 @@ class API extends AbstractController
     public function PostNotSpam()
     {
         $this->ResponseFormat = $_POST['rf'];
-        $user = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+        $user = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
         $twid = $_POST['twid'];
         
         $this->_CheckForResponseFormat();
@@ -2436,10 +2438,10 @@ class API extends AbstractController
 	public function PostAddDive()
 	{
 		//$userid = 1919216960; /* Fakers App */
-		$userid = 198192466; /* StatusPeople */
-		//$userid = 31386162; /* RobDWaller */
+		//$userid = 198192466; /* StatusPeople */
+		$userid = 31386162; /* RobDWaller */
 		
-		$user = 'lionsgatemovies';
+		$user = 'iRyanGlen';
 		
 		$details = $this->dbbind->GetTwitterDetails($userid);
 		
@@ -2458,7 +2460,7 @@ class API extends AbstractController
 		$this->ResponseFormat = $_POST['rf'];
 		$this->_CheckForResponseFormat();
 		
-		$valid = Validation::ValidateUrl($url);
+		$valid = $this->validation->ValidateUrl($url);
 		
 		if ($valid[0])
 		{
@@ -2471,7 +2473,7 @@ class API extends AbstractController
 				$title = $sitedetails['title'];
 			}
 			
-			$ipaddress =  $_SERVER["REMOTE_ADDR"];
+			$ipaddress =  $this->server->get("REMOTE_ADDR");
 			$oneday = strtotime('-1 Day');
 			
 			$checkip = $this->dbbind->CheckIPCount($ipaddress,$oneday);
@@ -2539,7 +2541,7 @@ class API extends AbstractController
 	public function PostChangeAutoRemoveStatus()
 	{
 		$this->ResponseFormat = $_POST['rf'];
-		$twid = Validation::UnobscureNumber($_POST['usr'],$this->Salt1);
+		$twid = $this->validation->UnobscureNumber($_POST['usr'],$this->Salt1);
         
         $this->_CheckForResponseFormat();
 		
@@ -2656,7 +2658,7 @@ class API extends AbstractController
         
         if ($this->ResponseFormat == 'json')
         {
-            $output['json'] = JSON::JSONAPIError($code,$message,$data);
+            $output['json'] = $this->json->JSONAPIError($code,$message,$data);
 
             $this->glaze->view('API/json.php',$output);
         }
@@ -2677,7 +2679,7 @@ class API extends AbstractController
         
         if ($this->ResponseFormat == 'json')
         {
-            $output['json'] = JSON::JSONAPIOutput(201,$message,$data);
+            $output['json'] = $this->json->JSONAPIOutput(201,$message,$data);
 
             $this->glaze->view('API/json.php',$output);
         }
@@ -2714,7 +2716,7 @@ class API extends AbstractController
     protected function _CheckURL($url)
     {
          
-        $valid = Validation::ValidateUrl($url);
+        $valid = $this->validation->ValidateUrl($url);
         
         if ($valid[0] == false)
         {
@@ -2737,7 +2739,7 @@ class API extends AbstractController
     
     protected function _CheckInteger($int,$name)
     {
-        $valid = Validation::ValidateInteger($int,$name);
+        $valid = $this->validation->ValidateInteger($int,$name);
 
         if ($valid[0] == false)
         {
@@ -2749,7 +2751,7 @@ class API extends AbstractController
     {
         if (!empty($text))
         {
-            $valid = Validation::ValidateString($text,$name);
+            $valid = $this->validation->ValidateString($text,$name);
 
             if ($valid[0] == false)
             {
@@ -2762,7 +2764,7 @@ class API extends AbstractController
     {
         if (!empty($text))
         {
-            $valid = Validation::ValidateLongString($text,$name);
+            $valid = $this->validation->ValidateLongString($text,$name);
 
             if ($valid[0] == false)
             {
@@ -2812,7 +2814,7 @@ class API extends AbstractController
             foreach ($images[1] as $image)
             {
                     //Checks that the image source is a valid url.
-                    $valid = Validation::ValidateUrl($image);
+                    $valid = $this->validation->ValidateUrl($image);
 
                     if ($valid[0])
                     {

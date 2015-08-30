@@ -74,6 +74,19 @@ class DBRequests extends DB
 			return $result;			
 		}
 
+        public function GetUserInfoByScreenName($screenname)
+        {
+            $query = "SELECT *
+                        FROM spsp_user_info
+                        WHERE screen_name = :screen_name AND live = 1";
+
+            $params = array('screen_name'=>array($screenname,'INT',0));
+
+            $result = $this->SelectRecord($query,$params);
+
+            return $result;         
+        }
+
         public function GetLatestSpamRecords($limit)
         {
 		

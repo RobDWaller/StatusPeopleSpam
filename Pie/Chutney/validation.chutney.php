@@ -632,6 +632,8 @@ class Validation
 	
 		public function Obscure($string,$salt)
 		{
+			$newstring = '';
+
 			$strings = str_split($string);
 			$index = self::HashIndex();
 			$hashindex = self::GenerateIndex($salt);
@@ -669,6 +671,8 @@ class Validation
 	
 		public function Unobscure($string,$salt)
 		{
+			$newstring = '';
+
 			$string = self::Confuse($salt,$string);
 			
 			$strings = str_split($string);

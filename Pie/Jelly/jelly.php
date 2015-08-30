@@ -22,8 +22,9 @@ class Jelly
 		$this->mod_rewrite = true;
 		//This sets your default error handler
 		
+		$this->errorschutney->IsDebug = $this->loader->isTest();
+
 		set_error_handler(array($this->errorschutney,"ErrorHandler")); 
-		
 	}	
 	
 	public function Bake()
@@ -80,7 +81,6 @@ class Jelly
 	{
 		
 		//require_once(__SITE_PATH.'/Pie/Jelly/user.jelly.php');
-	
 		$fakers = new Fakers();
 		
 		$fakers->Index($vars);

@@ -23,7 +23,7 @@ class Sessions
 	
 	// Destroy all sessions, only use this for logout systems and similar functions
 	
-	public function DestroySessions()
+	public static function DestroySessions()
 	{
 		
 		session_unset();
@@ -67,7 +67,7 @@ class Sessions
 	
 	// Pass an array of cookies you wish to destroy or unset. format = array('Name').
 	
-	public function DestroyCookies($cookies)
+	public static function DestroyCookies($cookies)
 	{
 		
 		foreach ($cookies as $key => $obj)

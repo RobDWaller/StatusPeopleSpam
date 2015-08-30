@@ -28,8 +28,8 @@ class Cron extends AbstractController
     
     public function UpdateFakersCheck()
     {
-		//if (true)
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
         { 
             $users = $this->dbbind->GetCheckers();
 			
@@ -272,8 +272,8 @@ class Cron extends AbstractController
     
 	public function UpdateAutoRemoves()
     {
-		//if (true)
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
         {
 			$records = $users = $this->dbbind->GetAutoRemoveAccounts(5,strtotime('-2 Hours'));
 			
@@ -499,7 +499,8 @@ class Cron extends AbstractController
 	
 	public function UpdateFakerQueue()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
         {
 			$users = $this->dbbind->GetProcessors();
 			
@@ -707,8 +708,8 @@ class Cron extends AbstractController
 	
     public function AutoRemoveSpam()
     {
-		//if (true)
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
             
             $users = $this->dbbind->GetAutoSpamUsers();
@@ -752,7 +753,8 @@ class Cron extends AbstractController
     
 	public function SendSubscriptionReminder()
 	{
- 		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+ 		//if ($_POST['ch'] == $this->cronhash)
         {
 			$emails = PaymentRequests::GetEmailList();
 			
@@ -878,7 +880,8 @@ class Cron extends AbstractController
 	
 	public function GetDeepDiveFollowerIDs()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			$divers = DeepdiveRequests::GetDivers();
@@ -1068,7 +1071,8 @@ class Cron extends AbstractController
 	
 	public function GetDeepDiveFollowers()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			$divers = DeepdiveRequests::GetDivers();
@@ -1200,7 +1204,8 @@ class Cron extends AbstractController
 	
 	public function GenerateDeepDiveScore()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			ini_set('memory_limit', '-1');
@@ -1208,7 +1213,7 @@ class Cron extends AbstractController
 			
 			$dives = DeepdiveRequests::GetFinishedDives();
 			
-			$this->errorschutney->PrintArray($dives);
+			//$this->errorschutney->PrintArray($dives);
 			
 			foreach ($dives as $d)
 			{
@@ -1234,8 +1239,8 @@ class Cron extends AbstractController
 					{
 						foreach ($fols->data as $fl)
 						{
-							$this->errorschutney->PrintArray($c);
-							$this->errorschutney->PrintArray($fl->screen_name);	
+							//$this->errorschutney->PrintArray($c);
+							//$this->errorschutney->PrintArray($fl->screen_name);	
 							
 							foreach ($fl as $k => $f)
 							{
@@ -1272,16 +1277,16 @@ class Cron extends AbstractController
 				
 				//$this->errorschutney->PrintArray($results);
 				
-				$count = DeepdiveRequests::CountScores($d['twitterid']);
+				//$count = DeepdiveRequests::CountScores($d['twitterid']);
 				
-				if ($count==0)
-				{
-					DeepdiveRequests::AddScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
-				}
-				else
-				{
-					DeepdiveRequests::UpdateScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
-				}
+				//if ($count==0)
+				//{
+					DeepdiveRequests::AddScore($d['id'],$d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
+				//}
+				//else
+				//{
+					//DeepdiveRequests::UpdateScore($d['twitterid'],$results['spam'],$results['potential'],$results['checks'],$created);
+				//}
 				
 				//$this->errorschutney->PrintArray(memory_get_usage());
 				//$this->errorschutney->PrintArray(memory_get_peak_usage());
@@ -1294,7 +1299,8 @@ class Cron extends AbstractController
 	
 	public function UpdateAPIScores()
 	{
-		if ($_POST['ch'] == $this->cronhash)
+		if (true)
+		//if ($_POST['ch'] == $this->cronhash)
 		{
 		
 			$scores = $this->dbbind->GetSpamScoreDetails();
