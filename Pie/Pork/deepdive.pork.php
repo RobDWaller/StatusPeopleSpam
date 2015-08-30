@@ -12,7 +12,7 @@ class Deepdive
 		
 		try {
 			
-			if (!$this->dbh)
+			if (!isset($this->dbh))
 			{
 				$this->dbh = new PDO("mysql:host=".__DBDV_HOSTNAME.";dbname=".__DBDV_NAME, __DBDV_USERNAME, __DBDV_PASSWORD);
 			}

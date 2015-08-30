@@ -34,7 +34,7 @@
 				</div>
 				<div class="menu">
 					<?php
-					if (!$logout)
+					if (!isset($logout))
 					{
 						echo '<ul class="fakericons">
 						<li><a href="/Fakers/Dashboard"><span class="ico3 icon" data-tip="Fakers Dashboard">"</span> Dashboard</a></li>
@@ -66,31 +66,18 @@
 						</ul>';
 					}
 					?>
-					<input type="hidden" id="twitterhandle" value="<?=$twitterhandle;?>" />
-					<input type="hidden" id="twitterid" value="<?=$twitterid;?>" />
+					<input type="hidden" id="twitterhandle" value="<?=isset($twitterhandle)?$twitterhandle:false;?>" />
+					<input type="hidden" id="twitterid" value="<?=isset($twitterid)?$twitterid:false;?>" />
 					<input type="hidden" id="spamscore" value="0" />
 					<input type="hidden" id="spam" value="0" />
 					<input type="hidden" id="potential" value="0" />
 					<input type="hidden" id="checks" value="0" />
 					<input type="hidden" id="followers" value="0" />
-					<input type="hidden" id="firsttime" value="<?=$firsttime;?>" />
-					<input type="hidden" id="accounttype" value="<?=$type;?>"/>
+					<input type="hidden" id="firsttime" value="<?=isset($firsttime)?$firsttime:false;?>" />
+					<input type="hidden" id="accounttype" value="<?=isset($type)?$type:false;?>"/>
 				</div>
 				<div class="connect">
-					<?php
-					// if ($logout == 1)
-					// {
-						// /*echo $menu;*/	
-					// }
-					// elseif ($logout!=1&&$logout!=2)
-					// {
-						echo '<ul><li class="accountform">'.$accountform.'</li></ul>';
-					// }
-					// elseif ($_SESSION['primaryid']!=$_SESSION['userid'])
-					// {
-						// echo '<ul><li class="accountform">'.$accountform.'</li></ul>';
-					// }
-					?>
+					<?=isset($accountform) ? '<ul><li class="accountform">'.$accountform.'</li></ul>' : false; ?>
 				</div>
 				<div class="selectMenu">
 					<div></div>
@@ -98,5 +85,5 @@
 					<div></div>
 				</div>
 			</div>
-			<?=$message;?>
+			<?=isset($message)?$message:''; ?>
 		</header>

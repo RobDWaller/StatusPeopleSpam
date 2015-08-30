@@ -30,7 +30,7 @@ $this->DebugQuery($prep); */
 class DB
 {
 	
-        private static $dbh;
+    private static $dbh;
     
 	protected function ConnectionString()
 	{
@@ -39,18 +39,19 @@ class DB
 		
 		try {
 			
-                    if (!$this->dbh)
-                    {
-                        $this->dbh = new PDO("mysql:host=".__DB_HOSTNAME.";dbname=".__DB_NAME, __DB_USERNAME, __DB_PASSWORD);
-                    }
-			
-                    return $this->dbh;
+            if (!isset($this->dbh))
+            {
+                $this->dbh = new PDO("mysql:host=".__DB_HOSTNAME.";dbname=".__DB_NAME, __DB_USERNAME, __DB_PASSWORD);
+            }
+	
+            return $this->dbh;
 		}
 		catch(PDOException $e)
 		{
 			echo 'Database connection failure. Please reload page. If problem persists contact info@statuspeople.com';
-                        die();
-                }
+            //echo $e->getMessage();
+            die();
+        }
 		
 	}
 	

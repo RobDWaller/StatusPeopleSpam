@@ -1,6 +1,8 @@
 <?php
 
-class Generic extends Jelly
+use Controllers\AbstractController;
+
+class Generic extends AbstractController
 {
 	
 	public function Index()
@@ -10,7 +12,7 @@ class Generic extends Jelly
 			
 	}
 
-        public function Logout($vars = null)
+        public static function Logout($vars = null)
 	{
 		
                 $mess = 1;
@@ -31,12 +33,12 @@ class Generic extends Jelly
 		
 	}    
         
-	public function _IsLogin()
+	public static function _IsLogin()
 	{
         
 		setcookie('lastpage',$_SERVER['REQUEST_URI'],time()+300,'/');
 		
-        if ($_SESSION['userid'] < 1)
+        if (!isset($_SESSION['userid']) || $_SESSION['userid'] < 1)
 		{
                     self::Logout();
 		}

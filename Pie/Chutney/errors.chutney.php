@@ -32,7 +32,6 @@ class Errors
 
 	public function ErrorHandler($number,$message,$file,$line,$vars)
 	{
-		
 		if (error_reporting() === 0)
 		{
 			return true;	
@@ -52,7 +51,7 @@ class Errors
 			$data['message'] = $message;
                         $data['logout'] = 0;
 			
-			$this->glaze->view('error.php',$data);
+            $this->glaze->view('error.php',$data);
 			
 			// If error is not a notice the application will die.			
 			if ( ($number !== E_NOTICE) && ($number < 2048) )
@@ -98,6 +97,7 @@ class Errors
 	{
 		
 		echo '<pre>';
+		var_dump($array);
 		print_r($array);
 		echo '</pre>';
 		die();
@@ -108,6 +108,7 @@ class Errors
 	{
 		
 		echo '<pre>';
+		var_dump($array);
 		print_r($array);
 		echo '</pre>';
 		

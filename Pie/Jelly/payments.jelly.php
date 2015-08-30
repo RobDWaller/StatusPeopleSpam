@@ -1,17 +1,27 @@
 <?php
 
-class Payments extends Jelly
+use Controllers\AbstractController;
+
+class Payments extends AbstractController
 {
+    protected $fakers;
     
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->fakers = new Fakers();
+    }
+
     public function Details()
     {
         
-        Generic::_IsLogin();
+        $this->auth->isLogin();
         
-        $count = PaymentRequests::CountUserDetails($_SESSION['userid']);
+        $count = $this->payments->CountUserDetails($_SESSION['userid']);
         
-		$validity = Fakers::_CheckValidity($_SESSION['userid']);
-		$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+		$validity = $this->fakers->_CheckValidity($_SESSION['userid']);
+		$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 		
 		if (!$validity[0])
 		{
@@ -21,7 +31,7 @@ class Payments extends Jelly
 			if ($_SESSION['userid']<1)
 			{
 				$data['logout'] = 2;
-				$data['menu'] = Fakers::_BuildMenu();
+				$data['menu'] = $this->fakers->_BuildMenu();
 			}
 		}
 		
@@ -33,7 +43,7 @@ class Payments extends Jelly
                             'lastname'=>array('Last Name','Text','',$_SESSION['lastname']),
                             'submit'=>array('Proceed','Submit')); 
             
-            $data['form'] = Forms::FormBuilder('yourdetailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
+            $data['form'] = $this->forms->FormBuilder('yourdetailsform',$this->routechutney->BuildUrl('/Payments/ProcessDetails',$this->mod_rewrite),$fields);
 
             if (isset($_SESSION['message']))
             {
@@ -41,25 +51,25 @@ class Payments extends Jelly
             }
             elseif ($vars[0]==1) 
             {
-                $data['message'] = Build::PageMessage('alert',array('Please connect to you Twitter account to make use of this service.'));
+                $data['message'] = $this->build->PageMessage('alert',array('Please connect to you Twitter account to make use of this service.'));
             }
             
 			$data['homelink'] = $this->routechutney->HREF('/Fakers/Scores',$this->mod_rewrite);	
             $data['title'] = 'Your Details : Fakers App from StatusPeople.com';
 			$data['menu'] = '&nbsp;';
             
-            Sessions::UnsetSessions(array('message','email','title','firstname','lastname'));
+            $this->sessions->UnsetSessions(array('message','email','title','firstname','lastname'));
             
 			if ($_SESSION['type']>=1)
 			{
-				$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+				$data['accountform'] = $this->fakers->_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 			}
 			
             $this->glaze->view('Payments/details.php',$data);
         } 
         else
         {
-            Sessions::UnsetSessions(array('message','email','title','firstname','lastname'));
+            $this->sessions->UnsetSessions(array('message','email','title','firstname','lastname'));
             
             header('Location:'.$this->routechutney->BuildUrl('/Payments/Subscriptions',$this->mod_rewrite));
             die();
@@ -70,17 +80,17 @@ class Payments extends Jelly
     public function ProcessDetails()
     {
         
-        Generic::_IsLogin();
+        $this->auth->isLogin();
         
-        $count = PaymentRequests::CountUserDetails($_SESSION['userid']);
+        $count = $this->payments->CountUserDetails($_SESSION['userid']);
         
         if ($count==0)
         {
         
-            $valid[] = Validation::ValidateEmail($_POST['email']);
-            $valid[] = Validation::ValidateString($_POST['title'],'Title'); 
-            $valid[] = Validation::ValidateString($_POST['firstname'],'First Name'); 
-            $valid[] = Validation::ValidateString($_POST['lastname'],'Last Name'); 
+            $valid[] = $this->validation->ValidateEmail($_POST['email']);
+            $valid[] = $this->validation->ValidateString($_POST['title'],'Title'); 
+            $valid[] = $this->validation->ValidateString($_POST['firstname'],'First Name'); 
+            $valid[] = $this->validation->ValidateString($_POST['lastname'],'Last Name'); 
 
             $isvalid = true;
             $messages = array();
@@ -96,7 +106,7 @@ class Payments extends Jelly
 
             if ($isvalid)
             {
-                $adddetails = PaymentRequests::AddUserDetails($_SESSION['userid'],$_POST['email'],$_POST['title'],$_POST['firstname'],$_POST['lastname'],time());
+                $adddetails = $this->payments->AddUserDetails($_SESSION['userid'],$_POST['email'],$_POST['title'],$_POST['firstname'],$_POST['lastname'],time());
 
                 if ($adddetails>0)
                 {
@@ -104,7 +114,7 @@ class Payments extends Jelly
                 }
                 else
                 {
-                    $_SESSION['message'] = Build::PageMessage('failure',array('Failed to add user details to system. Please try again. If this problem persists please contact info@statuspeople.com.'));
+                    $_SESSION['message'] = $this->build->PageMessage('failure',array('Failed to add user details to system. Please try again. If this problem persists please contact info@statuspeople.com.'));
                     $_SESSION['email'] = $_POST['email'];
                     $_SESSION['firstname'] = $_POST['firstname'];
                     $_SESSION['lastname'] = $_POST['lastname'];
@@ -115,7 +125,7 @@ class Payments extends Jelly
 
             }
             else {
-                $_SESSION['message'] = Build::PageMessage('alert',$messages);
+                $_SESSION['message'] = $this->build->PageMessage('alert',$messages);
                 $_SESSION['email'] = $_POST['email'];
                 $_SESSION['firstname'] = $_POST['firstname'];
                 $_SESSION['lastname'] = $_POST['lastname'];
@@ -126,7 +136,7 @@ class Payments extends Jelly
         }
         else 
         {
-            Sessions::UnsetSessions(array('message','email','title','firstname','lastname'));
+            $this->sessions->UnsetSessions(array('message','email','title','firstname','lastname'));
             
             header('Location:'.$this->routechutney->BuildUrl('/Payments/Subscriptions',$this->mod_rewrite));
             die();
@@ -135,12 +145,12 @@ class Payments extends Jelly
     
 	public function UpdateDetails()
 	{
-		Generic::_IsLogin();
+		$this->auth->isLogin();
         
-		$valid[] = Validation::ValidateEmail($_POST['email']);
-		$valid[] = Validation::ValidateString($_POST['title'],'Title'); 
-		$valid[] = Validation::ValidateString($_POST['firstname'],'First Name'); 
-		$valid[] = Validation::ValidateString($_POST['lastname'],'Last Name'); 
+		$valid[] = $this->validation->ValidateEmail($_POST['email']);
+		$valid[] = $this->validation->ValidateString($_POST['title'],'Title'); 
+		$valid[] = $this->validation->ValidateString($_POST['firstname'],'First Name'); 
+		$valid[] = $this->validation->ValidateString($_POST['lastname'],'Last Name'); 
 		
 		$isvalid = true;
 		$messages = array();
@@ -157,21 +167,21 @@ class Payments extends Jelly
 		if ($isvalid)
 		{
 		
-			$count = PaymentRequests::CountUserDetails($_SESSION['userid']);
+			$count = $this->payments->CountUserDetails($_SESSION['userid']);
 			
 			if ($count==0)
 			{
 				
-				$adddetails = PaymentRequests::AddUserDetails($_SESSION['userid'],$_POST['email'],$_POST['title'],$_POST['firstname'],$_POST['lastname'],time());
+				$adddetails = $this->payments->AddUserDetails($_SESSION['userid'],$_POST['email'],$_POST['title'],$_POST['firstname'],$_POST['lastname'],time());
 				
 				if ($adddetails>0)
 				{
-					$_SESSION['message'] = Build::PageMessage('success',array('User details successfully added.'));
+					$_SESSION['message'] = $this->build->PageMessage('success',array('User details successfully added.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 				else
 				{
-					$_SESSION['message'] = Build::PageMessage('failure',array('Failed to add user details to system. Please try again. If this problem persists please contact info@statuspeople.com.'));
+					$_SESSION['message'] = $this->build->PageMessage('failure',array('Failed to add user details to system. Please try again. If this problem persists please contact info@statuspeople.com.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 	
@@ -180,31 +190,31 @@ class Payments extends Jelly
 			{
 				//$this->errorschutney->DebugArray($_POST);
 				
-				$updatedetails = PaymentRequests::UpdateUserDetails($_SESSION['userid'],$_POST['email'],$_POST['title'],$_POST['firstname'],$_POST['lastname']);
+				$updatedetails = $this->payments->UpdateUserDetails($_SESSION['userid'],$_POST['email'],$_POST['title'],$_POST['firstname'],$_POST['lastname']);
 				
 				if ($updatedetails>0)
 				{
-					$_SESSION['message'] = Build::PageMessage('success',array('User details successfully updated.'));
+					$_SESSION['message'] = $this->build->PageMessage('success',array('User details successfully updated.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 				else
 				{
-					$_SESSION['message'] = Build::PageMessage('failure',array('Failed to update user details to system. Please try again. If this problem persists please contact info@statuspeople.com.'));
+					$_SESSION['message'] = $this->build->PageMessage('failure',array('Failed to update user details to system. Please try again. If this problem persists please contact info@statuspeople.com.'));
 					header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 				}
 			}
 		}
 		else {
-			$_SESSION['message'] = Build::PageMessage('alert',$messages);
+			$_SESSION['message'] = $this->build->PageMessage('alert',$messages);
 			header('Location:'.$this->routechutney->BuildUrl('/Fakers/Settings',$this->mod_rewrite));
 		}
 	}
 	
     public function Subscriptions($vars)
     {
-        Generic::_IsLogin();
+        $this->auth->isLogin();
         
-		$count = PaymentRequests::CountUserDetails($_SESSION['userid']);
+		$count = $this->payments->CountUserDetails($_SESSION['userid']);
 		
 		if ($count==0)
 		{
@@ -212,12 +222,12 @@ class Payments extends Jelly
 			die();
 		}
 		
-        $userdetails = PaymentRequests::GetUserDetails($_SESSION['userid']);
+        $userdetails = $this->payments->GetUserDetails($_SESSION['userid']);
         
 //        $this->errorschutney->DebugArray($userdetails);
         
-		$validity = Fakers::_CheckValidity($_SESSION['userid']);
-		$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+		$validity = $this->fakers->_CheckValidity($_SESSION['userid']);
+		$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 		$data['title'] = 'Purchase A Subscription : Fakers App from StatusPeople.com';
 		
 		if (!$validity[0])
@@ -228,7 +238,7 @@ class Payments extends Jelly
 			if ($_SESSION['userid']<1)
 			{
 				$data['logout'] = 2;
-				$data['menu'] = Fakers::_BuildMenu();
+				$data['menu'] = $this->fakers->_BuildMenu();
 			}
 		}
 		
@@ -250,7 +260,7 @@ class Payments extends Jelly
                         'months'=>array('','Hidden','',1),
                         'checkout'=>array('Check Out','Submit')); 
         
-        $data['form'] = Forms::FormBuilder('payform',$this->routechutney->BuildUrl('/Payments/Checkout',$this->mod_rewrite),$fields);
+        $data['form'] = $this->forms->FormBuilder('payform',$this->routechutney->BuildUrl('/Payments/Checkout',$this->mod_rewrite),$fields);
         
         $data['currency'] = '&pound;';
         $data['subtotal'] = '3.49';
@@ -258,15 +268,16 @@ class Payments extends Jelly
         $data['total'] = $data['subtotal'] + $data['tax'];
         $data['saving'] = '0.00';
         $data['months'] = '1';
-        $data['type'] = $vars['type'];
+        $data['type'] = isset($vars['type']) ? $vars['type'] : '';
 		$data['homelink'] = $this->routechutney->HREF('/Fakers/Dashboard',$this->mod_rewrite);
 		$data['menu'] = '&nbsp;';
+        $data['message'] = false;
 		
-        $vc = PaymentRequests::CountValidRecords($_SESSION['userid']);
+        $vc = $this->payments->CountValidRecords($_SESSION['userid']);
         
         if ($vc)
         {
-            $vd = PaymentRequests::GetValidDate($_SESSION['userid']);
+            $vd = $this->payments->GetValidDate($_SESSION['userid']);
             
             $diff = $vd[0] - time();
             
@@ -279,14 +290,14 @@ class Payments extends Jelly
 				$message = 'Your Fakers Dashboard Subscription expired '.$days.' day(s) ago.';
 			}
 			
-            $data['message'] .= Build::PageMessage('info',array($message));
+            $data['message'] .= $this->build->PageMessage('info',array($message));
         }
         
-        Sessions::UnsetSessions(array('message'));
+        $this->sessions->UnsetSessions(array('message'));
 		
 		if ($_SESSION['type']>=1)
 		{
-			$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+			$data['accountform'] = $this->fakers->_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 		}
             
         $this->glaze->view('Payments/subscriptions.php',$data);
@@ -295,12 +306,12 @@ class Payments extends Jelly
     
     public function Checkout()
     {
-        Generic::_IsLogin();
+        $this->auth->isLogin();
         
         $userid = $_SESSION['userid'];
         
-		$validity = Fakers::_CheckValidity($_SESSION['userid']);
-		$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+		$validity = $this->fakers->_CheckValidity($_SESSION['userid']);
+		$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 		$data['title'] = 'Checkout : Fakers App from StatusPeople.com';
 		
 		if (!$validity[0])
@@ -311,15 +322,15 @@ class Payments extends Jelly
 			if ($_SESSION['userid']<1)
 			{
 				$data['logout'] = 2;
-				$data['menu'] = Fakers::_BuildMenu();
+				$data['menu'] = $this->fakers->_BuildMenu();
 			}
 		}
 		
-        $transactionid = substr(Validation::HashString($userid.time().rand(1,9999)),0,12);
+        $transactionid = substr($this->validation->HashString($userid.time().rand(1,9999)),0,12);
             
         setcookie('transactionid',$transactionid,time()+3600);
         
-        $create = PaymentRequests::CreatePurchase($userid,$transactionid,$_POST['currency_code'],$_POST['subtotal'],$_POST['account_type'],time());
+        $create = $this->payments->CreatePurchase($userid,$transactionid,$_POST['currency_code'],$_POST['subtotal'],$_POST['account_type'],time());
         
         if ($create)
         {
@@ -339,7 +350,7 @@ class Payments extends Jelly
                             'tax'=>array('','Hidden','',$_POST['tax']),
                             'METHOD'=>array('Pay','Submit')); 
 
-            $data['form'] = Forms::FormBuilder('payform',PAYPAL_ACTION,$fields);
+            $data['form'] = $this->forms->FormBuilder('payform',PAYPAL_ACTION,$fields);
 
             setcookie('subtotal',$_POST['subtotal'],time()+3600);
             setcookie('email',$_POST['buyer_email'],time()+3600);
@@ -373,7 +384,7 @@ class Payments extends Jelly
 			
 			if ($_SESSION['type']>=1)
 			{
-				$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+				$data['accountform'] = $this->fakers->_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 			}
 			
             $this->glaze->view('Payments/checkout.php',$data);
@@ -381,7 +392,7 @@ class Payments extends Jelly
         }
         else
         {
-            $_SESSION['message'] = Build::PageMessage('failure',array('Incorect payment details, unable to process checkout. Please try again. If this problem persists please contact info@statuspeople.com'));
+            $_SESSION['message'] = $this->build->PageMessage('failure',array('Incorect payment details, unable to process checkout. Please try again. If this problem persists please contact info@statuspeople.com'));
             header('Location:'.$this->routechutney->BuildUrl('/Payments/Subscriptions',$this->mod_rewrite));
             die();
         }
@@ -389,13 +400,13 @@ class Payments extends Jelly
     
     public function Confirmation()
     {
-        Generic::_IsLogin();
+        $this->auth->isLogin();
         
         $transactionid = $_COOKIE['transactionid'];
         $email = $_COOKIE['email'];
         $firstname = $_COOKIE['firstname'];
         
-        $transaction = PaymentRequests::CountPurchases($transactionid);
+        $transaction = $this->payments->CountPurchases($transactionid);
 		$data['title'] = 'Purchase Confirmation : Fakers App from StatusPeople.com';
         
         if ($transaction)
@@ -421,13 +432,13 @@ class Payments extends Jelly
             $data['total'] = $data['subtotal']+$data['tax'];
             $data['transactionid'] = $transactionid;
             
-            $purchase = PaymentRequests::GetPurchaseDetails($transactionid);
+            $purchase = $this->payments->GetPurchaseDetails($transactionid);
             
 			//$this->errorschutney->DebugArray($purchase);
 			
             if (!$purchase[6])
             {
-                PaymentRequests::CompletePurchase($transactionid);
+                $this->payments->CompletePurchase($transactionid);
 
                 $m = 'months';
 
@@ -436,14 +447,14 @@ class Payments extends Jelly
                     $m = 'month';
                 }
 
-                $vc = PaymentRequests::CountValidRecords($purchase[1]);
+                $vc = $this->payments->CountValidRecords($purchase[1]);
 
 //                $this->errorschutney->PrintArray($purchase);
 //                $this->errorschutney->PrintArray($vc);
                 
                 if ($vc)
                 {
-                    $getlastvalid = PaymentRequests::GetValidDate($purchase[1]);
+                    $getlastvalid = $this->payments->GetValidDate($purchase[1]);
                     
 					if ($getlastvalid[0]<=time())
 					{
@@ -458,19 +469,19 @@ class Payments extends Jelly
                     
 //                    $this->errorschutney->DebugArray(date('y/m/d',$valid));
                     
-                    PaymentRequests::UpdateValidDate($purchase[0],$purchase[1],$valid);
+                    $this->payments->UpdateValidDate($purchase[0],$purchase[1],$valid);
                 }
                 else
                 {
                     $valid = strtotime('+'.$data['months'].' '.$m);
-                    PaymentRequests::CreateValidDate($purchase[0],$purchase[1],$valid);
+                    $this->payments->CreateValidDate($purchase[0],$purchase[1],$valid);
                 }
 
                 $this->_SendPurchaseEmail($email, $firstname, $data);    
             }
             
-			$validity = Fakers::_CheckValidity($_SESSION['userid']);
-			$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+			$validity = $this->fakers->_CheckValidity($_SESSION['userid']);
+			$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 			
 			if (!$validity[0])
 			{
@@ -480,7 +491,7 @@ class Payments extends Jelly
 				if ($_SESSION['userid']<1)
 				{
 					$data['logout'] = 2;
-					$data['menu'] = Fakers::_BuildMenu();
+					$data['menu'] = $this->fakers->_BuildMenu();
 				}
 			}
 			
@@ -489,14 +500,14 @@ class Payments extends Jelly
 			
 			if ($_SESSION['type']>=1)
 			{
-				$data['accountform'] = Fakers::_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
+				$data['accountform'] = $this->fakers->_BuildAccountsForm($_SESSION['primaryid'],$_SESSION['userid']);
 			}
 			
             $this->glaze->view('Payments/confirmation.php',$data);
         }
         else
         {
-            $_SESSION['message'] = Build::PageMessage('failure',array('Purchase confirmation process failed please contact info@statuspeople.com'));
+            $_SESSION['message'] = $this->build->PageMessage('failure',array('Purchase confirmation process failed please contact info@statuspeople.com'));
             header('Location:'.$this->routechutney->BuildUrl('/Payments/Subscriptions',$this->mod_rewrite));
             die();
         }
@@ -506,10 +517,10 @@ class Payments extends Jelly
     
     public function Cancelation()
     {
-        Generic::_IsLogin();
+        $this->auth->isLogin();
         
-		$validity = Fakers::_CheckValidity($_SESSION['userid']);
-		$data['twitterid'] = Validation::ObscureNumber($_SESSION['userid'],SALT_ONE);
+		$validity = $this->fakers->_CheckValidity($_SESSION['userid']);
+		$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);
 		$data['title'] = 'Purchase Cancellation : Fakers App from StatusPeople.com';
 		
 		if (!$validity[0])
@@ -520,7 +531,7 @@ class Payments extends Jelly
 			if ($_SESSION['userid']<1)
 			{
 				$data['logout'] = 2;
-				$data['menu'] = Fakers::_BuildMenu();
+				$data['menu'] = $this->fakers->_BuildMenu();
 			}
 		}
 		

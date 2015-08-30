@@ -1,9 +1,4 @@
 <?php
-
-// Set the sitepath constant
-$site_path = $_SERVER["DOCUMENT_ROOT"];
-define ('__SITE_PATH', $site_path);
-
 // StatusPeople Database
 /* define('__DB_HOSTNAME','127.0.0.1');
 define('__DB_USERNAME','spspan');

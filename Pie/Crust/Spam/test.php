@@ -1,4 +1,4 @@
-<?php require_once(__SITE_PATH.'/Pie/Crust/Template/header.php'); ?>
+<?php require_once(__SITE_PATH.'/Pie/Crust/Template/test_header.php'); ?>
 		<div class="column">
 			<div class="banner">
 				<ul>
@@ -8,8 +8,8 @@
 			</div>
 			<div class="one">
 				<div class="content">
-					<?=$text;?>
+					<?php echo $form->build(); ?>
 				</div>
 			</div>
 		</div>
-<?php require_once(__SITE_PATH.'/Pie/Crust/Template/footer.php'); ?>
+<?php require_once(__SITE_PATH.'/Pie/Crust/Template/test_footer.php'); ?>
