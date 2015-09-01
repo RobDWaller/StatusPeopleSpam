@@ -6,5 +6,8 @@ return [
 	'admins' => [
 		'31386162',
 		'198192466'
+	],
+	'connection' => [
+		'default' => 'statuspeople_spam'
 	]
 ];	

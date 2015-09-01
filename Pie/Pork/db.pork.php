@@ -1,54 +1,43 @@
 <?php
 
-/* DB Pork provides a very simple way to connect and query your database. It makes use of 
-PDO and prepared statements, we believe this provides a relatively flexible and secure
-means of interacting with your databases.
-
-There are five basic ways to query the database: Select Record, Select Records, Select Count,
-Insert Record and Update Record. All data is passed back using index arrays, we will build in
-an associative format in a later version.
-
-To make a query first update the ConnectionString method with your database details. Then call
-one of the relevant methods. All you need to do is pass a sql query and an array of PDO params.
-The array of params should take the following form...
-
-columnname
-	value
-	type
-	length
-	
-So a database query will look something like this... 
-
-SelectRecord("SELECT user FROM tblUsers WHERE name = :name", array('name'=>array('Pork','STR',150))); 
-
-Tip: You can debug PDO prepared statements using the following line of code...
-
-$this->DebugQuery($prep); */
-
-//namespace PorkPie\Pork;
+use Services\Config\Loader as Config;
+use Services\Routes\Loader;
 
 class DB
 {
 	
-    private static $dbh;
+    protected $dbh;
+    protected $connection;
+    protected $config;
+    protected $loader;
     
-	protected function ConnectionString()
+    protected function buildConnection($type)
+    {
+    	$this->dbh[$this->connection] = new PDO("mysql:
+        	host=".$this->config->get('database.'.$type.'.'.$this->connection.'.host').";
+        	dbname=".$this->config->get('database.'.$type.'.'.$this->connection.'.name'), 
+        	$this->config->get('database.'.$type.'.'.$this->connection.'.username'), 
+        	$this->config->get('database.'.$type.'.'.$this->connection.'.password'));
+    }
+
+    protected function ConnectionString()
 	{
-		
+		$this->config = new Config;
+		$this->loader = new Loader;
 		// Remember to update this information when you build a new application.
 		
 		try {
 			
-            if (!isset($this->dbh))
+            if (!isset($this->dbh[$this->connection]))
             {
-                $this->dbh = new PDO("mysql:host=".__DB_HOSTNAME.";dbname=".__DB_NAME, __DB_USERNAME, __DB_PASSWORD);
+                $this->loader->isTest() ? $this->buildConnection('test') : $this->buildConnection('live');
             }
 	
-            return $this->dbh;
+            return $this->dbh[$this->connection];
 		}
 		catch(PDOException $e)
 		{
-			echo 'Database connection failure. Please reload page. If problem persists contact info@statuspeople.com';
+			echo 'Database connection "'.$this->connection.'" failure. Please reload page. If problem persists contact info@statuspeople.com';
             //echo $e->getMessage();
             die();
         }

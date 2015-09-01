@@ -1,7 +1,9 @@
 <?php
 
-class MainRequests Extends Main
+class MainRequests Extends DB
 {
+
+	protected $connection = 'statuspeople';
 	
 	public function GetEmailAddresses()
 	{

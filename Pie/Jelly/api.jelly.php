@@ -10,11 +10,17 @@ class API extends AbstractController
     private $ResponseFormat;
 	private $Salt1;
 	private $Salt2;
-	
+
+    protected $apiRequests;
+    protected $paymentRequests;
+    protected $kredRequests;
+    protected $sttsplRequests;
+	protected $deepDiveRequests;
+    protected $curlRequests;
 	
     # End Header #
     
-    function __construct() {
+    public function __construct() {
         parent::__construct();
         
         $httporigin = $this->server->get('HTTP_ORIGIN');
@@ -32,6 +38,13 @@ class API extends AbstractController
         $this->json = new \JSON;
 
 		ini_set('max_execution_time', 300);
+
+        $this->apiRequests = new ApiRequests();
+        $this->paymentRequests = new PaymentRequests();
+        $this->kredRequests = new KredRequests();
+        $this->sttsplRequests = new SttsplRequests();
+        $this->deepDiveRequests = new DeepdiveRequests();
+        $this->curlRequests = new CurlRequests();
     }
     
     # Public Functions #
@@ -229,7 +242,7 @@ class API extends AbstractController
                     else 
                     {
                         $this->dbbind->AddSpamDetails($uid,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time(),time());
-						APIRequests::AddScore($uid,$bio['user']->screen_name,$bio['user']->profile_image_url,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time(),1,1,time());
+						$this->apiRequests->AddScore($uid,$bio['user']->screen_name,$bio['user']->profile_image_url,$results['spam'],$results['potential'],$results['checks'],$results['followers'],time(),1,1,time());
 						
                         $countinfo = $this->dbbind->CountUserInfoRecords($uid); 
                     
@@ -1418,15 +1431,15 @@ class API extends AbstractController
 	public function GetUserDetailsCount($vars)
 	{
 		$this->ResponseFormat = $vars['rf'];
-        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']),$this->Salt1);
+        $user = $this->validation->UnobscureNumber(urldecode($vars['usr']), $this->Salt1);
         
         $this->_CheckForResponseFormat();
         
-        if ($user)
-        {
-			$count = PaymentRequests::CountUserDetails($user);
+        if ($user) {
+            
+            $count = $this->paymentRequests->CountUserDetails($user);
 			
-			if ($count)
+            if ($count)
 			{
 				$this->_APISuccess(201,'User Exists',$count);
 			}
@@ -1471,7 +1484,7 @@ class API extends AbstractController
 		
 		if ($isvalid)
 		{
-			$count = PaymentRequests::CountUserDetails($user);
+			$count = $this->paymentRequests->CountUserDetails($user);
 			
 			if ($count)
 			{
@@ -1484,7 +1497,7 @@ class API extends AbstractController
 			}
 			else
 			{
-				$adddetails = PaymentRequests::AddUserDetails($user,$email,$title,$fname,$lname,time());
+				$adddetails = $this->paymentRequests->AddUserDetails($user,$email,$title,$fname,$lname,time());
 				
 				if ($adddetails>0)
                 {
@@ -1530,7 +1543,7 @@ class API extends AbstractController
         if ($user)
         {
             $competitors = $this->dbbind->GetCompetitorCount($user);
-			$valid = PaymentRequests::GetValidDate($user);
+			$valid = $this->paymentRequests->GetValidDate($user);
             
             if ($competitors>=0)
             {
@@ -1703,7 +1716,7 @@ class API extends AbstractController
         
         if ($user)
         {
-            $kred = KredRequests::GetKredScore($user);
+            $kred = $this->kredRequests->GetKredScore($user);
             
             //$this->errorschutney->DebugArray($kred);
             
@@ -1803,7 +1816,7 @@ class API extends AbstractController
             
             $details = $this->dbbind->GetTwitterDetails($user);
 
-            $tweet = SttsplRequests::ConvertToShortURL(0, $tweet, 0, 0);
+            $tweet = $this->sttsplRequests->ConvertToShortURL(0, $tweet, 0, 0);
 
             if (strlen($tweet['text']) <= 140)
             {
@@ -1856,7 +1869,7 @@ class API extends AbstractController
         
         if ($user&&$search)
         {
-			$valid = PaymentRequests::GetValidDate($user);
+			$valid = $this->paymentRequests->GetValidDate($user);
 			
 			$allowed = 6;
 			
@@ -2399,17 +2412,17 @@ class API extends AbstractController
 		
 		$this->_CheckText($screen_name,'Screen Name');
 		
-		$check = APIRequests::CheckForKey($apikey);
+		$check = $this->apiRequests->CheckForKey($apikey);
 		
 		if ($check)
 		{
-			$exists = APIRequests::CheckForScreenNameScore($screen_name);
+			$exists = $this->apiRequests->CheckForScreenNameScore($screen_name);
 			
 			//$this->errorschutney->DebugArray($exists);
 			
 			if ($exists>0)
 			{
-				$result = APIRequests::GetScore($screen_name);	
+				$result = $this->apiRequests->GetScore($screen_name);	
 				//$this->errorschutney->DebugArray($result);
 				
 				$results['screen_name'] = $result[1];
@@ -2451,7 +2464,7 @@ class API extends AbstractController
 		$this->errorschutney->PrintArray($bio['user']->screen_name);
 		$this->errorschutney->PrintArray($bio['user']->followers_count);
 		
-		DeepdiveRequests::AddDive($userid,$bio['user']->id_str,$bio['user']->screen_name,$bio['user']->followers_count,time());
+		$this->deepDiveRequests->AddDive($userid,$bio['user']->id_str,$bio['user']->screen_name,$bio['user']->followers_count,time());
 	}
 	
 	public function PostAddSite()
@@ -2591,7 +2604,7 @@ class API extends AbstractController
 		
         $this->_CheckForResponseFormat();
 		
-		$rss = CurlRequests::GetXMLString('http://www.eventbrite.co.uk/rss/user_list_events/78072036317');
+		$rss = $this->curlRequests->GetXMLString('http://www.eventbrite.co.uk/rss/user_list_events/78072036317');
 		
 		//$this->errorschutney->DebugArray($rss);
 					

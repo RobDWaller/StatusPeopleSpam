@@ -30,7 +30,7 @@ class Errors
 		
 	}
 
-	public function ErrorHandler($number,$message,$file,$line,$vars)
+	public function ErrorHandler($number, $message, $file, $line, $vars)
 	{
 		if (error_reporting() === 0)
 		{
@@ -39,8 +39,7 @@ class Errors
 		// Check if application is in debug mode or not.
 		elseif ($this->IsDebug)
 		{
-			
-			$message = "<p>An error ($number) occurred on line <strong>$line</strong> in the file <strong>$file</strong></p>
+			$message = "<p>Debug: An error ($number) occurred on line <strong>$line</strong> in the file <strong>$file</strong></p>
 			<p>$message</p>
 			<pre>" .print_r($vars,1). "</pre>";
 			

@@ -24,7 +24,7 @@ class Jelly
 		
 		$this->errorschutney->IsDebug = $this->loader->isTest();
 
-		set_error_handler(array($this->errorschutney,"ErrorHandler")); 
+		set_error_handler(array($this->errorschutney, "ErrorHandler"), 30709); 
 	}	
 	
 	public function Bake()

@@ -1,7 +1,9 @@
 <?php
 
-class DeepdiveRequests Extends Deepdive
+class DeepdiveRequests Extends DB
 {
+
+	protected $connection = 'statuspeople_deepdive';
 
 	public function GetDives()
 	{

@@ -2,7 +2,8 @@
 
 class PaymentRequests Extends DB
 {
-    
+    protected $connection = 'statuspeople_spam';
+
     public function CountUserDetails($twitterid)
     {
         $query = "SELECT COUNT(*)

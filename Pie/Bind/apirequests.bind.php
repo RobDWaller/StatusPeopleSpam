@@ -1,7 +1,9 @@
 <?php
 
-class APIRequests Extends DBAPI
+class APIRequests Extends DB
 {
+
+	protected $connection = 'statuspeople_spam_api';
 
 	public function CheckForScore($twitterid)
 	{

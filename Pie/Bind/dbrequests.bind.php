@@ -2,8 +2,9 @@
 
 class DBRequests extends DB
 {
-	
-		public function CountUsers($twitterid)
+	protected $connection = 'statuspeople_spam';
+
+        public function CountUsers($twitterid)
         {
             
             $query = "SELECT COUNT(*)

@@ -85,11 +85,7 @@ class Fakers extends AbstractController
                
                 $validity = $this->_CheckValidity($_SESSION['userid']);
 				
-			//$this->errorschutney->PrintArray($validity);
-			
-			//$this->errorschutney->PrintArray($_SESSION);
-			
-                if (!$validity[0])
+			if (!$validity[0])
                 {
                     
                     if (!empty($validity[1]))
@@ -97,7 +93,7 @@ class Fakers extends AbstractController
                         $data['message'] = $validity[1];
                     }
                     
-                    if ($vars[0]==1)
+                    if (isset($vars[0]) && $vars[0] == 1)
                     {
                         $data['scores'] = $this->_BuildSpamScores($vars);
                     }

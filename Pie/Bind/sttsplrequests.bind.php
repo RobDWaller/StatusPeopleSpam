@@ -1,7 +1,9 @@
 <?php
 
-class SttsplRequests extends sttspl
+class SttsplRequests extends DB
 {
+
+    protected $connection = 'sttsp';
     
     public function ConvertToShortURL($accountid, $text, $type, $network)
     {

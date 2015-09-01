@@ -4,31 +4,31 @@ return [
 
 	'live' => [
 		'statuspeople' => [
-			'host' => 'localhost',
+			'host' => 'Localhost',
 			'username' => 'root',
 			'password' => 'Vfr45tgb#',
 			'name' => 'statuspeople'
 		],
 		'sttsp' => [
-			'host' => 'localhost',
+			'host' => 'Localhost',
 			'username' => 'root',
 			'password' => 'Vfr45tgb#',
 			'name' => 'sttsp'
 		],
 		'statuspeople_deepdive' => [
-			'host' => 'localhost',
+			'host' => 'Localhost',
 			'username' => 'root',
 			'password' => 'Vfr45tgb#',
 			'name' => 'statuspeople_deepdive'
 		],
 		'statuspeople_spam' => [
-			'host' => 'localhost',
+			'host' => 'Localhost',
 			'username' => 'root',
 			'password' => 'Vfr45tgb#',
 			'name' => 'statuspeople_spam'
 		],
 		'statuspeople_spam_api' => [
-			'host' => 'localhost',
+			'host' => 'Localhost',
 			'username' => 'root',
 			'password' => 'Vfr45tgb#',
 			'name' => 'statuspeople_spam_api'
