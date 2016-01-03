@@ -1,7 +1,7 @@
 <?php namespace Services\Routes;
 
 use Services\Config\Loader as Config;
-use Services\Fakers\Lists;
+use Fakers\Lists;
 
 class Loader
 {

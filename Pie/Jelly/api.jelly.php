@@ -1,9 +1,10 @@
 <?php
 
-use Controllers\AbstractController;
+use Helpers\Server; 
 
-class API extends AbstractController
+class API extends General
 {
+    use Server;
     
     # Header #
     
@@ -23,10 +24,16 @@ class API extends AbstractController
     public function __construct() {
         parent::__construct();
         
-        $httporigin = $this->server->get('HTTP_ORIGIN');
-        $allowed = array('http://localhost','http://tools.statuspeople.com','http://test.statuspeople.com','http://hometest.statuspeople.com','http://www.statuspeople.com','http://statuspeople.com');
+        $httporigin = $this->getServer()->HTTP_ORIGIN;
+
+        $allowed = array('http://local.statuspeople.com', 
+            'http://localhost','http://tools.statuspeople.com',
+            'http://test.statuspeople.com',
+            'http://hometest.statuspeople.com',
+            'http://www.statuspeople.com',
+            'http://statuspeople.com');
         
-        if (in_array($httporigin,$allowed))
+        if (in_array($httporigin, $allowed))
         {        
             header('Access-Control-Allow-Origin:'.$httporigin);
         }
@@ -53,6 +60,7 @@ class API extends AbstractController
     
     public function GetTwitterBio($vars)
     {
+        
         $this->ResponseFormat = $vars['rf'];
         $twid = $this->validation->UnobscureNumber(urldecode($vars['twid']),$this->Salt1);
         

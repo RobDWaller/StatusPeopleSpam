@@ -2,7 +2,7 @@
 
 use Controllers\AbstractController;
 
-class Cron extends AbstractController
+class Cron extends General
 {
     
     private $cronhash = '42c3fe3bb11e9014479a36f8faeff2469c8433178c99829f62f7f83d9d7d11eb';

@@ -3,6 +3,26 @@
 		"anahkiasen/html-object" : "v1.4.2",
 		"hashids/hashids" : "v1.0.5",
 		"respect/validation" : "v0.8.3",
-		"swiftmailer/swiftmailer" : "v5.4.0"
-	}
+		"swiftmailer/swiftmailer" : "v5.4.0",
+		"ircmaxell/password-compat" : "v1.0.4",
+		"phpunit/phpunit" : "v4.8.6",
+        "nesbot/carbon" : "v1.20.0",
+        "laracasts/integrated" : "v0.15.6"
+	},
+	"autoload": {
+        "psr-4": {
+            "Test\\" : "Test/",
+            "Helpers\\" : "Helpers/",
+            "Services\\Files\\" : "Services/Files/",
+            "Services\\Messages\\" : "Services/Messages/",
+            "Services\\Collection\\" : "Services/Collection/",
+            "Services\\Object\\" : "Services/Object/",
+            "Services\\Authentication\\" : "Services/Authentication/",
+            "Services\\Routes\\" : "Services/Routes/",
+            "Services\\Config\\" : "Services/Config/",
+            "Services\\Validation\\" : "Services/Validation/",
+            "Services\\Html\\" : "Services/Html/",
+            "Fakers\\" : "Fakers/"
+        }
+    }
 }

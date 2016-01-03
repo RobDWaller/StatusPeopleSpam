@@ -3,11 +3,8 @@
 return [
 	'test' => 'localhost.localdomain',
 	'down' => false,
-	'admins' => [
-		'31386162',
-		'198192466'
-	],
 	'connection' => [
 		'default' => 'statuspeople_spam'
-	]
+	],
+	'storage' => '/var/www/spam/Pie/Storage'
 ];	

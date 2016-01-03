@@ -2,7 +2,7 @@
 
 use Controllers\AbstractController;
 
-class Generic extends AbstractController
+class Generic extends General
 {
 	
 	public function Index()
@@ -27,7 +27,7 @@ class Generic extends AbstractController
 		//$this->errorschutney->DebugArray($_COOKIE);
 		Sessions::DestroyCookies($_COOKIE);
 		
-                header('Location:'.$this->routechutney->BuildUrl('/Fakers/V/1',$this->mod_rewrite));
+                header('Location:'.Route::BuildUrl('/V/1',true));
                 
                 die();
 		

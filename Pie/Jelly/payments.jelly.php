@@ -2,7 +2,7 @@
 
 use Controllers\AbstractController;
 
-class Payments extends AbstractController
+class Payments extends General
 {
     protected $fakers;
     
@@ -16,7 +16,8 @@ class Payments extends AbstractController
     public function Details()
     {
         
-        $this->auth->isLogin();
+        //$this->auth->isLogin();
+        Generic::_IsLogin();
         
         $count = $this->payments->CountUserDetails($_SESSION['userid']);
         
@@ -80,7 +81,8 @@ class Payments extends AbstractController
     public function ProcessDetails()
     {
         
-        $this->auth->isLogin();
+        //$this->auth->isLogin();
+        Generic::_IsLogin();
         
         $count = $this->payments->CountUserDetails($_SESSION['userid']);
         
@@ -145,7 +147,8 @@ class Payments extends AbstractController
     
 	public function UpdateDetails()
 	{
-		$this->auth->isLogin();
+		//$this->auth->isLogin();
+        Generic::_IsLogin();
         
 		$valid[] = $this->validation->ValidateEmail($_POST['email']);
 		$valid[] = $this->validation->ValidateString($_POST['title'],'Title'); 
@@ -212,7 +215,8 @@ class Payments extends AbstractController
 	
     public function Subscriptions($vars)
     {
-        $this->auth->isLogin();
+        //$this->auth->isLogin();
+        Generic::_IsLogin();
         
 		$count = $this->payments->CountUserDetails($_SESSION['userid']);
 		
@@ -306,7 +310,8 @@ class Payments extends AbstractController
     
     public function Checkout()
     {
-        $this->auth->isLogin();
+        //$this->auth->isLogin();
+        Generic::_IsLogin();
         
         $userid = $_SESSION['userid'];
         
@@ -400,8 +405,9 @@ class Payments extends AbstractController
     
     public function Confirmation()
     {
-        $this->auth->isLogin();
-        
+        //$this->auth->isLogin();
+        Generic::_IsLogin();
+
         $transactionid = $_COOKIE['transactionid'];
         $email = $_COOKIE['email'];
         $firstname = $_COOKIE['firstname'];
@@ -517,7 +523,8 @@ class Payments extends AbstractController
     
     public function Cancelation()
     {
-        $this->auth->isLogin();
+        //$this->auth->isLogin();
+        Generic::_IsLogin();
         
 		$validity = $this->fakers->_CheckValidity($_SESSION['userid']);
 		$data['twitterid'] = $this->validation->ObscureNumber($_SESSION['userid'],SALT_ONE);

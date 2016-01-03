@@ -1,56 +1,67 @@
 <?php namespace Controllers;
 
-use Controllers\AbstractController;
-use Services\Routes\Loader;
-use Services\Routes\Redirector;
-use Services\Authentication\Session;
+use Fakers\ViewData;
+use Services\Routes\View;
+use Services\Authentication\Auth;
 
-class Test extends AbstractController
+class Test
 {
-	protected $loader;
-	protected $redirect;
+	protected $viewData;
+	protected $view;
+	protected $auth;
 
-	function __construct()
+	public function __construct()
 	{
-		
-		parent::__construct();
-
-		$this->loader = new Loader;
-		$this->redirect = new Redirector;
-		$this->session = new Session;
-		$this->payments = new \PaymentRequests;
-		
+		$this->viewData = new ViewData;
+		$this->view = new View;
+		$this->auth = new Auth;
 	}
 
-	public function Loader()
-    {
-    	$data['title'] = 'Maintenance Page';
-		$data['homelink'] = '/';
+	protected function login()
+	{
+		if (isset($this->view->get()->id) && isset($this->view->get()->pid) 
+			&& isset($this->view->get()->t)) {
+
+			$this->auth->login(
+				$this->view->get()->id,
+				$this->view->get()->pid,
+				$this->view->get()->t
+			);
 		
-		$this->session->destroy();
-		$this->session->destroyCookies();
-
-		if ($this->loader->isDown()) {
-			$this->glaze->view('Spam/maintenance.php',$data);
 		}
+	}
 
-		$data['form'] = $this->form->postHandleForm('/Test/LoadAccount');
+	public function menu()
+	{
+		$this->login();
 
-		$this->glaze->view('Spam/test.php',$data);
-    }
-    
-    public function LoadAccount()
-    {
-    	if ($this->loader->isTest()) {
+		echo $this->viewData->getMenu()->build();
 
-        	$account = $this->dbbind->GetUserInfoByScreenName($this->requests->post()->handle);
-        	$validdate = $this->payments->GetValidDate($account[1]); 
-        	
-        	$this->auth->login($account[1],$validdate[1]);
+		die();
+	}
 
-        	$this->redirect->to('/Fakers/Scores');
-        }
+	public function linksMenu()
+	{
+		$this->login();
 
-        $this->redirect->to('/');
-    }
+		echo $this->viewData->getLinksMenu()->build();
+
+		die();
+	}
+
+	public function accountForm()
+	{
+		$this->login();
+
+		echo $this->viewData->getAccountForm()->build();
+
+		die();
+	}
+
+	public function hiddenFields()
+	{
+		echo $this->viewData->getHiddenFields()->build();
+
+		die();
+	}
 }

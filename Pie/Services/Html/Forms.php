@@ -15,7 +15,7 @@ class Forms extends Base
 	public function open($attributes = null)
 	{
 		$this->inputs = array();
-		$this->options = array();
+		$this->options = '';
 		$this->form = Element::form();
 		$this->addAttributes($this->form, $attributes);
 		return $this;
@@ -23,8 +23,8 @@ class Forms extends Base
 
 	protected function isSelected($element, $data, $value, $selected)
 	{
-		if ($data[$value]==$selected) {
-			$this->addAttributes($element,['selected'=>'true']);
+		if ($data[$value] == $selected) {
+			$this->addAttributes($element, ['selected' => 'true']);
 		}
 	}
 
@@ -32,7 +32,7 @@ class Forms extends Base
 	{
 		if ($type!='hidden') {	
 			$this->inputs[] = $this->buildFieldset(
-				$this->addLabel($label,$for),Input::create($type, $name, $value, $attributes)
+				$this->addLabel($label,$for), Input::create($type, $name, $value, $attributes)
 			);
 
 			return $this;
@@ -54,46 +54,35 @@ class Forms extends Base
 		$selected = null
 	)
 	{
-		$this->select = Element::select();
-		$this->addAttributes($this->select,$attributes);
+		$this->createOptions($data, $text, $value);
 
-		foreach ($data as $key => $v) {
-			$option = Element::option($v[$text]);
-			
-			$this->addAttributes(
-				$option,
-				['Value'=>$v[$value]]
-			);
-			
-			$this->isSelected(
-				$option,
-				$v,
-				$value,
-				$selected
-			);
+		$this->select = Element::select($this->options);
+		$this->addAttributes($this->select, $attributes);
 
-			$this->options[] = $option;
-		}
-
-		
-		$this->select->nest($this->options);
-
-		$this->inputs[] = $this->buildFieldset($this->addLabel($label,$for),$this->select);
+		$this->inputs[] = $this->buildFieldset($this->addLabel($label, $for), $this->select);
 
 		return $this;
 	}
 
-	public function buildFieldset($label,$input)
+	protected function createOptions($data, $text, $value)
 	{
-		return Element::fieldset()->nest([$label,$input]);
+		foreach ($data as $key => $v) {
+			$option = '<option value="' . $v[$value] . '">' . $v[$text] . '</option>';
+
+			$this->options .= $option;
+		}
 	}
 
-	public function addLabel($text,$for)
+	public function buildFieldset($label, $input)
+	{
+		return Element::fieldset()->nest([$label, $input]);
+	}
+
+	public function addLabel($text, $for)
 	{
 		$this->label = '';
 
-		if ($text != null)
-		{
+		if ($text != null) {
 			$this->label = Element::label($text);
 
 			$this->addAttributes($this->label,['for'=>$for]);

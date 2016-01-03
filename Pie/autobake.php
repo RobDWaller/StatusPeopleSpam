@@ -38,7 +38,7 @@ function autoLoader($class)
 		{
 			
 			$path = __SITE_PATH.$directory.sprintf($file, strtolower($class));
-			$path2 = __SITE_PATH.$directory.sprintf($file,str_replace('\\','/',$class));
+			$path2 = __SITE_PATH.$directory.sprintf($file, str_replace('\\','/',$class));
                         //echo $path.'<br/>';
                         
 			/*echo '<p>'.$path.'</p>';*/

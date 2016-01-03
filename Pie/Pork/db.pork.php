@@ -38,7 +38,7 @@ class DB
 		catch(PDOException $e)
 		{
 			echo 'Database connection "'.$this->connection.'" failure. Please reload page. If problem persists contact info@statuspeople.com';
-            //echo $e->getMessage();
+            echo $e->getMessage();
             die();
         }
 		
@@ -68,7 +68,7 @@ class DB
 	
 	// Select Records returns multiple rows from the database
 	
-	public function SelectRecords($query,$params = null)
+	public function SelectRecords($query, $params = null)
 	{
 		
 		$dbh = self::ConnectionString();
@@ -77,14 +77,18 @@ class DB
 		
 		if (isset($params))
 		{
-			self::BuildParams($params,$prep);
+			self::BuildParams($params, $prep);
 		}
 		
 		$prep->execute();
+
+		if ($prep->errorCode() !== '00000') {
+			var_dump($prep->errorCode());
+			var_dump($prep->errorInfo());
+			die('Fail');
+		}
 		
-		$result = $prep->fetchAll();
-		
-		return $result;
+		return $prep->fetchAll();
 		
 	}
 	

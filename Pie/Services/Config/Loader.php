@@ -5,9 +5,9 @@ class Loader
 	protected $configUrl;
 	protected $value;
 
-	public function __construct()
+	public function __construct($url = null)
 	{
-		$this->configUrl = $_SERVER['DOCUMENT_ROOT'] . '/Pie/Config/';
+		$this->configUrl = $url ? $url : $_SERVER['DOCUMENT_ROOT'] . '/Pie/Config/';
 	}
 
 	protected function parts($fileString)
