@@ -1,4 +1,4 @@
 /Pie/vendor
 /Pie/phpunit.xml
-/sftp-config.json
+/Pie/sftp-config.json
 /Pie/composer.lock
