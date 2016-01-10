@@ -2,6 +2,7 @@
 
 use Services\Files\Facade as File;
 use Services\Config\Facade as Config;
+use Services\Routes\Host;
 use Helpers\Session;
 use Helpers\Serialize;
 use Exception;
@@ -47,7 +48,9 @@ class Accessor
 
 	public function messagesDirectory()
 	{
-		return Config::make()->get('app.storage').'/Messages/';
+		$host = new Host();
+
+		return Config::make()->get('app.storage.' . $host->whichHost()).'/Messages/';
 	}
 
 	protected function messages()
