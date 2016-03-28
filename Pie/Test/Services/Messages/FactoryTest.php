@@ -37,7 +37,7 @@ class FactoryTest extends Build
 	public function testForceFactoryFail()
 	{
 		$this->setExpectedException(
-          'InvalidArgumentException', 'Invlaid Message Type'
+          'InvalidArgumentException', 'Invalid Message Type blasdsad. Must be either alert, failure, success or info.'
         );
 
 		$factory = new Factory('blasdsad', ['hello world'], 'email');

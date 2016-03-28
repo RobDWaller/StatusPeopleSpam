@@ -5,10 +5,12 @@
 		"respect/validation" : "v0.8.3",
 		"swiftmailer/swiftmailer" : "v5.4.0",
 		"ircmaxell/password-compat" : "v1.0.4",
-		"phpunit/phpunit" : "v4.8.6",
-        "nesbot/carbon" : "v1.20.0",
-        "laracasts/integrated" : "v0.15.6"
+		"nesbot/carbon" : "v1.20.0"
 	},
+    "require-dev": {
+        "phpunit/phpunit" : "v4.8.6",
+        "laracasts/integrated" : "v0.15.6"
+    },
 	"autoload": {
         "psr-4": {
             "Test\\" : "Test/",

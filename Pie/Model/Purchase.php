@@ -22,4 +22,23 @@ class Purchase extends AbstractModel
 
 		return $this->get();
 	}
+
+	public function addPayment($userId, $transactionId, $currency, $amount, $type, $complete = 0, $created)
+	{
+		$this->query = "INSERT INTO {$this->table} 
+			(userid, transactionid, currency, amount, type, complete, created)
+			VALUES (:userid, :transactionid, :currency, :amount, :type, :complete, :created)";
+
+		$this->params = [
+			'userid' => [$userId, 'INT', 0],
+			'transactionid' => [$transactionId, 'INT', 0],
+			'currency' => [$currency, 'STR', 3],
+			'amount' => [$amount, 'INT', 0],
+			'type' => [$type, 'INT', 0],
+			'complete' => [$complete, 'INT', 0],
+			'created' => [$created, 'INT', 0]
+		];
+
+		return $this->create();
+	}
 }

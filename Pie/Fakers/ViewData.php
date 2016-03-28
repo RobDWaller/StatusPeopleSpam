@@ -59,6 +59,11 @@ class ViewData
 		$this->logo = $this->config->get('view.logo');
 	}
 
+	public function setAdmin($state)
+	{
+		$this->admin = $state;
+	}
+
 	public function getMetaData()
 	{
 		return $this->metaData;
@@ -86,14 +91,14 @@ class ViewData
 
 	public function getMenu()
 	{
-		$menu = new Menu($this->auth, new MainMenu());
+		$menu = new Menu($this->auth, new MainMenu(), $this->admin);
 
 		return $menu->make();
 	}
 
 	public function getAccountForm()
 	{
-		return $this->admin ? $this->buildAdminLink() : $this->buildAccountForm();
+		return $this->admin ? false : $this->buildAccountForm();
 	}
 
 	protected function buildAccountForm()
@@ -101,13 +106,6 @@ class ViewData
 		$form = new AccountForm();
 
 		return $form->make();
-	}
-
-	protected function buildAdminLink()
-	{
-		$admin = new Admin();
-
-		return $admin->link();
 	}
 
 	public function getHiddenFields()

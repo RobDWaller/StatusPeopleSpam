@@ -23,7 +23,6 @@ class Loader
 		$this->config = new Config;
 		$this->api = new \APIRequests;
 		$this->build = new \Build();
-		//$this->fakers = new \Fakers();
 		$this->lists = new Lists();
 	}
 	

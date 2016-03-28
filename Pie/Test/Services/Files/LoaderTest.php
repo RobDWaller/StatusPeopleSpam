@@ -44,6 +44,8 @@ class LoaderTest extends Build
 	{
 		$file = new Loader($_SERVER['DOCUMENT_ROOT']."/Pie/Storage/Test/", "bar", "txt");
 
+		$file->deleteDirectory();
+
 		$this->assertTrue($file->makeDirectory());
 
 		$this->assertTrue($file->deleteDirectory());

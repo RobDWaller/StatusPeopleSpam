@@ -1,0 +1,1 @@
+ALTER TABLE spsp_fakes DROP INDEX created;

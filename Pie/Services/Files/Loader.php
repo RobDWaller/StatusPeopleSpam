@@ -40,6 +40,10 @@ class Loader
 	protected function open($mode)
 	{
 		$this->handle = fopen($this->fileString, $mode);
+
+		if (!$this->handle) {
+			$this->fail('Failed to open file in mode [' . $mode . ']');
+		}
 	}
 
 	protected function close()
@@ -80,18 +84,21 @@ class Loader
 			$this->fail('File already exists');
 		}
 
-		if ($this->makeDirectory()) {
-			$this->open('x+');
+		$this->makeDirectory();
 
-			return $this;
-		}
+		$this->open('x+');
 
-		$this->fail('Failed to create file');
+		return $this;
 	}
 
 	public function makeDirectory()
 	{
-		return $this->directoryExists() ? true : mkdir($this->directory);
+		if(!$this->directoryExists()) {
+			return mkdir($this->directory) ? true :
+				$this->fail('Failed to create directory [' . $this->directory . ']');
+		}
+
+		return false;
 	}
 
 	public function delete()
