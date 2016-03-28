@@ -32,7 +32,7 @@ class Html
 
  			$close = $this->closeButton($mesObj); 
 
- 			$holder = Element::div($icon.$list.$close, ['class' => $mesObj->getType().'message bree']);
+ 			$holder = Element::div($icon.$list.$close, ['class' => $mesObj->getType().'message bree', 'id' => $mesObj->getType().'message']);
 
  			$html .= $holder->build(); 
  		}
@@ -51,7 +51,7 @@ class Html
 	protected function closeButton($message)
 	{
 		return Element::div(
-			Element::span('X', ['class' => $message->getType().'close']), 
+			Element::span('X', ['class' => $message->getType().'close', 'id' => $message->getType().'close']), 
 			['class' => $message->getType().'close s0 e3']
 		);
 	}

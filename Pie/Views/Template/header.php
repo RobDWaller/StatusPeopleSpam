@@ -19,7 +19,7 @@
 					<?=$hiddenFields->build();?>
 				</div>
 				<div class="connect">
-					<?=$accountForm->build();?>
+					<?=$accountForm !== false ? $accountForm->build() : '';?>
 				</div>
 				<div class="selectMenu">
 					<div></div>

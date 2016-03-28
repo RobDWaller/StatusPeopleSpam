@@ -41,9 +41,7 @@ class View
 
 	public function addData($key, $value)
 	{
-		if (!isset($this->data[$key])) {
-			$this->data[$key] = $value;
-		}
+		$this->data[$key] = $value;
 	}
 
 	public function to($location)

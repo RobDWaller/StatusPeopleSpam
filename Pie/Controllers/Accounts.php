@@ -5,6 +5,7 @@ use Model\UserInfo;
 use Model\Valid;
 use Model\User;
 use Model\Purchase;
+use Fakers\Forms;
 
 class Accounts extends AbstractController
 {
@@ -15,6 +16,8 @@ class Accounts extends AbstractController
     protected $user;
 
     protected $purchase;
+
+    protected $form;
 
 	function __construct()
 	{
@@ -29,6 +32,8 @@ class Accounts extends AbstractController
         $this->purchase = new Purchase;
 
 		$this->valid = new Valid;	
+
+        $this->form = new Forms;
 	}
 
 	public function User()
@@ -42,20 +47,21 @@ class Accounts extends AbstractController
 
     public function Search()
     {
-        if (isset($this->view->post()->handle)) {
-            $user = $this->userInfo->findScreenName($this->view->post()->handle);
+        $valid = $this->validator->csrf($this->view->post()->csrf)
+            ->string('Twitter Handle', $this->view->post()->handle)->check();
 
-            if ($user->count()) {
-                $this->buildUserDetails((int) $user->first()->twitterid);
-            }
+        $valid->isFail('/Dashboard/Home');
 
-            $this->redirect->messages(
-                $this->auth->getUserKey(), 
-                ['alert' => ['messages' => ['No User Name Found']]]
-            )->to('/Dashboard/Home');
+        $user = $this->userInfo->findScreenName($this->view->post()->handle);
+
+        if ($user->count()) {
+            $this->redirect->to('/Accounts/User?id=' . $this->hash->encode((int) $user->first()->twitterid));
         }
 
-        $this->noUserCredentials();
+        $this->redirect->messages(
+            $this->auth->getUserKey(), 
+            ['alert' => ['messages' => ['No User Name Found']]]
+        )->to('/Dashboard/Home');
     }
     
     protected function noUserCredentials()
@@ -76,6 +82,7 @@ class Accounts extends AbstractController
             $this->view->addData('user', $user);
             $this->view->addData('purchases', $this->purchase->findUserPurchases($user->first()->twitterid));
             $this->view->addData('hash', $this->hash);
+            $this->view->addData('form', $this->form->adminPaymentForm('/Payments/Add', 'Add Payment', $this->hash->encode($user->first()->twitterid)));
             
             $this->view->setFile('Views/Accounts/user.php');
             
@@ -100,15 +107,31 @@ class Accounts extends AbstractController
 
                 $valid = $this->valid->findAccoutType($user->first()->twitterid); 
             	
-            	if ($user->count() && $valid->count()) {
-            	 	$this->auth->login($user->first()->twitterid, $user->first()->twitterid, $this->auth->processType($valid->first()));
+            	if ($user->count()) {
+            	 	$this->auth->login(
+                        $user->first()->twitterid, 
+                        $user->first()->twitterid,
+                        $this->auth->processType($valid->first())
+                    );
+
             	 	$this->redirect->to('/Fakers/Scores');	
             	}
 
-
+                $this->accountLoadFail('Something Went Wrong, Could Not Access User Account');
 		    }
+
+            $this->accountLoadFail('Something Went Wrong, Invalid User');
 		}
 
-        $this->redirect->messages($this->auth->getUserKey(), ['failure' => ['messages' => ['Something Went Wrong, Could Not Access User Account']]])->to('/Dashboard/Home');
+        $this->accountLoadFail('Something Went Wrong, Could Not Find User Account');    
+    }
+
+    protected function accountLoadFail($message)
+    {
+        $this->redirect->messages(
+                $this->auth->getUserKey(), 
+                ['failure' => ['messages' => [$message]]]
+            )
+            ->to('/Dashboard/Home');
     }
 }
