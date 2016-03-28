@@ -15,6 +15,7 @@
 					</div>
 				</div>
 			</footer>
+			<script src="/Pie/Public/Assets/js/fakers.js"></script>
 			<script src="/Pie/Crust/Template/minify/js/spam.class.min.js"></script>
 			<script src="/Pie/Crust/Template/minify/js/closemessages.min.js"></script>
 		</div>

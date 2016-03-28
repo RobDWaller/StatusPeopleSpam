@@ -13,23 +13,12 @@ abstract class AbstractModel extends Connector
 
 	protected $result;  
 
-	public function count($id = false)
-	{
-		$where = null;
-		$params = [];
-
-		if ($id) {
-			$where = "WHERE id = :id";
-        	$params = array('id'=>array($id,'INT',0));
-		}
-
-		$query = "SELECT COUNT(*)
-                FROM {$this->table}
-                $where";
-                
+	public function count()
+	{              
+        $result = $this->SelectCount($this->query, $this->params);
         
-        $result = $this->SelectCount($query, $params);
-        
+        $this->clean();
+
         return $result;
 	}
 
@@ -81,7 +70,7 @@ abstract class AbstractModel extends Connector
 		$this->result = null;
 	}
 
-	protected function get()
+	public function get()
 	{
 		$this->getRecords();
 
@@ -90,5 +79,23 @@ abstract class AbstractModel extends Connector
 		$this->clean();
 
 		return $collection; 
+	}
+
+	public function update()
+	{
+		$result = $this->UpdateRecord($this->query, $this->params);
+        
+        $this->clean();
+
+        return $result;
+	}
+
+	public function create()
+	{
+		$result = $this->InsertRecord($this->query, $this->params);
+        
+        $this->clean();
+
+        return $result;
 	}
 }

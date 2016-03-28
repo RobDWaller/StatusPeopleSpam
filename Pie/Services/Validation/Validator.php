@@ -9,12 +9,16 @@ use Services\Messages\Collection;
 use Services\Messages\Builder;
 use Services\Messages\Accessor;
 use Services\Authentication\Facade as Authentication;
+use Helpers\Csrf;
+use Exception\CsrfException;
 
 class Validator
 {
 	use Redirector;
 
 	use Random;
+
+	use Csrf;
 
 	protected $results;
 	protected $valid;
@@ -47,6 +51,13 @@ class Validator
 	public function email($name, $email)
 	{
 		$this->results[$name] = v::email()->notEmpty()->validate($email);
+
+		return $this;
+	}
+
+	public function required($name, $value)
+	{
+		$this->results[$name] = v::notEmpty()->validate($value);
 
 		return $this;
 	}
@@ -100,5 +111,14 @@ class Validator
 	{
 		$accessor = new Accessor();
 		return $accessor->get();
+	}
+
+	public function csrf($key = null)
+	{
+		if (!$this->csrfCheck($key)) {
+			throw new CsrfException('Invalid Form Submission');
+		}	
+
+		return $this;
 	}
 }

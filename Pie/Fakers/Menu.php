@@ -7,20 +7,24 @@ class Menu
 {
 	protected $auth;
 	protected $list;
+	protected $admin;
 
-	public function __construct(Auth $auth, MainMenuList $list)
+	public function __construct(Auth $auth, MainMenuList $list, $admin = false)
 	{
 		$this->auth = $auth;
 		$this->list = $list;
+		$this->admin = $admin;
 	}
 
 	public function make()
 	{
 		$this->list->open(['class' => 'fakericons']);
 
-		if (!$this->auth->isLoggedIn()) {
+		if ($this->admin) {
+			$this->adminMenu();
+		} elseif (!$this->auth->isLoggedIn()) {
 			$this->loggedOut();
-		} elseif ($this->auth->user()->type == 1) {
+		} elseif ((int) $this->auth->user()->type === 1) {
 			$this->noSubscription();
 		} else {
 			$this->subscription();
@@ -32,6 +36,12 @@ class Menu
 	public function build()
 	{
 		return $this->list->build();
+	}
+
+	protected function adminMenu()
+	{
+		$this->createListElement('p', 'ico', 'Admin Home', 'Admin Home', '/Dashboard/Home');
+		$this->createListElement('p', 'ico', 'Logout', 'Logout', '/Admin/Logout');
 	}
 
 	protected function loggedOut()

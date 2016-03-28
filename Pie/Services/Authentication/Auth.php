@@ -81,8 +81,8 @@ class Auth
 		return $this->user()->user_key;
 	}
 
-	public function processType($data)
+	public function processType($data = null)
 	{	
-		return $data->valid >= time() ? $data->type : 0;
+		return $data != null && $data->valid >= time() ? $data->type : 0;
 	}
 }

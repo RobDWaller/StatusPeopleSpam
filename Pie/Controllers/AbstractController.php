@@ -62,6 +62,11 @@ abstract class AbstractController
 		$this->view->addData('footerPath', $viewData->getFooterUrl());
 	}
 
+	public function overrideViewData($admin)
+	{
+		$this->viewData($admin);
+	}
+
 	protected function setMessages()
 	{
 		$this->view->addData('messages', $this->buildMessages($this->redirect));

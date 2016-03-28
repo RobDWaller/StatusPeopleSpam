@@ -119,7 +119,7 @@ class DB
 	
 	//Updated
 	
-	public function InsertRecord($query,$params = null)
+	public function InsertRecord($query, $params = null)
 	{
 		
 		$dbh = self::ConnectionString();

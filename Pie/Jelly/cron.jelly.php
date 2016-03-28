@@ -276,7 +276,7 @@ class Cron extends General
         {
 			$records = $users = $this->dbbind->GetAutoRemoveAccounts(5,strtotime('-2 Hours'));
 			
-			$this->errorschutney->PrintArray($users);
+			//$this->errorschutney->PrintArray($users);
 			
 			//$this->dbbind->UpdateCheckerTime($u['userid'],time());
 				
@@ -707,14 +707,13 @@ class Cron extends General
 	
     public function AutoRemoveSpam()
     {
-		if (true)
-		//if ($_POST['ch'] == $this->cronhash)
-		{
+		if (true) {
             
             $users = $this->dbbind->GetAutoSpamUsers();
             
-			//$this->errorschutney->PrintArray($users);
-			
+            // $this->errorschutney->DebugArray($users);
+            // die();
+
             if ($users)
             {
                 
@@ -722,9 +721,7 @@ class Cron extends General
                 {
                     $details = $this->dbbind->GetTwitterDetails($u['userid']);
                     
-					//$this->errorschutney->PrintArray($details);
-                    
-                    $fakes = $this->dbbind->GetFakes($u['userid'],1,50);
+					$fakes = $this->dbbind->GetFakes($u['userid'],1,50);
                     
 					if (!empty($fakes))
 					{

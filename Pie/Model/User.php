@@ -26,7 +26,7 @@ class User extends AbstractModel
 
 	public function findNewUsers($limit = 10)
 	{
-		$this->query = "SELECT u.id, u.twitterid, ui.screen_name
+		$this->query = "SELECT u.id, u.twitterid, ui.screen_name, ui.avatar, u.created
 			FROM {$this->table} as u
 			JOIN spsp_user_info as ui ON u.twitterid = ui.twitterid
 			WHERE u.live = 1 AND ui.live
