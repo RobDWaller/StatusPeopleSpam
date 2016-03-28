@@ -641,18 +641,14 @@ class DBRequests extends DB
 	
         public function GetAutoSpamUsers()
         {
-/*             $query = "SELECT c.userid
-                    FROM spsp_checks AS c
-                    JOIN (SELECT userid FROM spsp_fakes WHERE live = 1) AS f
-                    ON c.userid = f.userid AND c.twitterid = f.userid
-                    WHERE c.autoremove = 1 AND c.accounttype = 1
-                    GROUP BY c.userid
-                    ORDER BY c.autocheck ASC
-                    LIMIT 0,3"; */
-			
+			$time = time();
+
 			$query = "SELECT c.userid
                     FROM spsp_checks AS c
-                    WHERE c.autoremove = 1 AND c.accounttype = 1
+                    JOIN spsp_valid AS v on c.userid = v.userid
+                    WHERE c.autoremove = 1 
+                    AND c.accounttype = 1
+                    AND v.valid >= $time
                     GROUP BY c.userid
                     ORDER BY c.autocheck ASC
                     LIMIT 0,10";
