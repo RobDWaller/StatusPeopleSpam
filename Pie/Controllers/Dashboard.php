@@ -33,7 +33,7 @@ class Dashboard extends AbstractController
 		$this->view->addData('block_week_count', $this->fake->weekBlockCount());
 		$this->view->addData('blocks', $this->fake->findNewBlocks(7));
 		$this->view->addData('hash', $this->hash);
-		$this->view->addData('form', $this->form->postHandleForm('/Accounts/Search'));
+		$this->view->addData('form', $this->form->postHandleForm('/Account/Search'));
 		
 		$this->view->setFile('Views/Dashboard/home.php');
 		$this->view->load();
