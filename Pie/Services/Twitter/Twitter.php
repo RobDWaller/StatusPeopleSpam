@@ -7,5 +7,7 @@ class Twitter extends AbstractTwitter
 		$this->client($token, $secret);
 
 		$this->result = $this->twitter->get('users/show', ['user_id' => $userid]);
+
+		return $this->user();
 	}
 }
