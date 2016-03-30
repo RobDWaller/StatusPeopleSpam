@@ -35,4 +35,15 @@ class User extends AbstractModel
 
 		return $this->get();
 	}
+
+	public function getTwitterDetails($twitterid)
+    {
+        $this->query = "SELECT *
+                    FROM spsp_users
+                    WHERE twitterid = :twitterid AND live = 1";
+        
+        $this->params = ['twitterid' => [$twitterid, 'INT', 0]];
+        
+        return $this->get();
+    }
 }
