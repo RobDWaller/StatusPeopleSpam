@@ -1248,7 +1248,7 @@ class Fakers extends General
             
 				if ($ok)
 				{
-					$ip = $this->server->get("REMOTE_ADDR");
+					$ip = $_SERVER["REMOTE_ADDR"];
 					//$_SESSION['message'] = $this->build->PageMessage('success',array('Twitter successfully authenticated.'));
 					$this->dbbind->AddLogin($userid,$ip,time());
 					//Generic::_LastPage();

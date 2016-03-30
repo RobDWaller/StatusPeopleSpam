@@ -2,3 +2,4 @@
 /Pie/phpunit.xml
 /Pie/sftp-config.json
 /Pie/composer.lock
+/Pie/node_modules
