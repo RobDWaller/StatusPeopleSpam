@@ -25,7 +25,7 @@
 						<td><?=$user->first()->screen_name;?></td>
 						<td><?=$user->first()->email;?></td>
 						<td><?=$user->first()->title;?> <?=$user->first()->forename;?> <?=$user->first()->surname;?></td>
-						<td><a href="/Accounts/Loader?id=<?=$hash->encode($user->first()->twitterid);?>">View Account</a></td>
+						<td><a href="/Account/Loader?id=<?=$hash->encode($user->first()->twitterid);?>">View Account</a></td>
 					</tr>
 				</tbody>
 			</table>
