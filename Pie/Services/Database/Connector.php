@@ -1,4 +1,4 @@
-<?php namespace Services\Db;
+<?php namespace Services\Database;
 
 use Services\Config\Loader as Config;
 use Helpers\Application;

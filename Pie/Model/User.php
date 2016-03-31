@@ -1,7 +1,6 @@
 <?php namespace Model;
 
 use Model\AbstractModel;
-use Services\Database\Collection;
 
 class User extends AbstractModel
 {
@@ -19,7 +18,22 @@ class User extends AbstractModel
                 WHERE u.twitterid = :twitterid
                 AND u.live = 1 AND ui.live";
             
-        $this->params = ['twitterid' => [$id, 'INT', 140]];
+        $this->params = ['twitterid' => [$id, 'INT', 0]];
+        
+        return $this->get();
+	}
+
+	public function findUserDetailsByScreenName($screenName)
+	{
+		$this->query = "SELECT u.id, u.twitterid, ui.screen_name, ui.avatar,
+				ud.email, ud.title, ud.forename, ud.surname
+                FROM {$this->table} AS u 
+                JOIN spsp_user_info AS ui ON u.twitterid = ui.twitterid 
+                LEFT JOIN spsp_user_details AS ud ON u.twitterid = ud.twitterid
+                WHERE ui.screen_name = :screenName
+                AND u.live = 1 AND ui.live";
+            
+        $this->params = ['screenName' => [$screenName, 'STR', 140]];
         
         return $this->get();
 	}	

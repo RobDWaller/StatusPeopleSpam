@@ -1,6 +1,6 @@
 <?php namespace Model;
 
-use Services\Db\Connector;
+use Services\Database\Connector;
 use Services\Database\Collection;
 
 abstract class AbstractModel extends Connector

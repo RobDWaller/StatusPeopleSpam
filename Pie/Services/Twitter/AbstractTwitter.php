@@ -1,5 +1,7 @@
 <?php namespace Services\Twitter;
 
+use Services\Twitter\OAuth\TwitterOauth;
+
 class AbstractTwitter
 {
 	protected $consumerKey = '';
@@ -14,6 +16,6 @@ class AbstractTwitter
 
 	public function client($token, $secret)
 	{
-		$this->twitter = TwitterOAuth($this->consumerKey, $this->consumerSecret, $token, $secret);
+		$this->twitter = new TwitterOauth($this->consumerKey, $this->consumerSecret, $token, $secret);
 	}
 }
