@@ -27,7 +27,7 @@
 					<?php foreach ($newUsers as $nu) { ?>
 						<tr>
 							<td><a href="https://twitter.com/<?=$nu->screen_name;?>" target="_blank"><img src="<?=$nu->avatar;?>" width="48px" height="48px" /></a></td>
-							<td><a href="/Accounts/User?id=<?=$hash->encode($nu->twitterid);?>"><?=$nu->screen_name;?></a></td>
+							<td><a href="/Account/User?id=<?=$hash->encode($nu->twitterid);?>"><?=$nu->screen_name;?></a></td>
 							<td><?=Fakers\UnitConverter::timestampToDate($nu->created);?></td>
 						</tr>
 					<?php } ?>
