@@ -19,4 +19,27 @@ class Admin extends AbstractModel
         
         return $this->get();
 	}	
+
+	public function addAdmin($email, $password)
+	{
+		$time = time();
+
+		$this->query = "INSERT INTO {$this->table} (email, password, created)
+			VALUES (:email, :password, {$time})";
+
+		$this->params = ['email' => [$email, 'STR', 150],
+			'password' => [$password, 'STR', 150]];
+
+		return $this->create();
+	}
+
+	public function deleteAdmin($email) 
+	{
+		$this->query = "DELETE FROM {$this->table}
+			WHERE email = :email";
+
+		$this->params = ['email' => [$email, 'STR', 150]];
+
+		$this->delete();
+	}
 }

@@ -40,17 +40,17 @@ class Admin extends AbstractController
 
 		$post = $this->view->post();
 
-		$valid = $this->validator->csrf($post->csrf)->string('Password', $post->password)
-			->email('Email', $post->email)->check();
+		$valid = $this->validator->csrf($post->csrf)->string('Password', $post->login_password)
+			->email('Email', $post->login_email)->check();
 
 		$valid->isFail('/Admin/Login');
 
 		$admin = new ModelAdmin();
 
-		$login = $admin->findEmailPassword($post->email);
+		$login = $admin->findEmailPassword($post->login_email);
 
 		if ($login->count() > 0) {
-			$this->loginAdmin($post->password, $login->first()->password, $login->first()->id);
+			$this->loginAdmin($post->login_password, $login->first()->password, $login->first()->id);
 		}
 
 		$this->login->addLogin($this->ipAddress(), 0);
@@ -63,17 +63,6 @@ class Admin extends AbstractController
 		$this->auth->destroy();
 
 		$this->redirect->to('/Admin/Login');
-	}
-
-	public function createHash()
-	{
-		$password = new Password(PASSWORD_BCRYPT);
-
-		if ($this->loader->isTest()) {
-			echo $this->view->get()->pwd . PHP_EOL;
-			echo $password->generate($this->view->get()->pwd);
-			die();
-		}
 	}
 
 	protected function checkLoginAttempts()

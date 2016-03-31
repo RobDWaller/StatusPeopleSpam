@@ -35,4 +35,14 @@ class Login extends AbstractModel
 
 		return $this->create();
 	}
+
+	public function deleteLogin($ip)
+	{
+		$this->query = "DELETE FROM {$this->table}
+			WHERE ip_address = :ip";
+
+		$this->params = ['ip' => [$ip, 'STR', 20]];
+
+		$this->update();
+	}
 }

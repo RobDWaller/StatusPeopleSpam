@@ -18,7 +18,6 @@
      stopOnSkipped="false"
      testSuiteLoaderFile="./Test/Build.php"
 
-     strict="false"
      verbose="false"
     >
 

@@ -24,7 +24,9 @@
             "Services\\Config\\" : "Services/Config/",
             "Services\\Validation\\" : "Services/Validation/",
             "Services\\Html\\" : "Services/Html/",
-            "Fakers\\" : "Fakers/"
+            "Fakers\\" : "Fakers/",
+	    "Model\\" : "Model/",
+	    "Services\\Db\\" : "Services/Db/"
         }
     }
 }

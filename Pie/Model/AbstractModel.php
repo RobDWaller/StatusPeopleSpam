@@ -1,6 +1,6 @@
 <?php namespace Model;
 
-use \DB as Connector;
+use Services\Db\Connector;
 use Services\Database\Collection;
 
 abstract class AbstractModel extends Connector
@@ -93,6 +93,15 @@ abstract class AbstractModel extends Connector
 	public function create()
 	{
 		$result = $this->InsertRecord($this->query, $this->params);
+        
+        $this->clean();
+
+        return $result;
+	}
+
+	public function delete()
+	{
+		$result = $this->UpdateRecord($this->query, $this->params);
         
         $this->clean();
 
