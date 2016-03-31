@@ -14,7 +14,7 @@
 	"autoload": {
         "psr-4": {
             "Test\\" : "Test/",
-            "Helpers\\" : "Helpers/",
+	    "Helpers\\" : "Helpers/",
             "Services\\Files\\" : "Services/Files/",
             "Services\\Messages\\" : "Services/Messages/",
             "Services\\Collection\\" : "Services/Collection/",

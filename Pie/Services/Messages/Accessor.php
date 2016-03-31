@@ -50,7 +50,7 @@ class Accessor
 	{
 		$host = new Host();
 
-		return Config::make()->get('app.storage.' . $host->whichHost()).'/Messages/';
+		return Config::make()->get('app.storage.' . $host->whichHost()) . '/Messages/';
 	}
 
 	protected function messages()

@@ -9,7 +9,7 @@ class Build extends Goutte
 
 	public function setUp()
 	{
-		$_SERVER['DOCUMENT_ROOT'] = '/var/www/spam';
+		$_SERVER['DOCUMENT_ROOT'] = '/var/spam/html';
 	}
 
 	protected function login($id, $primaryId, $type, $url) 
