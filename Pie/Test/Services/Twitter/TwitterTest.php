@@ -21,6 +21,6 @@ class TwitterTest extends Build
 	{
 		$twitter = new Twitter();
 
-		$result = $twitter->getBio($this->user->token, $this->user->secret, $this->user->twitterid);
+		$result = $twitter->getBio($this->user->first()->token, $this->user->first()->secret, $this->user->first()->twitterid);
 	}
 }
