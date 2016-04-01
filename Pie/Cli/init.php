@@ -4,6 +4,10 @@ if (!defined('__SITE_PATH')) {
         define('__SITE_PATH', '/var/spam/html/');
 }
 
+if (empty($_SERVER['DOCUMENT_ROOT'])) {
+	$_SERVER['DOCUMENT_ROOT'] = '/var/spam/html';
+}
+
 echo 'Starting!!'.PHP_EOL;
 ini_set('display_errors', 1);
 
