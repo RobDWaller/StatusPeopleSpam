@@ -14,10 +14,10 @@ class DB
     protected function buildConnection($type)
     {
     	$this->dbh[$this->connection] = new PDO("mysql:
-        	host=".$this->config->get('database.'.$type.'.'.$this->connection.'.host').";
-        	dbname=".$this->config->get('database.'.$type.'.'.$this->connection.'.name'), 
-        	$this->config->get('database.'.$type.'.'.$this->connection.'.username'), 
-        	$this->config->get('database.'.$type.'.'.$this->connection.'.password'));
+        	host=" . $this->config->get('database.' . $type . '.' . $this->connection . '.host').";
+        	dbname=" . $this->config->get('database.' . $type . '.' . $this->connection. '.name'), 
+        	$this->config->get('database.' . $type. '.' . $this->connection. '.username'), 
+        	$this->config->get('database.' . $type . '.' . $this->connection. '.password'));
     }
 
     protected function ConnectionString()
@@ -73,6 +73,8 @@ class DB
 		
 		$dbh = self::ConnectionString();
 		
+		var_dump($dbh);
+
 		$prep = $dbh->prepare($query);
 		
 		if (isset($params))
