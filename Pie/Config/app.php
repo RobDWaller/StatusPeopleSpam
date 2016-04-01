@@ -12,8 +12,8 @@ return [
 		'default' => 'statuspeople_spam'
 	],
 	'storage' => [
-		'local' => '/var/www/spam/Pie/Storage',
-		'test' => '/var/test/html/Pie/Storage',
+		'local' => '/var/spam/html/Pie/Storage',
+		'test' => '/var/spam/html/Pie/Storage',
 		'production' => '/var/spam/html/Pie/Storage'
 	]
 ];	
