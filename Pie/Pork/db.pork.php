@@ -73,8 +73,6 @@ class DB
 		
 		$dbh = self::ConnectionString();
 		
-		var_dump($dbh);
-
 		$prep = $dbh->prepare($query);
 		
 		if (isset($params))
