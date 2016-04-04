@@ -118,7 +118,7 @@ class ViewData
 	public function getFooterDate()
 	{
 		$dt = Carbon::now();
-		return $dt->format('Y/m/d');
+		return $dt->format('Y');
 	}
 
 	public function getLinksMenu()

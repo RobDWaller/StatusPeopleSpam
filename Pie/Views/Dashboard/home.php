@@ -39,7 +39,7 @@
 			<table>
 				<thead>
 					<tr>
-						<th>Blocked Last Day</th>
+						<th>Blocked Last Week</th>
 						<th>Blocked Last Month</th>
 					</tr>
 				</thead>
