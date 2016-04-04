@@ -82,18 +82,42 @@ trait Payment
 		}
 	}
 
-	public function paymentTimestamp($duration)
+	public function paymentTimestamp($duration, $valid = false)
 	{
 		if ($duration == 1) {
-			return strtotime('+1 Month');
+			return $this->generateTime('+1 Month', $valid);
 		}
 
 		if ($duration == 2) {
-			return strtotime('+6 Months');
+			return $this->generateTime('+6 Months', $valid);
 		}
 
 		if ($duration == 3) {
-			return strtotime('+12 Months');
+			return $this->generateTime('+12 Months', $valid);
 		}
+	}
+
+	public function generateTime($timeString, $valid)
+	{
+		if (!$valid) {
+			return strtotime($timeString);
+		}
+
+		return $this->alreadyValidTimestamp($timeString, $valid);
+	}
+
+	protected function alreadyValidTimestamp($timeString, $valid)
+	{
+		if ($timeString == '+1 Month') {
+			return $valid + (3600 * 24 * 31);
+		}
+
+		if ($timeString == '+6 Months') {
+			return $valid + (3600 * 24 * 183);
+		}
+
+		if ($timeString == '+12 Months') {
+			return $valid + (3600 * 24 * 365);
+		}		
 	}
 }
