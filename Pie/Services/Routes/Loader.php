@@ -128,12 +128,13 @@ class Loader
 
 	public function screenNamePage($class)
 	{
-		$class = str_replace('@','',$class);
+		$class = str_replace('@', '', $class);
 
 		$count = $this->api->CheckForScreenNameScore($class);
 
 		if ($count > 0) {
 			$fakers = new \Fakers();
+			
 			$fakers->_ShowUserData($class);
 		}
 		else {
