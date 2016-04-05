@@ -1,4 +1,4 @@
-<?php namespace Fakers;
+<?php namespace Fakers\Logic;
 
 use Model\Purchase;
 use Model\Valid;
@@ -57,7 +57,7 @@ class Payments
 				$valid->first()->id, 
 				$purchaseId, 
 				$userId, 
-				$this->paymentTimestamp($post->duration)
+				$this->paymentTimestamp($post->duration, $valid->first()->valid)
 			);
 		}
 

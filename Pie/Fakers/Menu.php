@@ -18,8 +18,6 @@ class Menu
 
 	public function make()
 	{
-		$this->list->open(['class' => 'fakericons']);
-
 		if ($this->admin) {
 			$this->adminMenu();
 		} elseif (!$this->auth->isLoggedIn()) {
@@ -38,14 +36,24 @@ class Menu
 		return $this->list->build();
 	}
 
-	protected function adminMenu()
+	protected function initiate()
 	{
+		$this->list->open(['class' => 'fakericons']);
+	}
+
+	public function adminMenu()
+	{
+		$this->initiate();
+
 		$this->createListElement('p', 'ico', 'Admin Home', 'Admin Home', '/Dashboard/Home');
+		
 		$this->createListElement('p', 'ico', 'Logout', 'Logout', '/Admin/Logout');
 	}
 
-	protected function loggedOut()
+	public function loggedOut()
 	{
+		$this->initiate();	
+
 		$this->createListElement('p', 'ico', 'Home', 'Home', '//fakers.statuspeople.com/');
 
 		$this->help();
@@ -55,8 +63,10 @@ class Menu
 		$this->createListElement('%', 'ico3', 'Blog', 'Blog', '//blog.statuspeople.co');
 	}
 
-	protected function noSubscription()
+	public function noSubscription()
 	{
+		$this->initiate();
+
 		$this->createListElement('"', 'ico3', 'Fakers Dashboard', 'Dashboard', '/Fakers/Scores');
 
 		$this->help();
@@ -68,8 +78,10 @@ class Menu
 		$this->settings();
 	}
 
-	protected function subscription()
+	public function subscription()
 	{
+		$this->initiate();
+		
 		$this->createListElement('"', 'ico3', 'Fakers Dashboard', 'Dashboard', '/Fakers/Dashboard');
 
 		$this->createListElement('t', 'ico', 'Follower Analytics', 'Analytics', '/Fakers/Followers');

@@ -1,6 +1,6 @@
 <?php namespace Controllers;
 
-use Fakers\Payments as FakerPayments;
+use Fakers\Logic\Payments as FakerPayments;
 
 class Payment extends AbstractController
 {

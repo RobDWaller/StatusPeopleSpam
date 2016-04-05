@@ -3,3 +3,5 @@
 /Pie/sftp-config.json
 /Pie/composer.lock
 /Pie/node_modules
+/nbproject
+/Pie/Public/Assets/
