@@ -1,8 +1,8 @@
 <?php namespace Controllers;
 
-use Fakers\Payments as FakerPayments;
+use Fakers\Logic\Payments as FakerPayments;
 
-class Payments extends AbstractController
+class Payment extends AbstractController
 {
 	protected $payments;
 
@@ -23,7 +23,7 @@ class Payments extends AbstractController
 			->required('duration', $post->duration)
 			->check();
 
-		$valid->isFail('/Accounts/User?id=' . $post->userId);
+		$valid->isFail('/Account/User?id=' . $post->userId);
 
 		$purchaseId = $this->payments->addPayment($post);
 
@@ -32,7 +32,7 @@ class Payments extends AbstractController
 		return $this->redirect->messages(
             $this->auth->getUserKey(), 
             ['success' => ['messages' => ['Purchase created successfully']]]
-        )->to('/Accounts/User?id=' . $post->userId);
+        )->to('/Account/User?id=' . $post->userId);
 	}
 
 	

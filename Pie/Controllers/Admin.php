@@ -5,6 +5,9 @@ use Model\Admin as ModelAdmin;
 use Services\Authentication\Password;
 use Model\Login;
 use Helpers\Ip;
+use Fakers\Menu;
+use Services\Html\Lists as MainMenuList;
+use Services\Authentication\Auth;
 
 class Admin extends AbstractController
 {
@@ -12,11 +15,15 @@ class Admin extends AbstractController
 
 	protected $login;
 
+	protected $menu;
+
 	public function __construct()
 	{
 		parent::__construct(true);
 
 		$this->login = new Login();
+
+		$this->menu = new Menu(new Auth, new MainMenuList);
 	}
 
 	public function login()
@@ -25,11 +32,13 @@ class Admin extends AbstractController
 			$this->redirect->to('/Dashboard/Home');
 		}
 
-		$this->overrideViewData(false);
-
 		$this->view->setFile('Views/Admin/login.php');
 
 		$this->view->addData('form', $this->forms->adminLoginForm());
+
+		$this->menu->loggedOut();
+
+		$this->view->addData('menu', $this->menu);
 
 		$this->view->load();
 	}

@@ -7,7 +7,7 @@ use Model\User;
 use Model\Purchase;
 use Fakers\Forms;
 
-class Accounts extends AbstractController
+class Account extends AbstractController
 {
 	protected $userInfo;
 
@@ -55,7 +55,7 @@ class Accounts extends AbstractController
         $user = $this->userInfo->findScreenName($this->view->post()->handle);
 
         if ($user->count()) {
-            $this->redirect->to('/Accounts/User?id=' . $this->hash->encode((int) $user->first()->twitterid));
+            $this->redirect->to('/Account/User?id=' . $this->hash->encode((int) $user->first()->twitterid));
         }
 
         $this->redirect->messages(
@@ -82,7 +82,7 @@ class Accounts extends AbstractController
             $this->view->addData('user', $user);
             $this->view->addData('purchases', $this->purchase->findUserPurchases($user->first()->twitterid));
             $this->view->addData('hash', $this->hash);
-            $this->view->addData('form', $this->form->adminPaymentForm('/Payments/Add', 'Add Payment', $this->hash->encode($user->first()->twitterid)));
+            $this->view->addData('form', $this->form->adminPaymentForm('/Payment/Add', 'Add Payment', $this->hash->encode($user->first()->twitterid)));
             
             $this->view->setFile('Views/Accounts/user.php');
             
