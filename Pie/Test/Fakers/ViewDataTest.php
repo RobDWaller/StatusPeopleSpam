@@ -38,6 +38,6 @@ class ViewDataTest extends Build
 	{
 		$view = new ViewData();
 
-		$this->assertEquals(date('Y/m/d', time()), $view->getFooterDate());
+		$this->assertEquals(date('Y', time()), $view->getFooterDate());
 	}
 }

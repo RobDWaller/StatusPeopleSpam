@@ -28,7 +28,8 @@
 	    "Model\\" : "Model/",
 	    "Services\\Database\\" : "Services/Database/",
 	    "Services\\Twitter\\" : "Services/Twitter/",
-	    "Services\\Twitter\\OAuth\\" : "Services/Twitter/OAuth/"
+	    "Services\\Twitter\\OAuth\\" : "Services/Twitter/OAuth/",
+	    "Exception\\" : "Exception/"	
         }
     }
 }

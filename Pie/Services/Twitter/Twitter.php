@@ -8,10 +8,6 @@ class Twitter extends AbstractTwitter
 
 		$this->result = $this->twitter->get('users/show', ['user_id' => $userId]);
 
-		var_dump($this->result);
-
-		die();
-
-		return $this->user();
+		return $this->user($this->result);
 	}
 }

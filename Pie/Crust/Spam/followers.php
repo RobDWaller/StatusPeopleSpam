@@ -23,7 +23,7 @@
 				</div>
 			</div>
 			<div class="one table" id="fakerslist">
-				<h2>Friend's List</h2>
+				<h2>Friends List</h2>
 				<?=$competitors;?>
 			</div>
 			<div class="oneThird">

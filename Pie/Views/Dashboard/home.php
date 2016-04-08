@@ -61,7 +61,7 @@
 				<tbody>
 					<?php foreach ($blocks as $b) { ?>
 						<tr>
-							<td><img src="<?=$b->avatar;?>" height="48px" width="48px" /></td>
+							<td><a href="https://twitter.com/<?=$b->screen_name;?>" target="_blank"><img src="<?=$b->avatar;?>" height="48px" width="48px" /></a></td>
 							<td><?=$b->screen_name;?></td>
 							<td><?=Fakers\UnitConverter::timestampToDate($b->created);?></td>
 						</tr>
