@@ -2,9 +2,12 @@
 
 use Services\Database\Connector;
 use Services\Database\Collection;
+use Helpers\Database;
 
 abstract class AbstractModel extends Connector
 {
+	use Database;
+
 	protected $table;
 
 	protected $connection;
@@ -107,4 +110,5 @@ abstract class AbstractModel extends Connector
 
         return $result;
 	}
+
 }

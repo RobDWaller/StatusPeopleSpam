@@ -34,17 +34,22 @@ class UpdateFakersCheck implements CronInterface
 
 		if ($users->count() >= 1) {
 
-			foreach ($users as $k => $u) {
-				$this->checker->updateCheckerTime($u->userid, time());
+			$this->processUserChecks($users);
 
-				$this->processUserChecks($u);
-			}
+			$this->updateCheckerTime($users);
 		}
 	}
 
-	protected function processUserChecks($user)
+	protected function updateCheckerTime($users)
 	{
-		$userRecords = $this->check->getUserToCheck($user->userid);
+		foreach ($users as $k => $u) {
+			$this->checker->updateCheckerTime($u->userid, time());
+		}
+	}
+
+	public function processUserChecks($users)
+	{
+		$userRecords = $this->check->getUsersToCheck($users);
 
 		if ($userRecords->count() >= 1) {
 
@@ -56,9 +61,9 @@ class UpdateFakersCheck implements CronInterface
 		}
 	}
 
-	protected function getTwitterBio($user) 
+	public function getTwitterBio($user) 
 	{
-		$details = $this->getTwitterDetails($u->twitterid);
+		$details = $this->user->getTwitterDetails($u->twitterid);
 
 		return $this->twitter->getBio();
 	}

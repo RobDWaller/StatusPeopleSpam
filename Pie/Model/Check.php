@@ -2,11 +2,14 @@
 
 class Check extends AbstractModel
 {
-	public function getUserToCheck($userid, $time)
+	public function getUsersToCheck($users, $time)
 	{
 		$this->query = "SELECT *
 					FROM spsp_checks
-					WHERE accounttype = 1 AND live = 1 AND userid = :userid AND lastcheck < :time
+					WHERE accounttype = 1 
+					AND live = 1 
+					AND userid IN({$this->inString('userid', $users)}) 
+					AND lastcheck < :time
 					ORDER BY lastcheck ASC
 					LIMIT 0,1";
 		
