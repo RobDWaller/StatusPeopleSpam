@@ -1,4 +1,4 @@
-<?php namespace Test\Controllers;
+<?php namespace Test\Controller;
 
 use Test\Build;
 use Fakers\ViewData;

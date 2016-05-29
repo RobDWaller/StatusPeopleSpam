@@ -40,7 +40,7 @@ trait Database
 			return PDO::PARAM_BOOL;
 		}
 
-		if (is_int($parameter)) {
+		if (is_int($parameter) || is_float($parameter)) {
 			return PDO::PARAM_INT;
 		}	
 
