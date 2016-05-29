@@ -16,5 +16,4 @@ class Build extends Goutte
 	{
 		return $this->visit($url . '?id=' . $id . '&pid=' . $primaryId . '&t=' . $type);
 	}
-
 }

@@ -1,30 +1,12 @@
-<?php namespace Test\Controllers;
+<?php namespace Test\Controller;
 
 use Test\Build;
 use Fakers\ViewData;
 use Services\Authentication\Auth;
-use Services\Authentication\Password;
-use Model\Admin;
-use Model\Login;
+use Test\Controller\AbstractTestController;
 
-class AdminControllerTest extends Build
+class AdminControllerTest extends AbstractTestController
 {
-	public function setUp()
-	{
-		parent::setUp();
-
-		$this->dropTestAdmin();
-		$this->dropLoginAttempts();
-	}
-
-	public function tearDown()
-	{
-		parent::tearDown();
-
-		$this->dropTestAdmin();
-		$this->dropLoginAttempts();
-	}
-
 	public function testLoginProcess()
 	{
 		$this->createTestAdmin();
@@ -110,28 +92,5 @@ class AdminControllerTest extends Build
 			->press('Login')
 			->seePageIs('/Admin/Login')
 			->see('User Details Incorrect');
-	}
-
-	protected function createTestAdmin()
-	{
-		$password = new Password(PASSWORD_BCRYPT);
-		
-		$admin = new Admin();
-
-		$admin->addAdmin('test@test.com', $password->generate('Test1234'));
-	}
-
-	protected function dropTestAdmin()
-	{
-		$admin = new Admin();
-
-		$admin->deleteAdmin('test@test.com');
-	}
-
-	protected function dropLoginAttempts()
-	{
-		$login = new Login();
-
-		$login->deleteLogin('::1');
 	}
 }

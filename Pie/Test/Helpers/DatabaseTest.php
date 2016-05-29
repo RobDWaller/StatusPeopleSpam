@@ -52,4 +52,23 @@ class DatabaseTest extends Build
 
 		$this->assertEquals('2,6,13', $string);
 	}
+
+	public function testGetParameterType()
+	{
+		$result = $this->getParameterType(3);
+
+		$this->assertEquals(1, $result);
+
+		$result = $this->getParameterType('a string');
+
+		$this->assertEquals(2, $result);
+
+		$result = $this->getParameterType(false);
+
+		$this->assertEquals(5, $result);
+
+		$result = $this->getParameterType(9.99);
+
+		$this->assertEquals(1, $result);
+	}
 }
