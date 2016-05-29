@@ -1,0 +1,1 @@
+ALTER TABLE spsp_users ADD INDEX (created);

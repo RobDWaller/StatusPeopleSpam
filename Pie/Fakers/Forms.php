@@ -15,9 +15,9 @@ class Forms
 				'action' => '/Admin/Process',
 				'method' => 'post'
 			])
-			->input('text', 'email', [], 'Email', 'email')
-			->input('password', 'password', [], 'Password', 'password')
-			->input('submit', 'Login');
+			->input('text', 'login_email', ['id' => 'login_email'], 'Email', 'email')
+			->input('password', 'login_password', ['id' => 'login_password'], 'Password', 'password')
+			->input('submit', 'login', null, null, null, 'Login');
 	}
 
 	public function postHandleForm($url)

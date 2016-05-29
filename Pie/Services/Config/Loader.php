@@ -1,13 +1,18 @@
 <?php namespace Services\Config;
 
+use Helpers\Server;
+
 class Loader
 {
+	use Server;
+
 	protected $configUrl;
+
 	protected $value;
 
 	public function __construct($url = null)
 	{
-		$this->configUrl = $url ? $url : $_SERVER['DOCUMENT_ROOT'] . '/Pie/Config/';
+		$this->configUrl = $url ? $url : $this->getServer()->DOCUMENT_ROOT . '/Pie/Config/';
 	}
 
 	protected function parts($fileString)
