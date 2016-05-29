@@ -1,10 +1,13 @@
 <?php namespace Model;
 
-use \DB as Connector;
+use Services\Database\Connector;
 use Services\Database\Collection;
+use Helpers\Database;
 
 abstract class AbstractModel extends Connector
 {
+	use Database;
+
 	protected $table;
 
 	protected $connection;
@@ -54,8 +57,8 @@ abstract class AbstractModel extends Connector
 
 	private function getRecords()
 	{
-		$this->result = is_array($this->params) ? $this->SelectRecords($this->query, $this->params) :
-			$this->SelectRecords($this->query);
+		$this->result = is_array($this->params) ? $this->selectRecords($this->query, $this->params) :
+			$this->selectRecords($this->query);
 	}
 
 	private function collection()
@@ -83,7 +86,7 @@ abstract class AbstractModel extends Connector
 
 	public function update()
 	{
-		$result = $this->UpdateRecord($this->query, $this->params);
+		$result = $this->updateRecord($this->query, $this->params);
         
         $this->clean();
 
@@ -92,10 +95,20 @@ abstract class AbstractModel extends Connector
 
 	public function create()
 	{
-		$result = $this->InsertRecord($this->query, $this->params);
+		$result = $this->insertRecord($this->query, $this->params);
         
         $this->clean();
 
         return $result;
 	}
+
+	public function delete()
+	{
+		$result = $this->updateRecord($this->query, $this->params);
+        
+        $this->clean();
+
+        return $result;
+	}
+
 }

@@ -19,7 +19,7 @@ class Valid extends AbstractModel
             ORDER BY created DESC
             LIMIT 1";
             
-        $this->params = ['userid' => [$userId, 'INT', 0]];
+        $this->params = ['userid' => $userId];
         
         return $this->get();
 	}
@@ -30,7 +30,7 @@ class Valid extends AbstractModel
             FROM {$this->table}
             WHERE userid = :userid";
 
-        $this->params = ['userid' => [$userId, 'INT', 0]];
+        $this->params = ['userid' => $userId];
 
         return $this->get();
     }
@@ -42,10 +42,10 @@ class Valid extends AbstractModel
             WHERE id = :id";
 
         $this->params = [
-            'purchaseid' => [$purchaseId, 'INT', 0],
-            'userid' => [$userId, 'INT', 0],
-            'valid' => [$time, 'INT', 0],
-            'id' => [$id, 'INT', 0]
+            'purchaseid' => $purchaseId,
+            'userid' => $userId,
+            'valid' => $time,
+            'id' => $id
         ];
 
         return $this->update();
@@ -57,9 +57,9 @@ class Valid extends AbstractModel
             VALUES (:purchaseid, :userid, :valid)";
 
         $this->params = [
-            'purchaseid' => [$purchaseId, 'INT', 0],
-            'userid' => [$userId, 'INT', 0],
-            'valid' => [$time, 'INT', 0]
+            'purchaseid' => $purchaseId,
+            'userid' => $userId,
+            'valid' => $time
         ];
 
         return $this->create();

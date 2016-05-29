@@ -9,12 +9,11 @@ class Build extends Goutte
 
 	public function setUp()
 	{
-		$_SERVER['DOCUMENT_ROOT'] = '/var/www/spam';
+		$_SERVER['DOCUMENT_ROOT'] = '/var/spam/html';
 	}
 
 	protected function login($id, $primaryId, $type, $url) 
 	{
-		return $this->visit($url.'?id='.$id.'&pid='.$primaryId.'&t='.$type);
+		return $this->visit($url . '?id=' . $id . '&pid=' . $primaryId . '&t=' . $type);
 	}
-
 }

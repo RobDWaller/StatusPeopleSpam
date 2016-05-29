@@ -1,7 +1,6 @@
 <?php namespace Model;
 
 use Model\AbstractModel;
-use Services\Database\Collection;
 
 class User extends AbstractModel
 {
@@ -17,9 +16,24 @@ class User extends AbstractModel
                 JOIN spsp_user_info AS ui ON u.twitterid = ui.twitterid 
                 LEFT JOIN spsp_user_details AS ud ON u.twitterid = ud.twitterid
                 WHERE u.twitterid = :twitterid
-                AND u.live = 1 AND ui.live";
+                AND u.live = 1 AND ui.live = 1";
             
-        $this->params = ['twitterid' => [$id, 'INT', 140]];
+        $this->params = ['twitterid' => $id];
+        
+        return $this->get();
+	}
+
+	public function findUserDetailsByScreenName($screenName)
+	{
+		$this->query = "SELECT u.id, u.twitterid, ui.screen_name, ui.avatar,
+				ud.email, ud.title, ud.forename, ud.surname
+                FROM {$this->table} AS u 
+                JOIN spsp_user_info AS ui ON u.twitterid = ui.twitterid 
+                LEFT JOIN spsp_user_details AS ud ON u.twitterid = ud.twitterid
+                WHERE ui.screen_name = :screenName
+                AND u.live = 1 AND ui.live = 1";
+            
+        $this->params = ['screenName' => $screenName];
         
         return $this->get();
 	}	
@@ -29,10 +43,23 @@ class User extends AbstractModel
 		$this->query = "SELECT u.id, u.twitterid, ui.screen_name, ui.avatar, u.created
 			FROM {$this->table} as u
 			JOIN spsp_user_info as ui ON u.twitterid = ui.twitterid
-			WHERE u.live = 1 AND ui.live
+			WHERE u.live = 1 AND ui.live = 1
 			ORDER BY u.created DESC
-			LIMIT {$limit}";
+			LIMIT :limit";
+
+		$this->params = ['limit' => $limit];	
 
 		return $this->get();
 	}
+
+	public function getTwitterDetails($twitterid)
+    {
+        $this->query = "SELECT *
+                    FROM spsp_users
+                    WHERE twitterid = :twitterid AND live = 1";
+        
+        $this->params = ['twitterid' => $twitterid];
+        
+        return $this->get();
+    }
 }

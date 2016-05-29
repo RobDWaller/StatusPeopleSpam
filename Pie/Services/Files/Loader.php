@@ -94,7 +94,7 @@ class Loader
 	public function makeDirectory()
 	{
 		if(!$this->directoryExists()) {
-			return mkdir($this->directory) ? true :
+			return mkdir($this->directory, 0755, true) ? true :
 				$this->fail('Failed to create directory [' . $this->directory . ']');
 		}
 

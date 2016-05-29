@@ -646,9 +646,11 @@ class DBRequests extends DB
 			$query = "SELECT c.userid
                     FROM spsp_checks AS c
                     JOIN spsp_valid AS v on c.userid = v.userid
+                    JOIN spsp_purchases AS p on v.purchaseid = p.id
                     WHERE c.autoremove = 1 
                     AND c.accounttype = 1
                     AND v.valid >= $time
+                    AND p.type >= 2
                     GROUP BY c.userid
                     ORDER BY c.autocheck ASC
                     LIMIT 0,10";
@@ -660,10 +662,16 @@ class DBRequests extends DB
         
 		public function GetAutoRemoveAccounts($limit,$time)
 		{
-			$query = "SELECT *
+            $time = time();
+
+			$query = "SELECT c.*
                     FROM spsp_checks AS c
+                    JOIN spsp_valid AS v on c.userid = v.userid
+                    JOIN spsp_purchases AS p on v.purchaseid = p.id
                     WHERE c.autoremove = 1
 					AND lastcheck < :time
+                    AND v.valid >= $time
+                    AND p.type >= 2
                     GROUP BY c.userid
                     ORDER BY c.lastcheck ASC
                     LIMIT 0,:limit";

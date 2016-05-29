@@ -15,8 +15,11 @@ class Builder
 	use Session;
 
 	protected $messages;
+
 	protected $files;
+	
 	protected $hash;
+	
 	protected $accessor;
 
 	public function __construct(Collection $messages)
@@ -31,7 +34,7 @@ class Builder
 		$hash = $this->hash->encode($key, time());
 
 		$file = File::make($this->accessor->messagesDirectory(), $hash, 'txt');
-
+		
 		$string = $this->serialize($this->messages);
 
 		$this->setSession('messages', $hash);
