@@ -14,7 +14,7 @@ class Build extends Goutte
 
 	protected function login($id, $primaryId, $type, $url) 
 	{
-		return $this->visit($url.'?id='.$id.'&pid='.$primaryId.'&t='.$type);
+		return $this->visit($url . '?id=' . $id . '&pid=' . $primaryId . '&t=' . $type);
 	}
 
 }

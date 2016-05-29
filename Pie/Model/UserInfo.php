@@ -16,7 +16,7 @@ class UserInfo extends AbstractModel
                 WHERE screen_name = :screen_name
                 AND live = 1";
             
-        $this->params = ['screen_name' => [$screenName, 'STR', 140]];
+        $this->params = ['screen_name' => $screenName];
         
         return $this->get();
 	}
@@ -26,8 +26,36 @@ class UserInfo extends AbstractModel
 		$this->query = "SELECT *
 			FROM {$this->table}
 			ORDER BY created DESC
-			LIMIT {$limit}";
+			LIMIT :limit";
+
+		$this->params = ['limit' => $limit];	
 
 		return $this->get();
 	}	
+
+	public function findTwitterId($twitterId)
+	{
+		$this->query = "SELECT *
+                FROM {$this->table}
+                WHERE twitterid = :twitterid
+                AND live = 1";
+            
+        $this->params = ['twitterid' => $twitterId];
+        
+        return $this->get();
+	}
+
+	public function updateUserInfo($twitterId, $screenName, $avatar)
+    {
+        $this->query = "UPDATE {$this->table}
+					SET screen_name = :screen_name,
+					avatar = :avatar
+					WHERE twitterid = :twitterid AND live = 1";
+        
+        $this->params = ['twitterid' => $twitterId,
+                    'screen_name' => $screenName,
+                    'avatar' => $avatar];
+        
+        return $this->update();
+    }
 }

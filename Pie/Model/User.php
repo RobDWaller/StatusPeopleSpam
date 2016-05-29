@@ -18,7 +18,7 @@ class User extends AbstractModel
                 WHERE u.twitterid = :twitterid
                 AND u.live = 1 AND ui.live = 1";
             
-        $this->params = ['twitterid' => [$id, 'INT', 0]];
+        $this->params = ['twitterid' => $id];
         
         return $this->get();
 	}
@@ -33,7 +33,7 @@ class User extends AbstractModel
                 WHERE ui.screen_name = :screenName
                 AND u.live = 1 AND ui.live = 1";
             
-        $this->params = ['screenName' => [$screenName, 'STR', 140]];
+        $this->params = ['screenName' => $screenName];
         
         return $this->get();
 	}	
@@ -45,7 +45,9 @@ class User extends AbstractModel
 			JOIN spsp_user_info as ui ON u.twitterid = ui.twitterid
 			WHERE u.live = 1 AND ui.live = 1
 			ORDER BY u.created DESC
-			LIMIT {$limit}";
+			LIMIT :limit";
+
+		$this->params = ['limit' => $limit];	
 
 		return $this->get();
 	}
@@ -56,7 +58,7 @@ class User extends AbstractModel
                     FROM spsp_users
                     WHERE twitterid = :twitterid AND live = 1";
         
-        $this->params = ['twitterid' => [$twitterid, 'INT', 0]];
+        $this->params = ['twitterid' => $twitterid];
         
         return $this->get();
     }

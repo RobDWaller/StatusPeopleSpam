@@ -41,8 +41,16 @@ class Fake extends AbstractModel
 			ORDER BY created DESC
 			LIMIT 0, :count";
 
-		$this->params = ['count' => [$count, 'INT', 0]];	
+		$this->params = ['count' => $count];	
 
 		return $this->get();
 	}
+
+	public function AddFakes($insertstring)
+    {
+        $query = "INSERT IGNORE INTO {$this->table} (userid, twitterid, screen_name, avatar, created)
+                    VALUES $insertstring";
+        
+        return $this->create();
+    }
 }

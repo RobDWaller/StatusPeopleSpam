@@ -10,12 +10,13 @@
     "require-dev": {
         "phpunit/phpunit" : "v4.8.6",
         "laracasts/integrated" : "v0.15.6",
-	"mockery/mockery" : "v0.9.4"
+	    "mockery/mockery" : "v0.9.4",
+        "fzaninotto/faker" : "v1.6.0"
     },
 	"autoload": {
         "psr-4": {
             "Test\\" : "Test/",
-	    "Helpers\\" : "Helpers/",
+	        "Helpers\\" : "Helpers/",
             "Services\\Files\\" : "Services/Files/",
             "Services\\Messages\\" : "Services/Messages/",
             "Services\\Collection\\" : "Services/Collection/",
@@ -26,11 +27,11 @@
             "Services\\Validation\\" : "Services/Validation/",
             "Services\\Html\\" : "Services/Html/",
             "Fakers\\" : "Fakers/",
-	    "Model\\" : "Model/",
-	    "Services\\Database\\" : "Services/Database/",
-	    "Services\\Twitter\\" : "Services/Twitter/",
-	    "Services\\Twitter\\OAuth\\" : "Services/Twitter/OAuth/",
-	    "Exception\\" : "Exception/"	
+    	    "Model\\" : "Model/",
+    	    "Services\\Database\\" : "Services/Database/",
+    	    "Services\\Twitter\\" : "Services/Twitter/",
+    	    "Services\\Twitter\\OAuth\\" : "Services/Twitter/OAuth/",
+    	    "Exception\\" : "Exception/"
         }
     }
 }

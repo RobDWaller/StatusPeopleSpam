@@ -15,7 +15,7 @@ class Admin extends AbstractModel
                 WHERE email = :email
                 AND live = 1";
             
-        $this->params = ['email' => [$email, 'STR', 64]];
+        $this->params = ['email' => $email];
         
         return $this->get();
 	}	
@@ -27,8 +27,8 @@ class Admin extends AbstractModel
 		$this->query = "INSERT INTO {$this->table} (email, password, created)
 			VALUES (:email, :password, {$time})";
 
-		$this->params = ['email' => [$email, 'STR', 150],
-			'password' => [$password, 'STR', 150]];
+		$this->params = ['email' => $email,
+			'password' => $password];
 
 		return $this->create();
 	}
@@ -38,7 +38,7 @@ class Admin extends AbstractModel
 		$this->query = "DELETE FROM {$this->table}
 			WHERE email = :email";
 
-		$this->params = ['email' => [$email, 'STR', 150]];
+		$this->params = ['email' => $email];
 
 		$this->delete();
 	}

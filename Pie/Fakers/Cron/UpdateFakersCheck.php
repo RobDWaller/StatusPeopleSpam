@@ -1,70 +1,122 @@
 <?php namespace Fakers\Cron;
 
-use Model\Checker;
-use Model\Check;
-use Model\User;
-use Services\Twitter\Twitter;
+use Fakers\Score\Generic;
+use Fakers\Score\Score;
+use Fakers\Score\Language;
+use Fakers\Score\Stats;
+use Exception;
+use Fakers\Cron\Object\Error;
+use Fakers\Cron\Object\Errors;
+use Fakers\Cron\Object\Results;
+use Fakers\Cron\Object\Result;
+use Fakers\Cron\Object\CronComplete;
 
 class UpdateFakersCheck implements CronInterface
 {
-	protected $checker;
+	protected $results = [];
 
-	protected $check;
+	protected $errors = [];
 
-	protected $user;
+	protected $scoreGeneric;
 
-	protected $twitter;
+	protected $score;
+
+	protected $language;
+
+	protected $stats;
 
 	protected $spam = [];
 
-	public function __construct(Checker $checker, Check $check, User $user, Twitter $twitter)
+	public function __construct(Generic $scoreGeneric, Score $score, Language $language, Stats $stats)
 	{
-		$this->checker = $checker;
+		$this->scoreGeneric = $scoreGeneric;
 
-		$this->check = $check;
+		$this->score = $score;
 
-		$this->user = $user;
+		$this->language = $language;
 
-		$this->twitter = $twitter;
+		$this->stats = $stats;
 	}
 
 	public function run()
 	{
-		$users = $this->checker->getCheckers(0, 20, strtotime('-1 Month'));
+		$users = $this->scoreGeneric->getCheckers();
 
 		if ($users->count() >= 1) {
 
-			$this->processUserChecks($users);
-
 			$this->updateCheckerTime($users);
+
+			return $this->processUserChecks($users);
 		}
 	}
 
 	protected function updateCheckerTime($users)
 	{
 		foreach ($users as $k => $u) {
-			$this->checker->updateCheckerTime($u->userid, time());
+			$this->scoreGeneric->updateCheckerTime($u->userid, time());
 		}
 	}
 
 	public function processUserChecks($users)
 	{
-		$userRecords = $this->check->getUsersToCheck($users);
-
+		$userRecords = $this->scoreGeneric->getUsersToCheck($users, strtotime('-12 hours'));
+		
 		if ($userRecords->count() >= 1) {
 
 			foreach ($userRecords as $k => $u) {
-				$this->check->updateLastCheckTime($u->twitterid, $u->screen_name, time());
+				
+				$this->scoreGeneric->updateLastCheckTime($u->twitterid, $u->screen_name);
 
-				$bio = $this->getTwitterBio($u);
+				$bio = $this->scoreGeneric->getTwitterBio($u);
+
+				$this->scoreGeneric->updateInfoRecord($bio);
+
+				try {
+					
+					$score = $this->score->getFakerScore($bio, $u);
+
+					$languageStats = $this->language->getLanguageStats($this->score->getFollowers());
+
+					$stats = $this->stats->getStats($this->score->getFollowers());
+
+					$this->scoreGeneric->updateStatsData(
+						$score->twitterId, 
+						$languageStats, 
+						$stats, 
+						$score->fakeFollowers,
+						$score->timestamp
+					);
+
+					$this->scoreGeneric->updateSpamScore(
+						$score->twitterId, 
+						$score->fakes, 
+						$score->inactive, 
+						$score->checks, 
+						$score->followers,
+						$score->timestamp
+					);
+
+					$this->scoreGeneric->addCheckScore(
+						$score->twitterId, 
+						$score->screenName,
+						$score->fakes, 
+						$score->inactive, 
+						$score->checks, 
+						$score->followers,
+						$score->timestamp			
+					);
+
+					$this->scoreGeneric->updateCheckTime($score->twitterId, $score->screenName);
+
+					$this->results[] = new Result($score);
+
+				} catch (Exception $e) {
+
+					$this->errors[] = new Error($e->getMessage, $e->getLine(), $e->getFile());
+				}
 			}
 		}
-	}
 
-	public function getTwitterBio($user) 
-	{
-		$details = $this->user->getTwitterDetails($u->twitterid);
-
-		return $this->twitter->getBio();
+		return new CronComplete(new Results($this->results), new Errors($this->errors));
 	}
 }

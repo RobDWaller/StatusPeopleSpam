@@ -2,6 +2,9 @@
 
 use Services\Database\Collection;
 use Exception\DatabaseException;
+use Services\Database\Object\Parameter;
+use Services\Database\Object\Parameters;
+use PDO;
 
 trait Database
 {
@@ -29,5 +32,22 @@ trait Database
 		}
 
 		return substr($inString, 0, -1);
+	}
+
+	public function getParameterType($parameter)
+	{
+		if ($parameter === true || $parameter === false) {
+			return PDO::PARAM_BOOL;
+		}
+
+		if (is_int($parameter)) {
+			return PDO::PARAM_INT;
+		}	
+
+		if (is_string($parameter)) {
+			return PDO::PARAM_STR;
+		}
+
+		throw new DatabaseException('[' . $parameter . '] Not a valid PDO parameter type');
 	}
 }

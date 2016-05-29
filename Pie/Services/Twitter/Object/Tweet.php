@@ -1,5 +1,7 @@
 <?php namespace Services\Twitter\Object;
 
+use Services\Object\AbstractObject;
+
 class Tweet extends AbstractObject
 {
 	protected $id;
@@ -29,6 +31,8 @@ class Tweet extends AbstractObject
 		$this->createdDate = $createdDate;
 
 		$this->createdTimestamp = strtotime($createdDate);
+
+		$this->createdDays = round(((time() - $this->createdTimestamp) / 3600) / 24);
 
 		$this->retweets = $retweets;
 

@@ -1,6 +1,7 @@
 <?php namespace Services\Twitter\Object;
 
 use Services\Twitter\Object\Tweet;
+use Services\Object\AbstractObject;
 
 class User extends AbstractObject 
 {
@@ -9,6 +10,8 @@ class User extends AbstractObject
 	protected $screenName;
 
 	protected $location;
+
+	protected $timeZone;
 
 	protected $description;
 
@@ -26,9 +29,13 @@ class User extends AbstractObject
 
 	protected $createdTimestamp;
 
+	protected $createdDays;
+
 	protected $favourites;
 
 	protected $tweets;
+
+	protected $tweetsPerDay;
 
 	protected $language;
 
@@ -38,14 +45,17 @@ class User extends AbstractObject
 
 	protected $following;
 
-	public function __construct($twitterId, $screenName, $location, $description, $website, $privateAccount, 
-		$followers, $follows, $listedCount, $createdDate, $favourites, $tweets, $language, $lastTweet, $avatar, $following)
+	public function __construct($twitterId, $screenName, $location, $timeZone, $description, 
+		$website, $privateAccount, $followers, $follows, $listedCount, $createdDate, 
+		$favourites, $tweets, $language, $lastTweet, $avatar, $following)
 	{
 		$this->twitterId = $twitterId;
 
 		$this->screenName = $screenName;
 
 		$this->location = $location;
+
+		$this->timeZone = $timeZone;
 
 		$this->description = $description;
 
@@ -63,9 +73,13 @@ class User extends AbstractObject
 
 		$this->createdTimestamp = strtotime($createdDate);
 
+		$this->createdDays = round(((time() - $this->createdTimestamp) / 3600) / 24);
+
 		$this->favourites = $favourites;
 
 		$this->tweets = $tweets;
+
+		$this->tweetsPerDay = $this->tweets != 0 && $this->createdDays != 0 ? round($this->tweets / $this->createdDays) : 0;
 
 		$this->language = $language;
 

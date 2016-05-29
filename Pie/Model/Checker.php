@@ -2,6 +2,10 @@
 
 class Checker extends AbstractModel
 {
+	protected $table = 'spsp_fakes';
+
+	protected $connection = 'statuspeople_spam';
+
 	public function getCheckers($start, $limit, $time)
 	{
 		$this->query = "SELECT sc.userid,FROM_UNIXTIME(sv.valid),FROM_UNIXTIME(sc.updated)
@@ -12,9 +16,9 @@ class Checker extends AbstractModel
 						LIMIT :start, :limit";
 
 		$this->params = [
-			'time' => [$time, 'INT', 0]
-			'start' => [$start, 'INT', 0]	
-			'limit' => [$limit, 'INT', 0]
+			'time' => $time,
+			'start' => $start,	
+			'limit' => $limit
 		];
 
 		return $this->get();
@@ -26,8 +30,8 @@ class Checker extends AbstractModel
 					SET updated = :updated
 					WHERE userid = :userid";
 		
-		$this->params = ['userid' => [$userid , 'INT' , 0 ],
-					   ['updated' => [$updated,'INT', 0]];
+		$this->params = ['userid' => $userid,
+					   'updated' => $updated];
 		
 		return $this->update();
 	}

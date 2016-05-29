@@ -48,4 +48,13 @@ abstract class AbstractCollection implements Iterator, Countable, CollectionInte
 
     	return $this->current();
     }
+
+    public function toArray()
+    {
+        foreach ($this->records as $key => $value) {
+            $array[$key] = $value;
+        }
+
+        return $array;
+    }
 }

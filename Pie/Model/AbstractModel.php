@@ -57,8 +57,8 @@ abstract class AbstractModel extends Connector
 
 	private function getRecords()
 	{
-		$this->result = is_array($this->params) ? $this->SelectRecords($this->query, $this->params) :
-			$this->SelectRecords($this->query);
+		$this->result = is_array($this->params) ? $this->selectRecords($this->query, $this->params) :
+			$this->selectRecords($this->query);
 	}
 
 	private function collection()
@@ -86,7 +86,7 @@ abstract class AbstractModel extends Connector
 
 	public function update()
 	{
-		$result = $this->UpdateRecord($this->query, $this->params);
+		$result = $this->updateRecord($this->query, $this->params);
         
         $this->clean();
 
@@ -95,7 +95,7 @@ abstract class AbstractModel extends Connector
 
 	public function create()
 	{
-		$result = $this->InsertRecord($this->query, $this->params);
+		$result = $this->insertRecord($this->query, $this->params);
         
         $this->clean();
 
@@ -104,7 +104,7 @@ abstract class AbstractModel extends Connector
 
 	public function delete()
 	{
-		$result = $this->UpdateRecord($this->query, $this->params);
+		$result = $this->updateRecord($this->query, $this->params);
         
         $this->clean();
 

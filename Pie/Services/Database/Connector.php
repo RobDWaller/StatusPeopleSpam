@@ -2,31 +2,45 @@
 
 use Services\Config\Loader as Config;
 use Helpers\Application;
+use Helpers\Database;
+use Helpers\String;
+use Services\Database\Object\Parameter;
+use Services\Database\Object\Parameters;
+use Exception\DatabaseException;
 use PDO;
 
 class Connector
 {
 	use Application;
+	use Database;
+	use String;
 
     protected $dbh;
+
     protected $connection;
-    protected $config;
-    protected $loader;
     
+    protected $config;
+    
+    protected $loader;
+
+    public function setConnection($connection)
+    {	
+    	$this->connection = $connection;
+    }
+
     protected function buildConnection($type)
     {
     	$this->dbh[$this->connection] = new PDO("mysql:
-        	host=".$this->config->get('database.'.$type.'.'.$this->connection.'.host').";
-        	dbname=".$this->config->get('database.'.$type.'.'.$this->connection.'.name'), 
-        	$this->config->get('database.'.$type.'.'.$this->connection.'.username'), 
-        	$this->config->get('database.'.$type.'.'.$this->connection.'.password'));
+        	host=" . $this->config->get('database.' . $type . '.' . $this->connection . '.host') . ";
+        	dbname=" . $this->config->get('database.' . $type . '.' . $this->connection . '.name'), 
+        	$this->config->get('database.' . $type . '.' . $this->connection . '.username'), 
+        	$this->config->get('database.' . $type . '.' . $this->connection . '.password'));
     }
 
-    protected function ConnectionString()
+    protected function connectionString()
 	{
 		$this->config = new Config;
-		// Remember to update this information when you build a new application.
-		
+
 		try {
 			
             if (!isset($this->dbh[$this->connection]))
@@ -36,178 +50,136 @@ class Connector
 	
             return $this->dbh[$this->connection];
 		}
-		catch(PDOException $e)
-		{
-			echo 'Database connection "'.$this->connection.'" failure. Please reload page. If problem persists contact info@statuspeople.com';
+		catch(PDOException $e) {
+			echo 'Database connection "' . $this->connection . '" failure. Please reload page. If problem persists contact info@statuspeople.com';
             echo $e->getMessage();
             die();
         }
 		
 	}
 	
-	// Select Record fetches a single row from the database
+	// Build Params binds the relevant parameters to your PDO prepared statement. 
 	
-	public function SelectRecord($query,$params = null)
+	public function defineParameters(array $parameters)
 	{
-		
-		$dbh = self::ConnectionString();
-							
-		$prep = $dbh->prepare($query);
-		
-		if (isset($params))
-		{
-			self::BuildParams($params,$prep);
+		foreach ($parameters as $key => $parameter) {
+			$parameterArray[] = new Parameter(
+				$key, 
+				$parameter, 
+				$this->getParameterType($parameter), 
+				$this->stringLength($parameter)
+			);	
 		}
-		
-		$prep->execute();
-		
-		$result = $prep->fetch(PDO::FETCH_NUM);
-		
-		return $result;
-		
+
+		return new Parameters($parameterArray);
 	}
 	
+	public function bindParameters(Parameters $parameters, $preparedStatement)
+	{
+		foreach ($parameters as $parameter) {
+			$preparedStatement->bindParam($parameter->name, $parameter->value, $parameter->type, $parameter->length);
+		}
+
+		return $preparedStatement;
+	}
+
+	public function getPreparedStatement($query)
+	{
+		return $this->connectionString()->prepare($query);
+	}
+
+	public function buildParameters($preparedStatement, $parameters = null)
+	{
+		if ($parameters !== null) {
+			$parameterCollection = $this->defineParameters($parameters);
+
+			$this->bindParameters($parameterCollection, $preparedStatement);
+		}
+	}
+
+	protected function executeFail($info) 
+	{
+		return 'SQL Code: ' . $info[0] . ' Driver Code: ' . $info[1] . ' Message: ' . $info[2];
+	}
+
+	public function execute($preparedStatement)
+	{
+		try {
+			
+			$result = $preparedStatement->execute();
+		
+			if ($preparedStatement->errorCode() !== '00000') {
+				throw new DatabaseException(
+					$this->executeFail($preparedStatement->errorInfo())
+				);
+			}
+
+			return $result;
+		} 
+		catch (Exception $e) {
+			echo $e->getMessage() . PHP_EOL;
+			die();
+		}
+	}
+
 	// Select Records returns multiple rows from the database
 	
-	public function SelectRecords($query, $params = null)
+	public function selectRecords($query, $parameters = null)
 	{
+		$preparedStatement = $this->getPreparedStatement($query); 
 		
-		$dbh = self::ConnectionString();
-		
-		$prep = $dbh->prepare($query);
-		
-		if (isset($params))
-		{
-			self::BuildParams($params, $prep);
-		}
-		
-		$prep->execute();
+		$this->buildParameters($preparedStatement, $parameters);
 
-		if ($prep->errorCode() !== '00000') {
-			var_dump($prep->errorCode());
-			var_dump($prep->errorInfo());
-			die('Fail');
-		}
-		
-		return $prep->fetchAll();
-		
+		$this->execute($preparedStatement);
+
+		return $preparedStatement->fetchAll();	
 	}
 	
 	
 	// Select Count returns a Count of rows from the database. Remember to use COUNT(*).
 	
-	public function SelectCount($query,$params = null)
+	public function selectCount($query, $parameters = null)
 	{
 		
-		$dbh = self::ConnectionString();
-					
-		$prep = $dbh->prepare($query);
+		$preparedStatement = $this->getPreparedStatement($query); 
 		
-		if (isset($params))
-		{
-			self::BuildParams($params,$prep);
-		}
-		
-		$prep->execute();
-		
-		$result = $prep->fetchColumn();
-		
-		return $result;
-		
+		$this->buildParameters($preparedStatement, $parameters);
+
+		$this->execute($preparedStatement);
+
+		return (int) $preparedStatement->fetchColumn();
 	}
 	
 	// Insert Record inserts a single record into the database and returns the new record id.
 	
 	//Updated
 	
-	public function InsertRecord($query, $params = null)
+	public function insertRecord($query, $parameters = null)
 	{
 		
-		$dbh = self::ConnectionString();
+		$preparedStatement = $this->getPreparedStatement($query); 
 		
-		$prep = $dbh->prepare($query);
+		$this->buildParameters($preparedStatement, $parameters);
+
+		$this->execute($preparedStatement);
 		
-		if (isset($params))
-		{
-			self::BuildParams($params,$prep);
-		}
-		
-		$prep->execute();
-		
-		//$this->DebugQuery($prep);
-		
-		$result = $dbh->lastInsertID();
-		
-		return $result;
+		return (int) $this->dbh[$this->connection]->lastInsertID();
 		
 	}
 	
 	// Update Record will update the relevant records in the database.
 	
-	public function UpdateRecord($query, $params)
+	public function updateRecord($query, $parameters)
 	{
 		
-		$dbh = self::ConnectionString();
+		$preparedStatement = $this->getPreparedStatement($query); 
 		
-		$prep = $dbh->prepare($query);
+		$this->buildParameters($preparedStatement, $parameters);
+
+		$this->execute($preparedStatement);
 		
-		self::BuildParams($params,$prep);
-		
-		$result = $prep->execute();
-		
-		return $result;
-		
+		return $preparedStatement->rowCount();
 	} 
-	
-	// Build Params binds the relevant parameters to your PDO prepared statement. 
-	
-	protected function BuildParams($params,$prep)
-	{
-		
-		foreach ($params as $key => $obj)
-		{
-			
-			$field = ':'.$key;
-			$type = self::SetParam($obj[1]);
-			
-			$prep->bindParam($field, $obj[0], $type, $obj[2]);
-				
-		}
-		
-	}
-	
-	// Set Param returns the relevant PDO param constant.
-	
-	protected function SetParam($type)
-	{
-	
-		$param = PDO::PARAM_STR;
-	
-		if ($type == 'INT')
-		{
-			$param = PDO::PARAM_INT;	
-		}
-		elseif ($type == 'BOOL')
-		{
-			$param = PDO::PARAM_BOOL;	
-		}
-		
-		return $param;
-		
-	}
-	
-	protected function DebugQuery($prep)
-	{
-		
-		echo '<pre>';
-		
-		print_r($prep->debugDumpParams());
-		
-		echo '</pre>';
-		
-		die();
-		
-	}
 	
 }
 

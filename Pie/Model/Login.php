@@ -18,7 +18,7 @@ class Login extends AbstractModel
 			AND created >= $time
 			AND success = 0";
 
-		$this->params = ['ip_address' => [$ipAddress, 'STR', 20]];
+		$this->params = ['ip_address' => $ipAddress];
 
 		return $this->count();
 	}
@@ -30,8 +30,8 @@ class Login extends AbstractModel
 		$this->query = "INSERT INTO {$this->table} (ip_address, success, created)
 			VALUES (:ipAddress, :success, $time)";
 
-		$this->params = ['ipAddress' => [$ipAddress, 'STR', 20],
-			'success' => [$success, 'INT', 0]];
+		$this->params = ['ipAddress' => $ipAddress,
+			'success' => $success];
 
 		return $this->create();
 	}
@@ -41,7 +41,7 @@ class Login extends AbstractModel
 		$this->query = "DELETE FROM {$this->table}
 			WHERE ip_address = :ip";
 
-		$this->params = ['ip' => [$ip, 'STR', 20]];
+		$this->params = ['ip' => $ip];
 
 		$this->update();
 	}

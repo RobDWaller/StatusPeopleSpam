@@ -3,6 +3,10 @@
 use Services\Twitter\OAuth\TwitterOauth;
 use Services\Config\Loader as Config;
 use Services\Twitter\Object\User;
+use Services\Twitter\Object\Users;
+use Services\Twitter\Object\Ids;
+use Services\Twitter\Object\Id;
+use Exception\TwitterException;
 
 class AbstractTwitter
 {
@@ -35,6 +39,26 @@ class AbstractTwitter
 		$this->consumerSecret = $secret;
 	}
 
+	protected function checkResult()
+	{
+		if (!is_array($this->result) && property_exists($this->result, 'error'))  {
+			$this->fail('Something went wrong with the Twitter Request [' . $this->result->error . ']');
+		}
+
+		if ($this->result == null) {
+			$this->fail('Something went wrong with the Twitter Request [' . $this->result->error . ']');
+		}
+
+		if (!is_array($this->result) && property_exists($this->result, 'errors')) {
+			$this->fail('Something went wrong with the Twitter Request [' . $this->result->errors[0]->message . ']');
+		}
+	}
+
+	protected function fail($message)
+	{
+		throw new TwitterException($message);
+	}
+
 	protected function keysSet()
 	{
 		return isset($this->consumerKey) && isset($this->consumerSecret);
@@ -55,6 +79,7 @@ class AbstractTwitter
 			$result->id,
 			$result->screen_name,
 			$result->location,
+			$result->timezone,
 			$result->description,
 			$result->url,
 			$result->protected,
@@ -69,5 +94,27 @@ class AbstractTwitter
 			$result->profile_image_url_https,
 			$result->following
 		);
+	}
+
+	protected function users($result)
+	{
+		foreach ($result as $r) {
+			$users[] = $this->user($r);
+		}
+
+		return new Users($users);
+	}
+
+	protected function ids($result)
+	{
+		if ($result->ids != null) {
+			foreach ($result->ids as $id) {
+				$ids[] = new Id($id);
+			}
+
+			if ($ids != null) {
+				return new Ids($ids, $result->next_cursor_str, $result->previous_cursor_str);
+			}
+		}
 	}
 }

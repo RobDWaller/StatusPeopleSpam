@@ -83,7 +83,7 @@ class TwitterTest extends Build
 	}
 
 	/**
-	 * @expectedException Exception\TwitterException
+	 * @expectedException Exception\ObjectException
 	 */
 
 	public function testGetBioFail()
