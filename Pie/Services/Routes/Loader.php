@@ -2,9 +2,12 @@
 
 use Services\Config\Loader as Config;
 use Fakers\Lists;
+use Helpers\Application;
 
 class Loader
 {
+	use Application;
+
 	protected $routes;
 	protected $glaze;
 	protected $config;
@@ -159,7 +162,7 @@ class Loader
 
 	public function isTest()
 	{
-		return gethostname() == $this->config->get('app.test');
+		return $this->isAppInTest();
 	}
 
 	public function isDown()
