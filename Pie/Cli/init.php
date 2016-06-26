@@ -13,12 +13,19 @@ ini_set('display_errors', 1);
 
 require_once(__SITE_PATH.'/Pie/recipe.php');
 require_once(__SITE_PATH.'/Pie/autobake.php');
-require_once(__SITE_PATH.'/Pie/Cli/commands.php');
+require_once(__SITE_PATH.'/Pie/Cli/Commands.php');
 
-$cli = new Commands($argv);
+try {
 
-$result = $cli->make();
+	$cli = new Commands($argv);
 
-var_dump($result).PHP_EOL;
+	$result = $cli->make();
+}
+catch (Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
+	die('Finished!!') . PHP_EOL;
+}
 
-echo 'Finished!!'.PHP_EOL;
+var_dump($result) . PHP_EOL;
+
+echo 'Finished!!' . PHP_EOL;

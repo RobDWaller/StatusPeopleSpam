@@ -31,7 +31,8 @@
     	    "Services\\Database\\" : "Services/Database/",
     	    "Services\\Twitter\\" : "Services/Twitter/",
     	    "Services\\Twitter\\OAuth\\" : "Services/Twitter/OAuth/",
-    	    "Exception\\" : "Exception/"
+    	    "Exception\\" : "Exception/",
+            "Cli\\" : "Cli/"
         }
     }
 }
